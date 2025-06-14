@@ -4,8 +4,12 @@ WORKDIR /backend
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r requirements.txt 
 
-COPY app ./app
+COPY . .
+
+RUN chmod +x entrypoint.sh && \
+    apt-get update && apt-get install -y postgresql-client
+
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+ENTRYPOINT ["./entrypoint.sh"]

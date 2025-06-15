@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from app.core.session import get_session_context
 from app.core.seeder import seed_initial_data
+from app.routes import role
 
 
 @asynccontextmanager
@@ -14,6 +15,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(role.router)
 
 
 @app.get("/")

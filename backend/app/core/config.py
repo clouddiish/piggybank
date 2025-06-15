@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     dev_sync_database_url: str
     echo_sql: bool = True
 
-    model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parents[2] / ".env")
+    model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parents[3] / ".env")
 
 
 @lru_cache

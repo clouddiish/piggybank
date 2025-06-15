@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     dev_async_database_url: str
     dev_sync_database_url: str
     echo_sql: bool = True
+    initial_admin_email: str
+    initial_admin_password: str
+    initial_roles: list = ["admin", "user"]
 
     model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parents[3] / ".env")
 

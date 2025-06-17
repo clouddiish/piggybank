@@ -16,13 +16,15 @@ def mock_role_service(mock_session_fixture: AsyncMock) -> RoleService:
 
 class TestRoleServices:
     @pytest.mark.anyio
-    async def test_get_roles__no_filters(self, mock_session_fixture: AsyncMock, mock_role_service: RoleService) -> None:
+    async def test_get_all_with_filters__no_filters(
+        self, mock_session_fixture: AsyncMock, mock_role_service: RoleService
+    ) -> None:
         mock_roles = [Role(id=i, name=role_name) for i, role_name in enumerate(settings.initial_roles)]
-        mock_result = MagicMock()
-        mock_session_fixture.execute.return_value = mock_result
-        mock_result.scalars.return_value.all.return_value = mock_roles
+        mock_query = MagicMock()
+        mock_session_fixture.execute.return_value = mock_query
+        mock_query.scalars.return_value.all.return_value = mock_roles
 
-        result = await mock_role_service.get_roles()
+        roles = await mock_role_service.get_all_with_filters()
 
         mock_session_fixture.execute.assert_called_once()
-        assert result == mock_roles
+        assert roles == mock_roles

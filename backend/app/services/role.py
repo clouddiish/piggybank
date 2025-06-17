@@ -25,9 +25,9 @@ class RoleService:
                 if filter_values:
                     statement = statement.where(or_(*(column == val for val in filter_values)))
 
-            result = await self.session.execute(statement)
-            roles = result.scalars().all()
-            return roles
+        result = await self.session.execute(statement)
+        roles = result.scalars().all()
+        return roles
 
 
 def get_role_service(session: AsyncSession = Depends(get_session)) -> RoleService:

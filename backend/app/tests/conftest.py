@@ -1,4 +1,5 @@
 from typing import AsyncGenerator
+from unittest.mock import AsyncMock
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -24,6 +25,12 @@ test_async_session = async_sessionmaker(bind=test_engine, expire_on_commit=False
 @pytest.fixture
 def anyio_backend():
     return "asyncio"
+
+
+@pytest.fixture
+def mock_session_fixture() -> AsyncMock:
+    mock_session = AsyncMock(spec=AsyncSession)
+    return mock_session
 
 
 @pytest.fixture()

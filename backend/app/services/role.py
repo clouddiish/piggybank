@@ -5,7 +5,7 @@ from app.common.enums import EntityType
 from app.core.session import get_session
 from app.db_models import Role
 from app.schemas import RoleCreate, RoleUpdate, RoleFilters
-from backend.app.services.base import BaseService
+from app.services.base import BaseService
 
 
 class RoleService(BaseService[Role, RoleCreate, RoleUpdate, RoleFilters]):

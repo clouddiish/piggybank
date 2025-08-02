@@ -5,8 +5,8 @@ from app.common.enums import EntityType
 from app.common.exceptions import EntityNotFoundException
 from app.core.config import get_settings
 from app.core.logger import logger
-from app.core.security import get_password_hash
 from app.db_models import User, Role
+from app.services.security import get_password_hash
 
 
 async def seed_initial_data(session: AsyncSession) -> None:

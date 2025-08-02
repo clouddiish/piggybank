@@ -28,7 +28,7 @@ def anyio_backend():
 
 
 @pytest.fixture
-def mock_session_fixture() -> AsyncMock:
+def mock_session() -> AsyncMock:
     mock_session = AsyncMock(spec=AsyncSession)
     return mock_session
 

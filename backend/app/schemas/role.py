@@ -6,11 +6,11 @@ class RoleBase(BaseModel):
 
 
 class RoleCreate(RoleBase):
-    pass
+    model_config = {"extra": "forbid"}
 
 
 class RoleUpdate(RoleBase):
-    pass
+    model_config = {"extra": "forbid"}
 
 
 class RoleOut(RoleBase):

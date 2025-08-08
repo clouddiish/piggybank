@@ -6,13 +6,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.enums import EntityType
 from app.common.exceptions import EntityNotFoundException
-from app.core.logger import logger
+from app.core.logger import get_logger
 
 
 DatabaseModelT = TypeVar("DatabaseModelT")
 CreateSchemaT = TypeVar("CreateSchemaT", bound=BaseModel)
 UpdateSchemaT = TypeVar("UpdateSchemaT", bound=BaseModel)
 FilterSchemaT = TypeVar("FilterSchemaT", bound=BaseModel)
+
+
+logger = get_logger(__name__)
 
 
 class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSchemaT]):

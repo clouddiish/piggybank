@@ -4,13 +4,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.enums import EntityType
 from app.common.exceptions import EntityNotFoundException
 from app.core.config import get_settings
-from app.core.logger import logger
+from app.core.logger import get_logger
 from app.db_models import User, Role
 from app.services.security import get_password_hash
 
 
 async def seed_initial_data(session: AsyncSession) -> None:
     settings = get_settings()
+    logger = get_logger(__name__)
 
     logger.debug("creating initial roles")
     for role_name in settings.initial_roles:

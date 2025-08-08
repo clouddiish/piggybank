@@ -1,10 +1,11 @@
 from typing_extensions import Self
-
 from functools import lru_cache
 from pathlib import Path
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.common.enums import LogLevel
 
 
 class Settings(BaseSettings):
@@ -39,6 +40,10 @@ class Settings(BaseSettings):
 
     # logging settings
     echo_sql: bool = False
+    log_level: LogLevel = LogLevel.DEBUG
+    log_dir: str = "logs"
+    log_filename: str = "backend.log"
+    log_format: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
     # testing settings
     test_database_url: str = "sqlite+aiosqlite:///:memory:"

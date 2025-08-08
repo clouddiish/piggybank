@@ -4,10 +4,12 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 
 from app.common.enums import Tag
 from app.common.exceptions import EntityNotFoundException
-from app.core.logger import logger
+from app.core.logger import get_logger
 from app.schemas import RoleCreate, RoleUpdate, RoleOut, RoleFilters
 from app.services.role import RoleService, get_role_service
 
+
+logger = get_logger(__name__)
 
 router = APIRouter(prefix="/roles", tags=[Tag.role])
 

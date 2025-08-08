@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Depends, Query
 
 from app.common.enums import Tag
-from app.common.exceptions import EntityNotFoundException
+from app.common.exceptions import EntityNotFoundException, ActionForbiddenException
 from app.core.logger import get_logger
 from app.schemas import RoleCreate, RoleUpdate, RoleOut, RoleFilters
 from app.services.role import RoleService, get_role_service
@@ -61,3 +61,5 @@ async def delete_role(role_id: int, service: RoleService = Depends(get_role_serv
         return role
     except EntityNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except ActionForbiddenException as e:
+        raise HTTPException(status_code=403, detail=str(e))

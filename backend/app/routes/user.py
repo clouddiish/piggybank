@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Depends, Query
 
 from app.common.enums import Tag
-from app.common.exceptions import EntityNotFoundException, UserEmailAlreadyExists
+from app.common.exceptions import EntityNotFoundException, UserEmailAlreadyExistsException
 from app.core.logger import get_logger
 from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters
 from app.services.user import UserService, get_user_service
@@ -42,7 +42,7 @@ async def create_user(new_user: UserCreate, service: UserService = Depends(get_u
         return user
     except EntityNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
-    except UserEmailAlreadyExists as e:
+    except UserEmailAlreadyExistsException as e:
         raise HTTPException(status_code=422, detail=str(e))
 
 
@@ -56,7 +56,7 @@ async def update_user(
         return user
     except EntityNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
-    except UserEmailAlreadyExists as e:
+    except UserEmailAlreadyExistsException as e:
         raise HTTPException(status_code=422, detail=str(e))
 
 

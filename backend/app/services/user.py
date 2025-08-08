@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.enums import EntityType
-from app.common.exceptions import UserEmailAlreadyExists
+from app.common.exceptions import UserEmailAlreadyExistsException
 from app.core.session import get_session
 from app.core.logger import get_logger
 from app.db_models import User
@@ -59,7 +59,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
 
         # verify user with same email exists
         if await self.get_by_email(email=create_schema.email):
-            raise UserEmailAlreadyExists(email=create_schema.email)
+            raise UserEmailAlreadyExistsException(email=create_schema.email)
 
         user_db = User(
             role_id=create_schema.role_id,
@@ -93,7 +93,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
 
         # verify user with same email exists
         if await self.get_by_email(email=update_schema.email):
-            raise UserEmailAlreadyExists(email=update_schema.email)
+            raise UserEmailAlreadyExistsException(email=update_schema.email)
 
         user_db.role_id = update_schema.role_id
         user_db.email = update_schema.email

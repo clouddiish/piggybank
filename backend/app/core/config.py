@@ -48,6 +48,11 @@ class Settings(BaseSettings):
     # testing settings
     test_database_url: str = "sqlite+aiosqlite:///:memory:"
 
+    # security settings
+    algorithm: str = "HS256"
+    secret_key: str = "changethis"
+    access_token_expire_minutes: int = 15
+
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = f"The value of {var_name} is 'changethis'. For security, please change it."
@@ -61,6 +66,7 @@ class Settings(BaseSettings):
         self._check_default_secret("postgres_password", self.postgres_password)
         self._check_default_secret("initial_admin_email", self.initial_admin_email)
         self._check_default_secret("initial_admin_password", self.initial_admin_password)
+        self._check_default_secret("secret_key", self.secret_key)
 
         return self
 

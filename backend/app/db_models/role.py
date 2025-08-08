@@ -10,4 +10,4 @@ class Role(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
 
-    users = relationship("User", back_populates="role")
+    users = relationship("User", back_populates="role", cascade="all, delete")

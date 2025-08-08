@@ -14,5 +14,5 @@ class Category(Base):
 
     user = relationship("User", back_populates="categories")
     type = relationship("Type", back_populates="categories")
-    transactions = relationship("Transaction", back_populates="category")
-    goals = relationship("Goal", back_populates="category")
+    transactions = relationship("Transaction", back_populates="category", passive_deletes=True)
+    goals = relationship("Goal", back_populates="category", passive_deletes=True)

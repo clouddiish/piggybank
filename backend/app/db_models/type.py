@@ -10,6 +10,6 @@ class Type(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
 
-    categories = relationship("Category", back_populates="type")
-    goals = relationship("Goal", back_populates="type")
-    transactions = relationship("Transaction", back_populates="type")
+    categories = relationship("Category", back_populates="type", cascade="all, delete")
+    goals = relationship("Goal", back_populates="type", cascade="all, delete")
+    transactions = relationship("Transaction", back_populates="type", cascade="all, delete")

@@ -13,6 +13,6 @@ class User(Base):
     password_hash = Column(String, nullable=False)
 
     role = relationship("Role", back_populates="users")
-    categories = relationship("Category", back_populates="user")
-    goals = relationship("Goal", back_populates="user")
-    transactions = relationship("Transaction", back_populates="user")
+    categories = relationship("Category", back_populates="user", cascade="all, delete")
+    goals = relationship("Goal", back_populates="user", cascade="all, delete")
+    transactions = relationship("Transaction", back_populates="user", cascade="all, delete")

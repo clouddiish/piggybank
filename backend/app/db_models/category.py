@@ -8,8 +8,8 @@ class Category(Base):
     __tablename__ = "category"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    type_id = Column(Integer, ForeignKey("type.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    type_id = Column(Integer, ForeignKey("type.id", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
 
     user = relationship("User", back_populates="categories")

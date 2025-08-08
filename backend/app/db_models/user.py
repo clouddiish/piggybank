@@ -8,7 +8,7 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    role_id = Column(Integer, ForeignKey("role.id"), nullable=False)
+    role_id = Column(Integer, ForeignKey("role.id", ondelete="CASCADE"), nullable=False)
     email = Column(String, unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
 

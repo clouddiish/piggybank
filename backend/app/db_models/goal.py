@@ -8,9 +8,9 @@ class Goal(Base):
     __tablename__ = "goal"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    type_id = Column(Integer, ForeignKey("type.id"), nullable=False)
-    category_id = Column(Integer, ForeignKey("category.id"), nullable=True)
+    user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    type_id = Column(Integer, ForeignKey("type.id", ondelete="CASCADE"), nullable=False)
+    category_id = Column(Integer, ForeignKey("category.id", ondelete="CASCADE"), nullable=True)
     name = Column(String, nullable=False)
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)

@@ -8,9 +8,9 @@ class Transaction(Base):
     __tablename__ = "transaction"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    type_id = Column(Integer, ForeignKey("type.id"), nullable=False)
-    category_id = Column(Integer, ForeignKey("category.id"), nullable=True)
+    user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    type_id = Column(Integer, ForeignKey("type.id", ondelete="CASCADE"), nullable=False)
+    category_id = Column(Integer, ForeignKey("category.id", ondelete="CASCADE"), nullable=True)
     date = Column(Date, nullable=False)
     value = Column(Numeric, nullable=False)
     comment = Column(String, nullable=True)

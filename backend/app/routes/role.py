@@ -6,12 +6,13 @@ from app.common.enums import Tag
 from app.common.exceptions import EntityNotFoundException
 from app.core.logger import get_logger
 from app.schemas import RoleOut, RoleFilters
-from app.services.role import RoleService, get_role_service
+from app.services import RoleService, get_role_service
+from app.services.security import get_current_admin
 
 
 logger = get_logger(__name__)
 
-router = APIRouter(prefix="/roles", tags=[Tag.role])
+router = APIRouter(prefix="/roles", tags=[Tag.role], dependencies=[Depends(get_current_admin)])
 
 
 @router.get("/{role_id}", response_model=RoleOut, status_code=200, summary="get one role by its id")

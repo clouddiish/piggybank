@@ -8,7 +8,7 @@ from app.core.logger import get_logger
 from app.db_models import User
 from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters
 from app.services import UserService, get_user_service
-from app.services.security import get_password_hash, get_current_user
+from app.services.security import get_password_hash, get_current_user, get_current_admin
 
 
 logger = get_logger(__name__)
@@ -17,12 +17,14 @@ router = APIRouter(prefix="/users", tags=[Tag.user])
 
 
 @router.get("/me", response_model=UserOut, status_code=200, summary="get information about the current user")
-async def get_user_me(current_user: Annotated[User, Depends(get_current_user)]):
+async def get_user_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
 @router.get("/{user_id}", response_model=UserOut, status_code=200, summary="get one user by their id")
-async def get_user(user_id: int, service: UserService = Depends(get_user_service)) -> UserOut:
+async def get_user(
+    user_id: int, service: UserService = Depends(get_user_service), current_admin: User = Depends(get_current_admin)
+) -> UserOut:
     logger.info(f"fetching user with id {user_id}")
     try:
         user = await service.get_by_id(entity_id=user_id)
@@ -33,7 +35,9 @@ async def get_user(user_id: int, service: UserService = Depends(get_user_service
 
 @router.get("", response_model=list[UserOut], status_code=200, summary="get all users with optional filters")
 async def get_users(
-    filters: Annotated[UserFilters, Query()], service: UserService = Depends(get_user_service)
+    filters: Annotated[UserFilters, Query()],
+    service: UserService = Depends(get_user_service),
+    current_admin: User = Depends(get_current_admin),
 ) -> list[UserOut]:
     logger.info(f"fetching all users with filters {filters}")
     users = await service.get_all_with_filters(filters=filters)
@@ -55,7 +59,10 @@ async def create_user(new_user: UserCreate, service: UserService = Depends(get_u
 
 @router.put("/{user_id}", response_model=UserOut, status_code=200, summary="update a user by their id")
 async def update_user(
-    user_id: int, updated_user: UserUpdate, service: UserService = Depends(get_user_service)
+    user_id: int,
+    updated_user: UserUpdate,
+    service: UserService = Depends(get_user_service),
+    current_admin: User = Depends(get_current_admin),
 ) -> UserOut:
     logger.info(f"updating a user with id {user_id}")
     try:
@@ -70,7 +77,9 @@ async def update_user(
 
 
 @router.delete("/{user_id}", response_model=UserOut, status_code=200, summary="delete a user by their id")
-async def delete_user(user_id: int, service: UserService = Depends(get_user_service)) -> UserOut:
+async def delete_user(
+    user_id: int, service: UserService = Depends(get_user_service), current_admin: User = Depends(get_current_admin)
+) -> UserOut:
     logger.info(f"deleting a user with id {user_id}")
     try:
         user = await service.delete(entity_id=user_id)

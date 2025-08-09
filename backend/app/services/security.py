@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 
+from app.common.enums import RoleName
 from app.core.config import get_settings
 from app.db_models import User
 from app.schemas import TokenData
@@ -49,7 +50,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], user_service: Annotated[UserService, Depends(get_user_service)]
-):
+) -> User:
     credentials_exception = HTTPException(
         status_code=401, detail="could not validate credentials", headers={"WWW-Authenticate": "Bearer"}
     )
@@ -65,3 +66,13 @@ async def get_current_user(
     if user_db is None:
         raise credentials_exception
     return user_db
+
+
+async def get_current_admin(
+    current_user: Annotated[User, Depends(get_current_user)],
+    user_service: Annotated[UserService, Depends(get_user_service)],
+) -> User:
+    current_user_role = await user_service.role_service.get_by_id(entity_id=current_user.role_id)
+    if not current_user_role.name.value == RoleName.admin.value:
+        raise HTTPException(status_code=403, detail="user is not an admin")
+    return current_user

@@ -18,7 +18,7 @@ async def seed_initial_data(session: AsyncSession) -> None:
         result = await session.execute(select(Role).where(Role.name == role_name))
         role = result.scalar_one_or_none()
         if not role:
-            new_role = Role(name=role_name)
+            new_role = Role(name=role_name, is_protected=True)
             session.add(new_role)
             await session.flush()
             logger.info(f"created {role_name} role")
@@ -38,6 +38,7 @@ async def seed_initial_data(session: AsyncSession) -> None:
             role_id=admin_role_id,
             email=settings.initial_admin_email,
             password_hash=get_password_hash(settings.initial_admin_password),
+            is_protected=True,
         )
         session.add(new_user)
         await session.flush()

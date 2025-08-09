@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.enums import EntityType
 from app.common.exceptions import UserEmailAlreadyExistsException, ActionForbiddenException
-from app.core.config import get_settings
 from app.core.session import get_session
 from app.core.logger import get_logger
 from app.db_models import User
@@ -14,7 +13,6 @@ from app.services.role import get_role_service
 
 
 logger = get_logger(__name__)
-settings = get_settings()
 
 
 class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
@@ -106,8 +104,8 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         user_db = await self.get_by_id(entity_id=entity_id)
 
         # disallow deleting initial admin
-        if user_db.email == settings.initial_admin_email:
-            raise ActionForbiddenException(detail="cannot delete initial admin user")
+        if user_db.is_protected:
+            raise ActionForbiddenException(detail="cannot delete protected user")
 
         return user_db
 

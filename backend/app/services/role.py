@@ -3,7 +3,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.enums import EntityType
 from app.common.exceptions import ActionForbiddenException
-from app.core.config import get_settings
 from app.core.logger import get_logger
 from app.core.session import get_session
 from app.db_models import Role
@@ -12,7 +11,6 @@ from app.services.base import BaseService
 
 
 logger = get_logger(__name__)
-settings = get_settings()
 
 
 class RoleService(BaseService[Role, RoleCreate, RoleUpdate, RoleFilters]):
@@ -37,8 +35,8 @@ class RoleService(BaseService[Role, RoleCreate, RoleUpdate, RoleFilters]):
         role_db = await self.get_by_id(entity_id=entity_id)
 
         # disallow deleting initial admin role
-        if role_db.name == settings.initial_admin_role:
-            raise ActionForbiddenException(detail="cannot delete initial admin role")
+        if role_db.is_protected:
+            raise ActionForbiddenException(detail="cannot delete protected role")
 
         return role_db
 

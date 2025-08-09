@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock
 
 from app.common.enums import EntityType
-from app.common.exceptions import EntityNotFoundException
+from app.common.exceptions import EntityNotFoundException, ActionForbiddenException
 from app.core.config import get_settings
 from app.db_models import Role
 from app.schemas import RoleFilters, RoleCreate, RoleUpdate
@@ -81,10 +81,31 @@ class TestRoleServices:
         assert roles == [mock_roles[1]]
 
     @pytest.mark.anyio
+    async def test_get_create_or_update_valid_fields__RoleCreate(self, mock_role_service: RoleService) -> None:
+        role_create = RoleCreate(name="test role")
+
+        valid_fields = mock_role_service._get_create_or_update_valid_fields(schema=role_create)
+
+        assert valid_fields == {"name": "test role"}
+
+    @pytest.mark.anyio
+    async def test_get_create_or_update_valid_fields__RoleUpdate(self, mock_role_service: RoleService) -> None:
+        role_update = RoleUpdate(name="test role")
+
+        valid_fields = mock_role_service._get_create_or_update_valid_fields(schema=role_update)
+
+        assert valid_fields == {"name": "test role"}
+
+    @pytest.mark.anyio
     async def test_create__all_ok(self, mock_session: AsyncMock, mock_role_service: RoleService) -> None:
+        mock_role_service._validate_create = AsyncMock()
+        mock_role_service._get_create_or_update_valid_fields = MagicMock(return_value={"name": "test role"})
+
         role_create = RoleCreate(name="test role")
         role = await mock_role_service.create(create_schema=role_create)
 
+        mock_role_service._validate_create.assert_called_once()
+        mock_role_service._get_create_or_update_valid_fields.assert_called_once()
         mock_session.add.assert_called_once()
         mock_session.commit.assert_called_once()
         assert isinstance(role, Role)
@@ -92,15 +113,39 @@ class TestRoleServices:
         assert role.name == role_create.name
 
     @pytest.mark.anyio
+    async def test_validate_update__all_ok(self, mock_role_service: RoleService, mock_roles: list[Role]) -> None:
+        mock_role_service.get_by_id = AsyncMock(return_value=mock_roles[1])
+
+        role = await mock_role_service._validate_update(entity_id=1, update_schema=RoleUpdate(name="test role"))
+
+        mock_role_service.get_by_id.assert_called_once()
+        assert role == mock_roles[1]
+
+    @pytest.mark.anyio
+    async def test_validate_update__id_does_not_exist(
+        self, mock_role_service: RoleService, mock_roles: list[Role]
+    ) -> None:
+        mock_role_service.get_by_id = AsyncMock(
+            side_effect=EntityNotFoundException(entity_id=3, entity_type=EntityType.role)
+        )
+
+        with pytest.raises(EntityNotFoundException):
+            await mock_role_service._validate_update(entity_id=3, update_schema=RoleUpdate(name="test role"))
+
+        mock_role_service.get_by_id.assert_called_once()
+
+    @pytest.mark.anyio
     async def test_update__all_ok(
         self, mock_session: AsyncMock, mock_role_service: RoleService, mock_roles: list[Role]
     ) -> None:
-        mock_role_service.get_by_id = AsyncMock(return_value=mock_roles[1])
+        mock_role_service._validate_update = AsyncMock(return_value=mock_roles[1])
+        mock_role_service._get_create_or_update_valid_fields = MagicMock(return_value={"name": "updated role"})
 
         role_update = RoleUpdate(name="updated role")
         role = await mock_role_service.update(entity_id=mock_roles[1].id, update_schema=role_update)
 
-        mock_role_service.get_by_id.assert_called_once()
+        mock_role_service._validate_update.assert_called_once()
+        mock_role_service._get_create_or_update_valid_fields.assert_called_once()
         mock_session.add.assert_called_once()
         mock_session.commit.assert_called_once()
         mock_session.refresh.assert_called_once()
@@ -111,45 +156,81 @@ class TestRoleServices:
     async def test_update__id_does_not_exist(
         self, mock_session: AsyncMock, mock_role_service: RoleService, mock_roles: list[Role]
     ) -> None:
-        mock_role_service.get_by_id = AsyncMock(
+        mock_role_service._validate_update = AsyncMock(
             side_effect=EntityNotFoundException(entity_id=3, entity_type=EntityType.role)
         )
+        mock_role_service._get_create_or_update_valid_fields = MagicMock(return_value={"name": "updated role"})
 
         role_update = RoleUpdate(name="updated role")
         with pytest.raises(EntityNotFoundException):
             await mock_role_service.update(entity_id=3, update_schema=role_update)
 
-        mock_role_service.get_by_id.assert_called_once()
+        mock_role_service._validate_update.assert_called_once()
+        mock_role_service._get_create_or_update_valid_fields.assert_not_called()
         mock_session.add.assert_not_called()
         mock_session.commit.assert_not_called()
         mock_session.refresh.assert_not_called
 
     @pytest.mark.anyio
+    async def test_validate_delete__all_ok(self, mock_role_service: RoleService, mock_roles: list[Role]) -> None:
+        mock_role_service.get_by_id = AsyncMock(return_value=mock_roles[1])
+
+        role = await mock_role_service._validate_delete(entity_id=1)
+
+        mock_role_service.get_by_id.assert_called_once()
+        assert role == mock_roles[1]
+
+    @pytest.mark.anyio
+    async def test_validate_delete__protected_role(self, mock_role_service: RoleService) -> None:
+        mock_role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="protected", is_protected=True))
+
+        with pytest.raises(ActionForbiddenException):
+            await mock_role_service._validate_delete(entity_id=2)
+
+        mock_role_service.get_by_id.assert_called_once()
+
+    @pytest.mark.anyio
     async def test_delete__all_ok(
         self, mock_session: AsyncMock, mock_role_service: RoleService, mock_roles: list[Role]
     ) -> None:
-        mock_role_service.get_by_id = AsyncMock(return_value=mock_roles[1])
+        mock_role_service._validate_delete = AsyncMock(return_value=mock_roles[1])
 
         role = await mock_role_service.delete(entity_id=mock_roles[1].id)
 
-        mock_role_service.get_by_id.assert_called_once()
+        mock_role_service._validate_delete.assert_called_once()
         mock_session.delete.assert_called_once()
         mock_session.commit.assert_called_once()
         mock_session.commit.assert_called_once()
         assert role == mock_roles[1]
 
     @pytest.mark.anyio
+    async def test_delete__protected_role(
+        self, mock_session: AsyncMock, mock_role_service: RoleService, mock_roles: list[Role]
+    ) -> None:
+        mock_role_service._validate_delete = AsyncMock(
+            side_effect=ActionForbiddenException(detail="cannot delete protected role")
+        )
+
+        with pytest.raises(ActionForbiddenException):
+            await mock_role_service.delete(entity_id=mock_roles[1].id)
+
+        mock_role_service._validate_delete.assert_called_once()
+        mock_session.delete.assert_not_called()
+        mock_session.commit.assert_not_called()
+        mock_session.commit.assert_not_called()
+
+    @pytest.mark.anyio
     async def test_delete__id_does_not_exist(
         self, mock_session: AsyncMock, mock_role_service: RoleService, mock_roles: list[Role]
     ) -> None:
-        mock_role_service.get_by_id = AsyncMock(
+        mock_role_service._validate_delete = AsyncMock(
             side_effect=EntityNotFoundException(entity_id=3, entity_type=EntityType.role)
         )
 
         with pytest.raises(EntityNotFoundException):
             await mock_role_service.delete(entity_id=3)
 
-        mock_role_service.get_by_id.assert_called_once()
+        mock_role_service._validate_delete.assert_called_once()
         mock_session.delete.assert_not_called()
         mock_session.commit.assert_not_called()
         mock_session.commit.assert_not_called()

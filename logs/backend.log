@@ -1,0 +1,862 @@
+2025-08-09 13:45:25,894 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:25,904 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:25,908 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:25,909 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:26,307 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:26,323 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 13:45:26,324 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 13:45:26,392 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:26,392 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:26,396 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:26,396 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:26,400 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:26,400 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:26,400 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:26,400 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:26,773 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:26,773 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:26,777 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 13:45:26,778 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:45:26,780 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:45:26,828 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:26,834 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:26,839 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:26,839 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:27,120 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:27,125 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 13:45:27,125 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 13:45:27,128 - app.routes.role - INFO - returned 2 roles
+2025-08-09 13:45:27,197 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:27,223 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:27,228 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:27,229 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:27,562 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:27,565 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 13:45:27,566 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 13:45:27,568 - app.routes.role - INFO - returned 1 roles
+2025-08-09 13:45:27,613 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:27,616 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:27,620 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:27,620 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:27,887 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:27,890 - app.routes.role - INFO - creating a new role
+2025-08-09 13:45:27,891 - app.services.base - INFO - executing query to create a new role
+2025-08-09 13:45:27,938 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:27,943 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:27,947 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:27,947 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:28,210 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:28,214 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 13:45:28,214 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 13:45:28,215 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 13:45:28,275 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:28,279 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:28,283 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:28,283 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:28,555 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:28,558 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 13:45:28,559 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 13:45:28,559 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:45:28,561 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:45:28,611 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:28,615 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:28,619 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:28,619 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:28,884 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:28,888 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 13:45:28,888 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 13:45:28,888 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 13:45:29,293 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:45:29,296 - app.core.seeder - INFO - created admin role
+2025-08-09 13:45:29,298 - app.core.seeder - INFO - created user role
+2025-08-09 13:45:29,298 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:45:29,560 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:45:29,564 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 13:45:29,564 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 13:45:29,565 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:45:29,567 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:45:29,684 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 13:45:29,695 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 13:45:29,696 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 13:45:29,706 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 13:45:29,713 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 13:45:29,719 - app.services.base - INFO - executing query to create a new role
+2025-08-09 13:45:29,728 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 13:45:29,738 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 13:45:29,744 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 13:45:29,752 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 13:53:15,400 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:15,416 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:15,421 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:15,422 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:15,910 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:15,916 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 13:53:15,917 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 13:53:15,983 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:15,983 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:15,988 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:15,988 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:15,992 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:15,992 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:15,992 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:15,992 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:16,482 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:16,482 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:16,490 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 13:53:16,491 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:53:16,495 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:53:16,573 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:16,579 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:16,584 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:16,585 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:17,101 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:17,120 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 13:53:17,121 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 13:53:17,125 - app.routes.role - INFO - returned 2 roles
+2025-08-09 13:53:17,209 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:17,216 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:17,221 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:17,222 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:17,735 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:17,742 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 13:53:17,743 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 13:53:17,746 - app.routes.role - INFO - returned 1 roles
+2025-08-09 13:53:17,827 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:17,833 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:17,838 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:17,839 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:18,326 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:18,334 - app.routes.role - INFO - creating a new role
+2025-08-09 13:53:18,334 - app.services.base - INFO - executing query to create a new role
+2025-08-09 13:53:18,405 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:18,410 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:18,415 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:18,415 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:18,890 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:18,898 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 13:53:18,905 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 13:53:18,906 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 13:53:18,989 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:18,994 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:18,999 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:18,999 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:19,447 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:19,452 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 13:53:19,453 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 13:53:19,454 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:53:19,457 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:53:19,521 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:19,526 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:19,531 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:19,531 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:19,979 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:19,985 - app.routes.role - INFO - creating a new role
+2025-08-09 13:53:19,986 - app.services.base - INFO - executing query to create a new role
+2025-08-09 13:53:20,649 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:20,655 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:20,660 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:20,661 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:21,167 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:21,173 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 13:53:21,173 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 13:53:21,174 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 13:53:21,247 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:53:21,253 - app.core.seeder - INFO - created admin role
+2025-08-09 13:53:21,257 - app.core.seeder - INFO - created user role
+2025-08-09 13:53:21,258 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:53:21,729 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:53:21,736 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 13:53:21,737 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 13:53:21,737 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:53:21,740 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:53:21,905 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 13:53:21,918 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 13:53:21,920 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 13:53:21,934 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 13:53:21,947 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 13:53:21,957 - app.services.base - INFO - executing query to create a new role
+2025-08-09 13:53:21,970 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 13:53:21,982 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 13:53:21,994 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 13:53:22,007 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 13:54:14,211 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:14,222 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:14,226 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:14,227 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:14,674 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:14,679 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 13:54:14,680 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 13:54:14,732 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:14,732 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:14,737 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:14,737 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:14,740 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:14,740 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:14,741 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:14,741 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:15,105 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:15,105 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:15,109 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 13:54:15,109 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:54:15,111 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:54:15,159 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:15,164 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:15,168 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:15,168 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:15,566 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:15,572 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 13:54:15,573 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 13:54:15,576 - app.routes.role - INFO - returned 2 roles
+2025-08-09 13:54:15,648 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:15,652 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:15,656 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:15,656 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:16,110 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:16,117 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 13:54:16,117 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 13:54:16,121 - app.routes.role - INFO - returned 1 roles
+2025-08-09 13:54:16,206 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:16,212 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:16,216 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:16,217 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:16,718 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:16,724 - app.routes.role - INFO - creating a new role
+2025-08-09 13:54:16,725 - app.services.base - INFO - executing query to create a new role
+2025-08-09 13:54:16,784 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:16,789 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:16,792 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:16,793 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:17,217 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:17,222 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 13:54:17,223 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 13:54:17,223 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 13:54:17,280 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:17,284 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:17,288 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:17,288 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:17,660 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:17,665 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 13:54:17,665 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 13:54:17,666 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:54:17,668 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:54:17,716 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:17,720 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:17,723 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:17,723 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:18,081 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:18,085 - app.routes.role - INFO - creating a new role
+2025-08-09 13:54:18,085 - app.services.base - INFO - executing query to create a new role
+2025-08-09 13:54:18,089 - app.routes.role - INFO - deleting a role with id 3
+2025-08-09 13:54:18,090 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 13:54:18,090 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 13:54:18,145 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:18,149 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:18,151 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:18,152 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:18,508 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:18,513 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 13:54:18,514 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 13:54:18,514 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 13:54:18,561 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 13:54:18,565 - app.core.seeder - INFO - created admin role
+2025-08-09 13:54:18,569 - app.core.seeder - INFO - created user role
+2025-08-09 13:54:18,570 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 13:54:18,941 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 13:54:18,945 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 13:54:18,946 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 13:54:18,946 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 13:54:18,948 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 13:54:19,054 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 13:54:19,066 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 13:54:19,067 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 13:54:19,085 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 13:54:19,095 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 13:54:19,104 - app.services.base - INFO - executing query to create a new role
+2025-08-09 13:54:19,114 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 13:54:19,125 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 13:54:19,134 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 13:54:19,142 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:12:39,797 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:39,807 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:39,811 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:39,811 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:40,228 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:40,233 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 14:12:40,233 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:12:40,285 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:40,285 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:40,290 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:40,290 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:40,293 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:40,293 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:40,293 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:40,293 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:40,653 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:40,653 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:40,658 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 14:12:40,658 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:12:40,660 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:12:40,711 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:40,716 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:40,719 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:40,720 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:41,070 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:41,075 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 14:12:41,075 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 14:12:41,079 - app.routes.role - INFO - returned 2 roles
+2025-08-09 14:12:41,141 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:41,145 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:41,148 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:41,149 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:41,630 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:41,640 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 14:12:41,641 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:12:41,646 - app.routes.role - INFO - returned 1 roles
+2025-08-09 14:12:41,738 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:41,744 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:41,749 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:41,750 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:42,224 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:42,230 - app.routes.role - INFO - creating a new role
+2025-08-09 14:12:42,230 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:12:42,288 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:42,293 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:42,297 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:42,298 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:42,719 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:42,724 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 14:12:42,724 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:12:42,725 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:12:42,793 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:42,798 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:42,802 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:42,802 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:43,202 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:43,206 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 14:12:43,207 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 14:12:43,207 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:12:43,209 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:12:43,266 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:43,270 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:43,274 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:43,274 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:43,653 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:43,658 - app.routes.role - INFO - creating a new role
+2025-08-09 14:12:43,658 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:12:43,663 - app.routes.role - INFO - deleting a role with id 3
+2025-08-09 14:12:43,664 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:12:43,664 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:12:43,723 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:43,728 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:43,732 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:43,732 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:44,095 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:44,100 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 14:12:44,100 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 14:12:44,100 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 14:12:44,155 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:12:44,161 - app.core.seeder - INFO - created admin role
+2025-08-09 14:12:44,164 - app.core.seeder - INFO - created user role
+2025-08-09 14:12:44,165 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:12:44,516 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:12:44,520 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 14:12:44,520 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 14:12:44,521 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:12:44,523 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:12:44,639 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 14:12:44,653 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:12:44,655 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 14:12:44,667 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 14:12:44,678 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:12:44,686 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:12:44,710 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:12:44,742 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 14:12:44,750 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 14:12:44,757 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:13:38,979 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:38,990 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:38,997 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:38,998 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:39,385 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:39,390 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 14:13:39,390 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:13:39,441 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:39,441 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:39,446 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:39,446 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:39,451 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:39,451 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:39,451 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:39,451 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:39,881 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:39,881 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:39,886 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 14:13:39,886 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:13:39,889 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:13:39,947 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:39,951 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:39,954 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:39,955 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:40,260 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:40,265 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 14:13:40,266 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 14:13:40,270 - app.routes.role - INFO - returned 2 roles
+2025-08-09 14:13:40,320 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:40,325 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:40,330 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:40,331 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:40,613 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:40,616 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 14:13:40,616 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:13:40,618 - app.routes.role - INFO - returned 1 roles
+2025-08-09 14:13:40,658 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:40,664 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:40,670 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:40,671 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:40,949 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:40,953 - app.routes.role - INFO - creating a new role
+2025-08-09 14:13:40,953 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:13:40,999 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:41,004 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:41,010 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:41,011 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:41,295 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:41,298 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 14:13:41,299 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:13:41,299 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:13:41,357 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:41,363 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:41,367 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:41,367 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:41,659 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:41,663 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 14:13:41,664 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 14:13:41,664 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:13:41,667 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:13:41,712 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:41,717 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:41,722 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:41,723 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:41,998 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:42,001 - app.routes.role - INFO - creating a new role
+2025-08-09 14:13:42,002 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:13:42,005 - app.routes.role - INFO - deleting a role with id 3
+2025-08-09 14:13:42,006 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:13:42,006 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:13:42,060 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:42,064 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:42,068 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:42,069 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:42,361 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:42,365 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 14:13:42,366 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 14:13:42,366 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 14:13:42,428 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:13:42,433 - app.core.seeder - INFO - created admin role
+2025-08-09 14:13:42,436 - app.core.seeder - INFO - created user role
+2025-08-09 14:13:42,437 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:13:42,726 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:13:42,729 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 14:13:42,730 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 14:13:42,730 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:13:42,732 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:13:42,806 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 14:13:42,816 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:13:42,817 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 14:13:42,825 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 14:13:42,833 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:13:42,838 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:13:42,846 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:13:42,852 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 14:13:42,859 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 14:13:42,867 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:16:32,048 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:32,058 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:32,061 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:32,061 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:32,355 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:32,359 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 14:16:32,359 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:16:32,408 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:32,408 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:32,413 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:32,413 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:32,416 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:32,416 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:32,416 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:32,416 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:32,686 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:32,686 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:32,689 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 14:16:32,690 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:16:32,692 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:16:32,744 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:32,750 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:32,756 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:32,757 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:33,031 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:33,049 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 14:16:33,050 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 14:16:33,053 - app.routes.role - INFO - returned 2 roles
+2025-08-09 14:16:33,110 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:33,114 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:33,117 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:33,118 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:33,390 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:33,393 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 14:16:33,393 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:16:33,395 - app.routes.role - INFO - returned 1 roles
+2025-08-09 14:16:33,441 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:33,446 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:33,450 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:33,450 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:33,716 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:33,720 - app.routes.role - INFO - creating a new role
+2025-08-09 14:16:33,720 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:16:33,767 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:33,770 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:33,775 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:33,775 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:34,052 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:34,056 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 14:16:34,056 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:16:34,057 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:16:34,114 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:34,119 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:34,124 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:34,124 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:34,395 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:34,398 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 14:16:34,399 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 14:16:34,399 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:16:34,401 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:16:34,439 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:34,444 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:34,446 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:34,447 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:34,719 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:34,722 - app.routes.role - INFO - creating a new role
+2025-08-09 14:16:34,723 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:16:34,726 - app.routes.role - INFO - deleting a role with id 3
+2025-08-09 14:16:34,726 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:16:34,727 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:16:34,782 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:34,787 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:34,790 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:34,791 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:35,056 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:35,060 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 14:16:35,060 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 14:16:35,061 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 14:16:35,103 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:16:35,108 - app.core.seeder - INFO - created admin role
+2025-08-09 14:16:35,112 - app.core.seeder - INFO - created user role
+2025-08-09 14:16:35,112 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:16:35,380 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:16:35,384 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 14:16:35,384 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 14:16:35,385 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:16:35,387 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:16:35,489 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 14:16:35,504 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:16:35,505 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 14:16:35,515 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 14:16:35,529 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:16:35,542 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:16:35,552 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:16:35,562 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 14:16:35,569 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 14:16:35,577 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:20:34,190 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:34,202 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:34,207 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:34,207 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:34,561 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:34,565 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 14:20:34,565 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:20:34,610 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:34,610 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:34,614 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:34,614 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:34,617 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:34,617 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:34,617 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:34,617 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:34,890 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:34,890 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:34,894 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 14:20:34,895 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:20:34,897 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:20:34,944 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:34,948 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:34,950 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:34,951 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:35,221 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:35,236 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 14:20:35,236 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 14:20:35,239 - app.routes.role - INFO - returned 2 roles
+2025-08-09 14:20:35,289 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:35,296 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:35,299 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:35,299 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:35,581 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:35,585 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 14:20:35,585 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:20:35,587 - app.routes.role - INFO - returned 1 roles
+2025-08-09 14:20:35,634 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:35,637 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:35,641 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:35,641 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:35,904 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:35,908 - app.routes.role - INFO - creating a new role
+2025-08-09 14:20:35,909 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:20:35,953 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:35,957 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:35,961 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:35,961 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:36,236 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:36,240 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 14:20:36,241 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:20:36,241 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:20:36,291 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:36,295 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:36,298 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:36,298 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:36,591 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:36,595 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 14:20:36,595 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 14:20:36,596 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:20:36,598 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:20:36,640 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:36,643 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:36,647 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:36,647 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:36,959 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:36,963 - app.routes.role - INFO - creating a new role
+2025-08-09 14:20:36,963 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:20:36,967 - app.routes.role - INFO - deleting a role with id 3
+2025-08-09 14:20:36,967 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:20:36,968 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:20:37,027 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:37,031 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:37,035 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:37,035 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:37,336 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:37,340 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 14:20:37,341 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 14:20:37,341 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 14:20:37,385 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:20:37,388 - app.core.seeder - INFO - created admin role
+2025-08-09 14:20:37,391 - app.core.seeder - INFO - created user role
+2025-08-09 14:20:37,392 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:20:37,709 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:20:37,713 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 14:20:37,714 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 14:20:37,714 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:20:37,716 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:20:37,827 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 14:20:37,834 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:20:37,835 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 14:20:37,845 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 14:20:37,852 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:20:37,866 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:20:37,875 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:20:37,882 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 14:20:37,891 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 14:20:37,897 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:34:59,737 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:34:59,749 - app.core.seeder - INFO - created admin role
+2025-08-09 14:34:59,754 - app.core.seeder - INFO - created user role
+2025-08-09 14:34:59,755 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:00,215 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:00,220 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 14:35:00,221 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:35:00,273 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:00,273 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:00,277 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:00,277 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:00,281 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:00,281 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:00,281 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:00,281 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:00,664 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:00,664 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:00,669 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 14:35:00,669 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:35:00,672 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:35:00,738 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:00,744 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:00,748 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:00,748 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:01,180 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:01,187 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 14:35:01,188 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 14:35:01,191 - app.routes.role - INFO - returned 2 roles
+2025-08-09 14:35:01,248 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:01,253 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:01,258 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:01,259 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:01,684 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:01,689 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 14:35:01,689 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:35:01,691 - app.routes.role - INFO - returned 1 roles
+2025-08-09 14:35:01,746 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:01,751 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:01,756 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:01,756 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:02,154 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:02,159 - app.routes.role - INFO - creating a new role
+2025-08-09 14:35:02,160 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:35:02,215 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:02,220 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:02,224 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:02,224 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:02,598 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:02,603 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 14:35:02,603 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:35:02,604 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:35:02,665 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:02,670 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:02,674 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:02,674 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:03,040 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:03,045 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 14:35:03,045 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 14:35:03,046 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:35:03,048 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:35:03,106 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:03,111 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:03,115 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:03,115 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:03,484 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:03,488 - app.routes.role - INFO - creating a new role
+2025-08-09 14:35:03,489 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:35:03,494 - app.routes.role - INFO - deleting a role with id 3
+2025-08-09 14:35:03,494 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:35:03,495 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:35:03,557 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:03,562 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:03,565 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:03,566 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:03,932 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:03,936 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 14:35:03,936 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 14:35:03,936 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 14:35:03,989 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:35:03,994 - app.core.seeder - INFO - created admin role
+2025-08-09 14:35:03,997 - app.core.seeder - INFO - created user role
+2025-08-09 14:35:03,998 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:35:04,353 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:35:04,357 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 14:35:04,357 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 14:35:04,358 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:35:04,360 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:35:04,468 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 14:35:04,481 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:35:04,482 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 14:35:04,497 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 14:35:04,511 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:35:04,539 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:35:04,579 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:35:04,592 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 14:35:04,614 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 14:35:04,623 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 14:35:04,632 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:37:05,639 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:05,651 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:05,655 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:05,655 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:05,952 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:05,956 - app.routes.role - INFO - fetching role with id 1
+2025-08-09 14:37:05,957 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:37:06,008 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:06,008 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:06,012 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:06,012 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:06,018 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:06,018 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:06,018 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:06,018 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:06,345 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:06,345 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:06,349 - app.routes.role - INFO - fetching role with id 100
+2025-08-09 14:37:06,349 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:37:06,351 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:37:06,415 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:06,424 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:06,430 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:06,430 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:06,720 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:06,735 - app.routes.role - INFO - fetching all roles with filters name=None
+2025-08-09 14:37:06,735 - app.services.base - INFO - executing query to fetch all role with filters name=None
+2025-08-09 14:37:06,737 - app.routes.role - INFO - returned 2 roles
+2025-08-09 14:37:06,785 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:06,789 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:06,792 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:06,792 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:07,060 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:07,064 - app.routes.role - INFO - fetching all roles with filters name=['user']
+2025-08-09 14:37:07,064 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:37:07,067 - app.routes.role - INFO - returned 1 roles
+2025-08-09 14:37:07,108 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:07,112 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:07,115 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:07,115 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:07,376 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:07,380 - app.routes.role - INFO - creating a new role
+2025-08-09 14:37:07,380 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:37:07,427 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:07,431 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:07,434 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:07,435 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:07,712 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:07,716 - app.routes.role - INFO - updating a role with id 1
+2025-08-09 14:37:07,717 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:37:07,717 - app.services.base - INFO - executing query to fetch role with id 1
+2025-08-09 14:37:07,768 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:07,772 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:07,774 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:07,775 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:08,071 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:08,074 - app.routes.role - INFO - updating a role with id 100
+2025-08-09 14:37:08,074 - app.services.base - INFO - executing query to update role with id 100
+2025-08-09 14:37:08,075 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:37:08,077 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:37:08,125 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:08,130 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:08,133 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:08,134 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:08,407 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:08,411 - app.routes.role - INFO - creating a new role
+2025-08-09 14:37:08,411 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:37:08,414 - app.routes.role - INFO - deleting a role with id 3
+2025-08-09 14:37:08,415 - app.services.base - INFO - executing query to delete role with id 3
+2025-08-09 14:37:08,415 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:37:08,473 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:08,477 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:08,480 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:08,480 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:08,766 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:08,769 - app.routes.role - INFO - deleting a role with id 2
+2025-08-09 14:37:08,770 - app.services.base - INFO - executing query to delete role with id 2
+2025-08-09 14:37:08,770 - app.services.base - INFO - executing query to fetch role with id 2
+2025-08-09 14:37:08,817 - app.core.seeder - DEBUG - creating initial roles
+2025-08-09 14:37:08,822 - app.core.seeder - INFO - created admin role
+2025-08-09 14:37:08,825 - app.core.seeder - INFO - created user role
+2025-08-09 14:37:08,826 - app.core.seeder - DEBUG - creating initial admin user
+2025-08-09 14:37:09,114 - app.core.seeder - INFO - created initial admin user with email testemail@example.com
+2025-08-09 14:37:09,118 - app.routes.role - INFO - deleting a role with id 100
+2025-08-09 14:37:09,119 - app.services.base - INFO - executing query to delete role with id 100
+2025-08-09 14:37:09,119 - app.services.base - INFO - executing query to fetch role with id 100
+2025-08-09 14:37:09,121 - app.services.base - ERROR - role with id 100 not found
+2025-08-09 14:37:09,218 - app.services.base - INFO - executing query to fetch role with id 0
+2025-08-09 14:37:09,229 - app.services.base - INFO - executing query to fetch role with id 3
+2025-08-09 14:37:09,230 - app.services.base - ERROR - role with id 3 not found
+2025-08-09 14:37:09,241 - app.services.base - INFO - executing query to fetch all role with filters None
+2025-08-09 14:37:09,250 - app.services.base - INFO - executing query to fetch all role with filters name=['user']
+2025-08-09 14:37:09,269 - app.services.base - INFO - executing query to create a new role
+2025-08-09 14:37:09,288 - app.services.base - INFO - executing query to update role with id 1
+2025-08-09 14:37:09,295 - app.services.base - INFO - executing query to update role with id 3
+2025-08-09 14:37:09,320 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 14:37:09,338 - app.services.base - INFO - executing query to delete role with id 1
+2025-08-09 14:37:09,349 - app.services.base - INFO - executing query to delete role with id 3

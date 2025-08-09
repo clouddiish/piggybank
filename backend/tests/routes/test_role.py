@@ -89,3 +89,29 @@ class TestRoleRoutes:
         response = await client_fixture.delete("/roles/100")
 
         assert response.status_code == 404
+
+    @pytest.mark.anyio
+    async def test_delete_role__cascade_delete_users(self, client_fixture: AsyncClient) -> None:
+        # create a new role
+        response = await client_fixture.post("/roles", json={"name": "test role"})
+        new_role = response.json()
+
+        # create new user with the new role
+        response = await client_fixture.post(
+            "/users", json={"role_id": new_role["id"], "email": "test@email.com", "password": "longpassword123"}
+        )
+        new_user = response.json()
+
+        # check if user got created with the new role
+        response = await client_fixture.get(f"/users/{new_user["id"]}")
+        assert response.status_code == 200
+        new_user_check = response.json()
+        assert new_user_check["role_id"] == new_role["id"]
+
+        # delete the new role
+        response = await client_fixture.delete(f"/roles/{new_role["id"]}")
+        assert response.status_code == 200
+
+        # check if the user got deleted too
+        response = await client_fixture.get(f"/users/{new_user["id"]}")
+        assert response.status_code == 404

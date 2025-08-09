@@ -50,9 +50,6 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
             EntityNotFoundException: If the role with the given id does not exist.
             UserEmailAlreadyExists: If user with provided email already exists.
         """
-        # verify role exists
-        await self.role_service.get_by_id(entity_id=create_schema.role_id)
-
         # verify user with same email exists
         if await self.get_by_email(email=create_schema.email):
             raise UserEmailAlreadyExistsException(email=create_schema.email)

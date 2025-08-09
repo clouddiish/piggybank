@@ -2,7 +2,6 @@ from pydantic import BaseModel, Field
 
 
 class UserBase(BaseModel):
-    role_id: int
     email: str
 
 
@@ -13,6 +12,7 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
+    role_id: int
     password: str = Field(min_length=8)
 
     model_config = {"extra": "forbid"}
@@ -23,6 +23,7 @@ class UserInDB(UserBase):
 
 
 class UserOut(UserBase):
+    role_id: int
     id: int
 
 

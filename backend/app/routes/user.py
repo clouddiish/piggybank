@@ -2,11 +2,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Depends, Query
 
-from app.common.enums import Tag
+from app.common.enums import Tag, RoleName
 from app.common.exceptions import EntityNotFoundException, UserEmailAlreadyExistsException, ActionForbiddenException
 from app.core.logger import get_logger
 from app.db_models import User
-from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters
+from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters, RoleFilters
 from app.services import UserService, get_user_service
 from app.services.security import get_password_hash, get_current_user, get_current_admin
 
@@ -49,7 +49,13 @@ async def get_users(
 async def create_user(new_user: UserCreate, service: UserService = Depends(get_user_service)) -> UserOut:
     logger.info("creating a new user")
     try:
-        user = await service.create(create_schema=new_user, password_hash=get_password_hash(new_user.password))
+        # find id of user role
+        user_role_list = await service.role_service.get_all_with_filters(filters=RoleFilters(name=[RoleName.user]))
+        user_role = user_role_list[0]
+        # create new user with base user role
+        user = await service.create(
+            create_schema=new_user, password_hash=get_password_hash(new_user.password), role_id=user_role.id
+        )
         return user
     except EntityNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))

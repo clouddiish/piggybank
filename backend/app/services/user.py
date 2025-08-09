@@ -3,17 +3,18 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.enums import EntityType
-from app.common.exceptions import UserEmailAlreadyExistsException
+from app.common.exceptions import UserEmailAlreadyExistsException, ActionForbiddenException
+from app.core.config import get_settings
 from app.core.session import get_session
 from app.core.logger import get_logger
 from app.db_models import User
 from app.schemas import UserCreate, UserUpdate, UserFilters
 from app.services.base import BaseService
 from app.services.role import get_role_service
-from app.services.security import get_password_hash
 
 
 logger = get_logger(__name__)
+settings = get_settings()
 
 
 class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
@@ -38,22 +39,20 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         entity = query.scalar_one_or_none()
         return entity
 
-    async def create(self, create_schema: UserCreate) -> User:
+    async def _validate_create(self, create_schema: UserCreate) -> None:
         """
-        Create new user in the database.
+        Validate UserCreate schema.
 
         Args:
-            create_schema (UserCreate): The schema for creating the user.
+            schema (UserCreate): The schema to validate.
 
         Returns:
-            User: The created user.
+            None
 
         Raises:
-            EntityNotFoundException: If the role with the given role_id does not exist.
+            EntityNotFoundException: If the role with the given id does not exist.
             UserEmailAlreadyExists: If user with provided email already exists.
         """
-        logger.info(f"executing query to create a new user")
-
         # verify role exists
         await self.role_service.get_by_id(entity_id=create_schema.role_id)
 
@@ -61,47 +60,55 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         if await self.get_by_email(email=create_schema.email):
             raise UserEmailAlreadyExistsException(email=create_schema.email)
 
-        user_db = User(
-            role_id=create_schema.role_id,
-            email=create_schema.email,
-            password_hash=get_password_hash(create_schema.password),
-        )
-        self.session.add(user_db)
-        await self.session.commit()
-        return user_db
-
-    async def update(self, entity_id: int, update_schema: UserUpdate) -> User:
+    async def _validate_update(self, entity_id: int, update_schema: UserUpdate) -> User:
         """
-        Update an existing user in the database.
+        Validate UserUpdate schema.
 
         Args:
-            entity_id (int): The id of the user to update.
-            update_schema (UserUpdate): The schema for updating the user.
+            entity_id (int): The id of the user to validate.
+            schema (UserUpdate): The schema to validate.
 
         Returns:
-            User: The updated user.
+            User: The validated user.
 
         Raises:
-            EntityNotFoundException: If the user with the given id or the provided role_id do not exist.
+            EntityNotFoundException: If the user or role with the given id do not exist.
+            UserEmailAlreadyExists: If user with provided email already exists, and is not the same as the user being updated.
         """
-        logger.info(f"executing query to update user with id {entity_id}")
-
+        # verify user exists
         user_db = await self.get_by_id(entity_id=entity_id)
 
         # verify role exists
         await self.role_service.get_by_id(entity_id=update_schema.role_id)
 
-        # verify user with same email exists
-        if await self.get_by_email(email=update_schema.email):
+        # verify user with same email exists, and is not the same as the user being updated
+        existing = await self.get_by_email(email=update_schema.email)
+        if existing and existing.id != user_db.id:
             raise UserEmailAlreadyExistsException(email=update_schema.email)
 
-        user_db.role_id = update_schema.role_id
-        user_db.email = update_schema.email
-        user_db.password_hash = get_password_hash(update_schema.password)
+        return user_db
 
-        self.session.add(user_db)
-        await self.session.commit()
-        await self.session.refresh(user_db)
+    async def _validate_delete(self, entity_id: int) -> User:
+        """
+        Validate deletion of a user.
+
+        Args:
+            entity_id (int): The id of the user to validate.
+
+        Returns:
+            User: The validated user.
+
+        Raises:
+            EntityNotFoundException: If the user with the given id does not exist.
+            ActionForbiddenException: If trying to delete initial admin user.
+        """
+        # validate user exists
+        user_db = await self.get_by_id(entity_id=entity_id)
+
+        # disallow deleting initial admin
+        if user_db.email == settings.initial_admin_email:
+            raise ActionForbiddenException(detail="cannot delete initial admin user")
+
         return user_db
 
 

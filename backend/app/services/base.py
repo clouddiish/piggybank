@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Type
+from typing import Generic, TypeVar, Type, Any
 
 from pydantic import BaseModel
 from sqlalchemy import select, or_
@@ -75,30 +75,84 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         entities = query.scalars().all()
         return entities
 
-    async def create(self, create_schema: CreateSchemaT) -> DatabaseModelT:
+    async def _validate_create(self, create_schema: CreateSchemaT) -> None:
+        """
+        Validate create schmea.
+
+        Args:
+            schema (CreateSchemaT): The schema to validate.
+
+        Returns:
+            None
+        """
+        # no validation by default, to be overwritten in child classes
+        pass
+
+    def _get_create_or_update_valid_fields(self, schema: CreateSchemaT | UpdateSchemaT, **kwargs) -> dict[str, Any]:
+        """
+        Extract valid fields for DatabaseModelT from schema and kwargs.
+
+        Args:
+            schema (CreateSchemaT | UpdateSchemaT): The schema from which to extract valid fields.
+            kwargs: Additional arguments from which to extract valid fields.
+
+        Returns:
+            dict[str, Any]: Dictionary of valid fields.
+        """
+        database_model_fields = self.db_model_class.__table__.columns
+        # filter out extra fields not in the DatabaseModelT
+        valid_fields = {key: value for key, value in schema.model_dump().items() if key in database_model_fields}
+        # add additional fields from kwargs that are in DatabaseModelT
+        valid_fields.update({key: value for key, value in kwargs.items() if key in database_model_fields})
+        return valid_fields
+
+    async def create(self, create_schema: CreateSchemaT, **kwargs) -> DatabaseModelT:
         """
         Create new entity in the database.
 
         Args:
             create_schema (CreateSchemaT): The schema for creating the entity.
+            kwargs: Additional arguments for creation.
 
         Returns:
             DatabaseModelT: The created entity.
         """
         logger.info(f"executing query to create a new {self.entity_type.value}")
 
-        entity_db = self.db_model_class(**create_schema.model_dump())
+        await self._validate_create(create_schema=create_schema)
+
+        valid_fields = self._get_create_or_update_valid_fields(schema=create_schema, **kwargs)
+        entity_db = self.db_model_class(**valid_fields)
         self.session.add(entity_db)
         await self.session.commit()
         return entity_db
 
-    async def update(self, entity_id: int, update_schema: UpdateSchemaT) -> DatabaseModelT:
+    async def _validate_update(self, entity_id: int, update_schema: UpdateSchemaT) -> DatabaseModelT:
+        """
+        Validate create schmea.
+
+        Args:
+            entity_id (int): The id of the entity to validate.
+            schema (CreateSchemaT): The schema to validate.
+
+        Returns:
+            DatabaseModelT: The validated entity.
+
+        Raises:
+            EntityNotFoundException: If the entity with the given id does not exist.
+        """
+        # by default only validate if entity exists
+        entity_db = await self.get_by_id(entity_id=entity_id)
+        return entity_db
+
+    async def update(self, entity_id: int, update_schema: UpdateSchemaT, **kwargs) -> DatabaseModelT:
         """
         Update an existing entity in the database.
 
         Args:
             entity_id (int): The id of the entity to update.
             update_schema (UpdateSchemaT): The schema for updating the entity.
+            kwargs: Additional arguments for update.
 
         Returns:
             DatabaseModelT: The updated entity.
@@ -108,14 +162,32 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         """
         logger.info(f"executing query to update {self.entity_type.value} with id {entity_id}")
 
-        entity_db = await self.get_by_id(entity_id=entity_id)
+        entity_db = await self._validate_update(entity_id=entity_id, update_schema=update_schema)
 
-        for key, value in update_schema.model_dump().items():
+        valid_fields = self._get_create_or_update_valid_fields(schema=update_schema, **kwargs)
+        for key, value in valid_fields.items():
             setattr(entity_db, key, value)
 
         self.session.add(entity_db)
         await self.session.commit()
         await self.session.refresh(entity_db)
+        return entity_db
+
+    async def _validate_delete(self, entity_id: int) -> DatabaseModelT:
+        """
+        Validate deletion of an entity.
+
+        Args:
+            entity_id (int): The id of the entity to validate.
+
+        Returns:
+            DatabaseModelT: The validated entity.
+
+        Raises:
+            EntityNotFoundException: If the entity with the given id does not exist.
+        """
+        # by default only validate if entity exists
+        entity_db = await self.get_by_id(entity_id=entity_id)
         return entity_db
 
     async def delete(self, entity_id: int) -> DatabaseModelT:
@@ -133,7 +205,8 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         """
         logger.info(f"executing query to delete {self.entity_type.value} with id {entity_id}")
 
-        entity_db = await self.get_by_id(entity_id=entity_id)
+        entity_db = await self._validate_delete(entity_id=entity_id)
+
         await self.session.delete(entity_db)
         await self.session.commit()
         return entity_db

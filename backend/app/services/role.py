@@ -19,30 +19,27 @@ class RoleService(BaseService[Role, RoleCreate, RoleUpdate, RoleFilters]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session=session, db_model_class=Role, entity_type=EntityType.role)
 
-    async def delete(self, entity_id: int) -> Role:
+    async def _validate_delete(self, entity_id: int) -> Role:
         """
-        Delete an existing role in the database.
+        Validate deletion of a role.
 
         Args:
-            entity_id (int): The id of the role to delete.
+            entity_id (int): The id of the role to validate.
 
         Returns:
-            Role: The deleted role.
+            Role: The validated role.
 
         Raises:
             EntityNotFoundException: If the role with the given id does not exist.
-            ActionForbiddenException: If trying to delete the initial admin role.
+            ActionForbiddenException: If trying to delete initial admin role.
         """
-        logger.info(f"executing query to delete role with id {entity_id}")
-
+        # validate role exists
         role_db = await self.get_by_id(entity_id=entity_id)
 
         # disallow deleting initial admin role
         if role_db.name == settings.initial_admin_role:
             raise ActionForbiddenException(detail="cannot delete initial admin role")
 
-        await self.session.delete(role_db)
-        await self.session.commit()
         return role_db
 
 

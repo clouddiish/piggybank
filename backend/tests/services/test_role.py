@@ -200,7 +200,6 @@ class TestRoleServices:
         mock_role_service._validate_delete.assert_called_once()
         mock_session.delete.assert_called_once()
         mock_session.commit.assert_called_once()
-        mock_session.commit.assert_called_once()
         assert role == mock_roles[1]
 
     @pytest.mark.anyio
@@ -217,7 +216,6 @@ class TestRoleServices:
         mock_role_service._validate_delete.assert_called_once()
         mock_session.delete.assert_not_called()
         mock_session.commit.assert_not_called()
-        mock_session.commit.assert_not_called()
 
     @pytest.mark.anyio
     async def test_delete__id_does_not_exist(
@@ -232,5 +230,4 @@ class TestRoleServices:
 
         mock_role_service._validate_delete.assert_called_once()
         mock_session.delete.assert_not_called()
-        mock_session.commit.assert_not_called()
         mock_session.commit.assert_not_called()

@@ -35,7 +35,7 @@ class TestRoleRoutes:
 
     @pytest.mark.anyio
     async def test_get_roles__with_filters(self, client_fixture: AsyncClient) -> None:
-        response = await client_fixture.get("/roles?name=user")
+        response = await client_fixture.get(f"/roles?name={settings.initial_roles[1]}")
 
         assert response.status_code == 200
         roles = response.json()
@@ -70,6 +70,7 @@ class TestRoleRoutes:
     async def test_delete_role__all_ok(self, client_fixture: AsyncClient) -> None:
         response = await client_fixture.post("/roles", json={"name": "test role"})
         new_role = response.json()
+
         response = await client_fixture.delete(f"/roles/{new_role["id"]}")
 
         assert response.status_code == 200

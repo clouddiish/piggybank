@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Enum
 from sqlalchemy.orm import relationship
 
+from app.common.enums import RoleName
 from app.db_models.base import Base
 
 
@@ -8,7 +9,6 @@ class Role(Base):
     __tablename__ = "role"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    is_protected = Column(Boolean, default=False)
+    name = Column(Enum(RoleName), nullable=False)
 
     users = relationship("User", back_populates="role", cascade="all, delete")

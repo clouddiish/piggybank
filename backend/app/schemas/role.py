@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 
+from app.common.enums import RoleName
+
 
 class RoleBase(BaseModel):
-    name: str
+    name: RoleName
 
 
 class RoleCreate(RoleBase):
@@ -20,4 +22,4 @@ class RoleOut(RoleBase):
 class RoleFilters(BaseModel):
     model_config = {"extra": "forbid"}
 
-    name: list[str] | None = None
+    name: list[RoleName] | None = None

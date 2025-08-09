@@ -35,8 +35,6 @@ class Settings(BaseSettings):
 
     initial_admin_email: str = "changethis"
     initial_admin_password: str = "changethis"
-    initial_admin_role: str = "admin"
-    initial_roles: list[str] = ["admin", "user"]
 
     # logging settings
     echo_sql: bool = False

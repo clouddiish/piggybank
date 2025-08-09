@@ -7,8 +7,7 @@ from app.db_models import Role
 class TestRoleDbModel:
     @pytest.mark.anyio
     async def test_role_model__all_ok(self):
-        role = Role(name="test role", is_protected=False)
+        role = Role(name="test role")
 
         assert hasattr(role, "id")
         assert role.name == "test role"
-        assert role.is_protected is False

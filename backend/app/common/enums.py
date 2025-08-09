@@ -8,6 +8,7 @@ class Tag(Enum):
     transaction = "transaction"
     type = "type"
     user = "user"
+    security = "security"
 
 
 class EntityType(Enum):

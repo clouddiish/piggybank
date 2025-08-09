@@ -7,7 +7,7 @@ from app.core.logger import get_logger
 from app.core.session import get_session
 from app.db_models import Role
 from app.schemas import RoleCreate, RoleUpdate, RoleFilters
-from app.services.base import BaseService
+from app.services import BaseService
 
 
 logger = get_logger(__name__)

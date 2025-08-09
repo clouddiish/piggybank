@@ -18,6 +18,10 @@ class UserUpdate(UserBase):
     model_config = {"extra": "forbid"}
 
 
+class UserInDB(UserBase):
+    password_hash: str
+
+
 class UserOut(UserBase):
     id: int
 

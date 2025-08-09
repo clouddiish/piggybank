@@ -8,8 +8,7 @@ from app.core.session import get_session
 from app.core.logger import get_logger
 from app.db_models import User
 from app.schemas import UserCreate, UserUpdate, UserFilters
-from app.services.base import BaseService
-from app.services.role import get_role_service
+from app.services import BaseService, get_role_service
 
 
 logger = get_logger(__name__)

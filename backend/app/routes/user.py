@@ -5,14 +5,20 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from app.common.enums import Tag
 from app.common.exceptions import EntityNotFoundException, UserEmailAlreadyExistsException, ActionForbiddenException
 from app.core.logger import get_logger
+from app.db_models import User
 from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters
-from app.services.user import UserService, get_user_service
-from app.services.security import get_password_hash
+from app.services import UserService, get_user_service
+from app.services.security import get_password_hash, get_current_user
 
 
 logger = get_logger(__name__)
 
 router = APIRouter(prefix="/users", tags=[Tag.user])
+
+
+@router.get("/me", response_model=UserOut, status_code=200, summary="get information about the current user")
+async def get_user_me(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user
 
 
 @router.get("/{user_id}", response_model=UserOut, status_code=200, summary="get one user by their id")

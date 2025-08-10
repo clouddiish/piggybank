@@ -8,17 +8,15 @@ from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters
 class TestUserSchemas:
     @pytest.mark.anyio
     async def test_UserCreate__all_ok(self):
-        data = {"role_id": 1, "email": "test@example.com", "password": "strongpass"}
+        data = {"email": "test@example.com", "password": "strongpass"}
         user = UserCreate(**data)
 
-        assert user.role_id == 1
         assert user.email == "test@example.com"
         assert user.password == "strongpass"
 
     @pytest.mark.anyio
     async def test_UserCreate__extra_field(self):
         data = {
-            "role_id": 1,
             "email": "test@example.com",
             "password": "strongpass",
             "extra": "not allowed",
@@ -37,16 +35,15 @@ class TestUserSchemas:
 
     @pytest.mark.anyio
     async def test_UserCreate__invalid_type(self):
-        data = {"role_id": "wrong", "email": 123, "password": "strongpass"}
+        data = {"email": 123, "password": "strongpass"}
         with pytest.raises(ValidationError) as e:
             UserCreate(**data)
 
-        assert "Input should be a valid integer" in str(e.value)
         assert "Input should be a valid string" in str(e.value)
 
     @pytest.mark.anyio
     async def test_UserCreate__password_too_short(self):
-        data = {"role_id": 1, "email": "test@example.com", "password": "short"}
+        data = {"email": "test@example.com", "password": "short"}
         with pytest.raises(ValidationError) as e:
             UserCreate(**data)
 

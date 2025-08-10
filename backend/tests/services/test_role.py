@@ -12,16 +12,6 @@ from app.services import RoleService
 settings = get_settings()
 
 
-@pytest.fixture
-def mock_role_service(mock_session: AsyncMock) -> RoleService:
-    return RoleService(session=mock_session)
-
-
-@pytest.fixture
-def mock_roles() -> list[Role]:
-    return [Role(id=i, name=role_name) for i, role_name in enumerate(RoleName)]
-
-
 @pytest.mark.unit
 class TestRoleServices:
     @pytest.mark.anyio

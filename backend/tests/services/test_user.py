@@ -3,23 +3,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 from app.common.enums import EntityType
 from app.common.exceptions import EntityNotFoundException, UserEmailAlreadyExistsException, ActionForbiddenException
-from app.core.config import get_settings
 from app.db_models import User, Role
 from app.schemas import UserFilters, UserCreate, UserUpdate
 from app.services import UserService
-
-
-@pytest.fixture
-def mock_user_service(mock_session: AsyncMock) -> UserService:
-    return UserService(session=mock_session)
-
-
-@pytest.fixture
-def mock_users() -> list[User]:
-    return [
-        User(id=1, role_id=1, email="test1@email.com", password_hash="hash1", is_protected=False),
-        User(id=2, role_id=2, email="test2@email.com", password_hash="hash2", is_protected=True),
-    ]
 
 
 @pytest.mark.unit
@@ -110,50 +96,32 @@ class TestUserServices:
 
     @pytest.mark.anyio
     async def test_validate_create__all_ok(self, mock_user_service: UserService) -> None:
-        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test role"))
         mock_user_service.get_by_email = AsyncMock(return_value=None)
-        user_create = UserCreate(role_id=1, email="test@test.pl", password="testpassword")
+        user_create = UserCreate(email="test@test.pl", password="testpassword")
 
         await mock_user_service._validate_create(create_schema=user_create)
 
-        mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
 
     @pytest.mark.anyio
-    async def test_validate_create__role_id_does_not_exist(self, mock_user_service: UserService) -> None:
-        mock_user_service.role_service.get_by_id = AsyncMock(
-            side_effect=EntityNotFoundException(entity_id=100, entity_type=EntityType.role)
-        )
-        mock_user_service.get_by_email = AsyncMock()
-        user_create = UserCreate(role_id=100, email="test@test.pl", password="testpassword")
-
-        with pytest.raises(EntityNotFoundException):
-            await mock_user_service._validate_create(create_schema=user_create)
-
-        mock_user_service.role_service.get_by_id.assert_called_once()
-        mock_user_service.get_by_email.assert_not_called()
-
-    @pytest.mark.anyio
     async def test_validate_create__email_exists(self, mock_user_service: UserService, mock_users: list[User]) -> None:
-        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test role"))
         mock_user_service.get_by_email = AsyncMock(return_value=mock_users[0])
-        user_create = UserCreate(role_id=1, email=mock_users[0].email, password="testpassword")
+        user_create = UserCreate(email=mock_users[0].email, password="testpassword")
 
         with pytest.raises(UserEmailAlreadyExistsException):
             await mock_user_service._validate_create(create_schema=user_create)
 
-        mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
 
     @pytest.mark.anyio
     async def test_get_create_or_update_valid_fields__UserCreate(self, mock_user_service: UserService) -> None:
-        user_create = UserCreate(role_id=1, email="test@test.pl", password="testpassword")
+        user_create = UserCreate(email="test@test.pl", password="testpassword")
 
         valid_fields = mock_user_service._get_create_or_update_valid_fields(
             schema=user_create, password_hash="testhash"
         )
 
-        assert valid_fields == {"role_id": 1, "email": "test@test.pl", "password_hash": "testhash"}
+        assert valid_fields == {"email": "test@test.pl", "password_hash": "testhash"}
 
     @pytest.mark.anyio
     async def test_get_create_or_update_valid_fields__UserUpdate(self, mock_user_service: UserService) -> None:
@@ -169,10 +137,10 @@ class TestUserServices:
     async def test_create__all_ok(self, mock_session: AsyncMock, mock_user_service: UserService) -> None:
         mock_user_service._validate_create = AsyncMock()
         mock_user_service._get_create_or_update_valid_fields = MagicMock(
-            return_value={"role_id": 1, "email": "test@test.pl", "password_hash": "testhash"}
+            return_value={"role_id": 2, "email": "test@test.pl", "password_hash": "testhash"}
         )
 
-        user_create = UserCreate(role_id=1, email="test@test.pl", password="testpassword")
+        user_create = UserCreate(email="test@test.pl", password="testpassword")
         user = await mock_user_service.create(create_schema=user_create)
 
         mock_user_service._validate_create.assert_called_once()
@@ -181,29 +149,9 @@ class TestUserServices:
         mock_session.commit.assert_called_once()
         assert isinstance(user, User)
         assert hasattr(user, "id")
-        assert user.role_id == user_create.role_id
+        assert user.role_id == 2
         assert user.email == user_create.email
         assert user.password_hash == "testhash"
-
-    @pytest.mark.anyio
-    async def test_create__role_id_does_not_exist(
-        self, mock_session: AsyncMock, mock_user_service: UserService
-    ) -> None:
-        mock_user_service._validate_create = AsyncMock(
-            side_effect=EntityNotFoundException(entity_id=100, entity_type=EntityType.role)
-        )
-        mock_user_service._get_create_or_update_valid_fields = MagicMock(
-            return_value={"role_id": 1, "email": "test@test.pl", "password_hash": "testhash"}
-        )
-
-        user_create = UserCreate(role_id=1, email="test@test.pl", password="testpassword")
-        with pytest.raises(EntityNotFoundException):
-            await mock_user_service.create(create_schema=user_create)
-
-        mock_user_service._validate_create.assert_called_once()
-        mock_user_service._get_create_or_update_valid_fields.assert_not_called()
-        mock_session.add.assert_not_called()
-        mock_session.commit.assert_not_called()
 
     @pytest.mark.anyio
     async def test_create__email_exists(self, mock_session: AsyncMock, mock_user_service: UserService) -> None:
@@ -211,10 +159,10 @@ class TestUserServices:
             side_effect=UserEmailAlreadyExistsException(email="test@test.pl")
         )
         mock_user_service._get_create_or_update_valid_fields = MagicMock(
-            return_value={"role_id": 1, "email": "test@test.pl", "password_hash": "testhash"}
+            return_value={"role_id": 2, "email": "test@test.pl", "password_hash": "testhash"}
         )
 
-        user_create = UserCreate(role_id=1, email="test@test.pl", password="testpassword")
+        user_create = UserCreate(email="test@test.pl", password="testpassword")
         with pytest.raises(UserEmailAlreadyExistsException):
             await mock_user_service.create(create_schema=user_create)
 
@@ -224,18 +172,42 @@ class TestUserServices:
         mock_session.commit.assert_not_called()
 
     @pytest.mark.anyio
-    async def test_validate_update__all_ok(self, mock_user_service: UserService, mock_users: list[User]) -> None:
-        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
-        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test role"))
+    async def test_validate_update__all_ok_admin(self, mock_user_service: UserService, mock_users: list[User]) -> None:
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test admin"))
         mock_user_service.get_by_email = AsyncMock(return_value=None)
 
         user_update = UserUpdate(role_id=1, email="test@test.pl", password="testpassword")
-        user = await mock_user_service._validate_update(entity_id=1, update_schema=user_update)
+        user = await mock_user_service._validate_update(
+            entity_id=1, update_schema=user_update, updated_by=mock_users[0]
+        )
 
         mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
-        assert user == mock_users[0]
+        assert user == mock_users[2]
+
+    @pytest.mark.anyio
+    async def test_validate_update__all_ok_same_user(
+        self, mock_user_service: UserService, mock_users: list[User]
+    ) -> None:
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
+        mock_user_service.get_by_email = AsyncMock(return_value=None)
+
+        user_update = UserUpdate(role_id=2, email="test@test.pl", password="testpassword")
+        user = await mock_user_service._validate_update(
+            entity_id=1, update_schema=user_update, updated_by=mock_users[2]
+        )
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.role_service.get_by_id.assert_called_once()
+        mock_user_service.get_by_email.assert_called_once()
+        assert user == mock_users[2]
 
     @pytest.mark.anyio
     async def test_validate_update__user_id_does_not_exist(
@@ -249,9 +221,27 @@ class TestUserServices:
 
         user_update = UserUpdate(role_id=1, email="test@test.pl", password="testpassword")
         with pytest.raises(EntityNotFoundException):
-            await mock_user_service._validate_update(entity_id=100, update_schema=user_update)
+            await mock_user_service._validate_update(entity_id=100, update_schema=user_update, updated_by=mock_users[0])
 
         mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_id.assert_not_called()
+        mock_user_service.get_by_email.assert_not_called()
+
+    @pytest.mark.anyio
+    async def test_validate_update__different_user(
+        self, mock_user_service: UserService, mock_users: list[User]
+    ) -> None:
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
+        mock_user_service.get_by_email = AsyncMock(return_value=None)
+
+        user_update = UserUpdate(role_id=2, email="test@test.pl", password="testpassword")
+        with pytest.raises(ActionForbiddenException):
+            await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[1])
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_not_called()
         mock_user_service.get_by_email.assert_not_called()
 
@@ -260,16 +250,54 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
         mock_user_service.role_service.get_by_id = AsyncMock(
             side_effect=EntityNotFoundException(entity_id=100, entity_type=EntityType.role)
         )
         mock_user_service.get_by_email = AsyncMock(return_value=None)
 
-        user_update = UserUpdate(role_id=1, email="test@test.pl", password="testpassword")
+        user_update = UserUpdate(role_id=100, email="test@test.pl", password="testpassword")
         with pytest.raises(EntityNotFoundException):
-            await mock_user_service._validate_update(entity_id=1, update_schema=user_update)
+            await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[0])
 
         mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.role_service.get_by_id.assert_called_once()
+        mock_user_service.get_by_email.assert_not_called()
+
+    @pytest.mark.anyio
+    async def test_validate_update__cannot_update_roles(
+        self, mock_user_service: UserService, mock_users: list[User]
+    ) -> None:
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
+        mock_user_service.get_by_email = AsyncMock(return_value=None)
+
+        user_update = UserUpdate(role_id=1, email="test@test.pl", password="testpassword")
+        with pytest.raises(ActionForbiddenException):
+            await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[2])
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.role_service.get_by_id.assert_called_once()
+        mock_user_service.get_by_email.assert_not_called()
+
+    @pytest.mark.anyio
+    async def test_validate_update__cannot_update_role_protected_user(
+        self, mock_user_service: UserService, mock_users: list[User]
+    ) -> None:
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[1])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
+        mock_user_service.get_by_email = AsyncMock(return_value=None)
+
+        user_update = UserUpdate(role_id=1, email="test@test.pl", password="testpassword")
+        with pytest.raises(ActionForbiddenException):
+            await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[0])
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_not_called()
 
@@ -278,14 +306,16 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
-        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test role"))
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
         mock_user_service.get_by_email = AsyncMock(return_value=mock_users[1])
 
-        user_update = UserUpdate(role_id=1, email="test@test.pl", password="testpassword")
+        user_update = UserUpdate(role_id=2, email="test@test.pl", password="testpassword")
         with pytest.raises(UserEmailAlreadyExistsException):
-            await mock_user_service._validate_update(entity_id=1, update_schema=user_update)
+            await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[0])
 
         mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
 
@@ -294,13 +324,17 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
-        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test role"))
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test admin"))
         mock_user_service.get_by_email = AsyncMock(return_value=mock_users[0])
 
         user_update = UserUpdate(role_id=1, email="test@test.pl", password="testpassword")
-        user = await mock_user_service._validate_update(entity_id=1, update_schema=user_update)
+        user = await mock_user_service._validate_update(
+            entity_id=1, update_schema=user_update, updated_by=mock_users[0]
+        )
 
         mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
         assert user == mock_users[0]
@@ -349,6 +383,27 @@ class TestUserServices:
         mock_session.refresh.assert_not_called()
 
     @pytest.mark.anyio
+    async def test_update__action_forbidden(
+        self, mock_session: AsyncMock, mock_user_service: UserService, mock_users: list[User]
+    ) -> None:
+        mock_user_service._validate_update = AsyncMock(
+            side_effect=ActionForbiddenException(detail="cannot update role of protected user")
+        )
+        mock_user_service._get_create_or_update_valid_fields = MagicMock(
+            return_value={"role_id": 1, "email": "test@test.pl", "password_hash": "testhash"}
+        )
+
+        user_update = UserUpdate(role_id=1, email="test@test.pl", password="testpassword")
+        with pytest.raises(ActionForbiddenException):
+            await mock_user_service.update(entity_id=mock_users[0].id, update_schema=user_update)
+
+        mock_user_service._validate_update.assert_called_once()
+        mock_user_service._get_create_or_update_valid_fields.assert_not_called()
+        mock_session.add.assert_not_called()
+        mock_session.commit.assert_not_called()
+        mock_session.refresh.assert_not_called()
+
+    @pytest.mark.anyio
     async def test_update__email_exists(
         self, mock_session: AsyncMock, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
@@ -370,20 +425,47 @@ class TestUserServices:
         mock_session.refresh.assert_not_called()
 
     @pytest.mark.anyio
-    async def test_vaidate_delete__all_ok(self, mock_user_service: UserService, mock_users: list[User]) -> None:
-        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
+    async def test_vaidate_delete__all_ok_same_user(
+        self, mock_user_service: UserService, mock_users: list[User]
+    ) -> None:
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
 
-        user = await mock_user_service._validate_delete(entity_id=1)
+        user = await mock_user_service._validate_delete(entity_id=1, deleted_by=mock_users[2])
 
         mock_user_service.get_by_id.assert_called_once()
-        assert user == mock_users[0]
+        mock_user_service.role_service.get_by_name.assert_called_once()
+        assert user == mock_users[2]
+
+    @pytest.mark.anyio
+    async def test_vaidate_delete__all_ok_admin(self, mock_user_service: UserService, mock_users: list[User]) -> None:
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+
+        user = await mock_user_service._validate_delete(entity_id=1, deleted_by=mock_users[0])
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
+        assert user == mock_users[2]
+
+    @pytest.mark.anyio
+    async def test_vaidate_delete__different_user(self, mock_user_service: UserService, mock_users: list[User]) -> None:
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+
+        with pytest.raises(ActionForbiddenException):
+            await mock_user_service._validate_delete(entity_id=1, deleted_by=mock_users[1])
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
 
     @pytest.mark.anyio
     async def test_vaidate_delete__protected_user(self, mock_user_service: UserService, mock_users: list[User]) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[1])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
 
         with pytest.raises(ActionForbiddenException):
-            await mock_user_service._validate_delete(entity_id=2)
+            await mock_user_service._validate_delete(entity_id=2, deleted_by=mock_users[1])
 
         mock_user_service.get_by_id.assert_called_once()
 

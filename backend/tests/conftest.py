@@ -6,12 +6,15 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+import app.db_models
 from app.main import app as fastapi_app
+from app.common.enums import RoleName
 from app.core.config import get_settings
 from app.core.seeder import seed_initial_data
 from app.core.session import get_session
+from app.db_models import User, Role
 from app.db_models.base import Base
-import app.db_models
+from app.services import UserService, RoleService
 
 
 settings = get_settings()
@@ -58,3 +61,27 @@ async def client_fixture(session_fixture: AsyncSession) -> AsyncGenerator[AsyncC
         yield client
 
     fastapi_app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def mock_role_service(mock_session: AsyncMock) -> RoleService:
+    return RoleService(session=mock_session)
+
+
+@pytest.fixture
+def mock_roles() -> list[Role]:
+    return [Role(id=i, name=role_name) for i, role_name in enumerate(RoleName)]
+
+
+@pytest.fixture
+def mock_user_service(mock_session: AsyncMock) -> UserService:
+    return UserService(session=mock_session)
+
+
+@pytest.fixture
+def mock_users() -> list[User]:
+    return [
+        User(id=1, role_id=1, email="test1@email.com", password_hash="hash1", is_protected=False),
+        User(id=2, role_id=2, email="test2@email.com", password_hash="hash2", is_protected=True),
+        User(id=3, role_id=2, email="test3@email.com", password_hash="hash3", is_protected=False),
+    ]

@@ -74,7 +74,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         # verify user exists
         user_db = await self.get_by_id(entity_id=entity_id)
 
-        # check if they can update
+        # verify if they can update at all
         admin_role = await self.role_service.get_by_name(role_name=RoleName.admin)
         if not (updated_by.id == user_db.id or updated_by.role_id == admin_role.id):
             raise ActionForbiddenException(detail="only admins can update other users")

@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.enums import EntityType
+from app.common.enums import EntityType, RoleName
 from app.common.exceptions import UserEmailAlreadyExistsException, ActionForbiddenException
 from app.core.session import get_session
 from app.core.logger import get_logger
@@ -54,13 +54,14 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         if await self.get_by_email(email=create_schema.email):
             raise UserEmailAlreadyExistsException(email=create_schema.email)
 
-    async def _validate_update(self, entity_id: int, update_schema: UserUpdate) -> User:
+    async def _validate_update(self, entity_id: int, update_schema: UserUpdate, updated_by: User, **kwargs) -> User:
         """
         Validate UserUpdate schema.
 
         Args:
             entity_id (int): The id of the user to validate.
             schema (UserUpdate): The schema to validate.
+            updated_by (User): The user doing the update.
 
         Returns:
             User: The validated user.
@@ -68,12 +69,24 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         Raises:
             EntityNotFoundException: If the user or role with the given id do not exist.
             UserEmailAlreadyExists: If user with provided email already exists, and is not the same as the user being updated.
+            ActionForbiddenException: If the user doing the update is not allowed to perform the update.
         """
         # verify user exists
         user_db = await self.get_by_id(entity_id=entity_id)
 
+        # check if they can update
+        admin_role = await self.role_service.get_by_name(role_name=RoleName.admin)
+        if not (updated_by.id == user_db.id or updated_by.role_id == admin_role.id):
+            raise ActionForbiddenException(detail="only admins can update other users")
+
         # verify role exists
         await self.role_service.get_by_id(entity_id=update_schema.role_id)
+
+        # verify if they can update roles
+        if user_db.is_protected and user_db.role_id != update_schema.role_id:
+            raise ActionForbiddenException(detail="cannot update role of protected user")
+        if updated_by.role_id != admin_role.id and user_db.role_id != update_schema.role_id:
+            raise ActionForbiddenException(detail="only admins can update role of users")
 
         # verify user with same email exists, and is not the same as the user being updated
         existing = await self.get_by_email(email=update_schema.email)
@@ -82,22 +95,28 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
 
         return user_db
 
-    async def _validate_delete(self, entity_id: int) -> User:
+    async def _validate_delete(self, entity_id: int, deleted_by: User) -> User:
         """
         Validate deletion of a user.
 
         Args:
             entity_id (int): The id of the user to validate.
+            deleted_by (User): The user doing the delete.
 
         Returns:
             User: The validated user.
 
         Raises:
             EntityNotFoundException: If the user with the given id does not exist.
-            ActionForbiddenException: If trying to delete initial admin user.
+            ActionForbiddenException: If trying to delete initial admin user, or if user doing the delete is not allowed to perform the delete.
         """
         # validate user exists
         user_db = await self.get_by_id(entity_id=entity_id)
+
+        # check if they can delete
+        admin_role = await self.role_service.get_by_name(role_name=RoleName.admin)
+        if not (deleted_by.id == user_db.id or deleted_by.role_id == admin_role.id):
+            raise ActionForbiddenException(detail="only admins can delete other users")
 
         # disallow deleting initial admin
         if user_db.is_protected:

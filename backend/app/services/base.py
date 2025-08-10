@@ -127,13 +127,14 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         await self.session.commit()
         return entity_db
 
-    async def _validate_update(self, entity_id: int, update_schema: UpdateSchemaT) -> DatabaseModelT:
+    async def _validate_update(self, entity_id: int, update_schema: UpdateSchemaT, **kwargs) -> DatabaseModelT:
         """
         Validate create schmea.
 
         Args:
             entity_id (int): The id of the entity to validate.
             schema (CreateSchemaT): The schema to validate.
+            kwargs: Additional arguments for update.
 
         Returns:
             DatabaseModelT: The validated entity.
@@ -162,7 +163,7 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         """
         logger.info(f"executing query to update {self.entity_type.value} with id {entity_id}")
 
-        entity_db = await self._validate_update(entity_id=entity_id, update_schema=update_schema)
+        entity_db = await self._validate_update(entity_id=entity_id, update_schema=update_schema, **kwargs)
 
         valid_fields = self._get_create_or_update_valid_fields(schema=update_schema, **kwargs)
         for key, value in valid_fields.items():
@@ -190,12 +191,13 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         entity_db = await self.get_by_id(entity_id=entity_id)
         return entity_db
 
-    async def delete(self, entity_id: int) -> DatabaseModelT:
+    async def delete(self, entity_id: int, **kwargs) -> DatabaseModelT:
         """
         Delete an existing entity in the database.
 
         Args:
             entity_id (int): The id of the entity to delete.
+            kwargs: Additional arguments for delete.
 
         Returns:
             DatabaseModelT: The deleted entity.
@@ -205,7 +207,7 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         """
         logger.info(f"executing query to delete {self.entity_type.value} with id {entity_id}")
 
-        entity_db = await self._validate_delete(entity_id=entity_id)
+        entity_db = await self._validate_delete(entity_id=entity_id, **kwargs)
 
         await self.session.delete(entity_db)
         await self.session.commit()

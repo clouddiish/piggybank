@@ -64,6 +64,30 @@ async def client_fixture(session_fixture: AsyncSession) -> AsyncGenerator[AsyncC
 
 
 @pytest.fixture
+async def admin_token(client_fixture: AsyncClient) -> str:
+    """Fixture that returns a valid bearer token for the seeded admin."""
+    payload = {"username": settings.initial_admin_email, "password": settings.initial_admin_password}
+    response = await client_fixture.post("/token", data=payload)
+    assert response.status_code == 200
+    return response.json()["access_token"]
+
+
+@pytest.fixture
+async def user_token(client_fixture: AsyncClient) -> str:
+    """Fixture that creates and logs in a non-admin user."""
+    # create non-admin user
+    email = "test@email.com"
+    password = "longpassword123"
+    response = await client_fixture.post("/users", json={"email": email, "password": password})
+    assert response.status_code == 201
+
+    # get token
+    response = await client_fixture.post("/token", data={"username": email, "password": password})
+    assert response.status_code == 200
+    return response.json()["access_token"]
+
+
+@pytest.fixture
 def mock_role_service(mock_session: AsyncMock) -> RoleService:
     return RoleService(session=mock_session)
 

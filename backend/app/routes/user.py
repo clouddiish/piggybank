@@ -4,9 +4,10 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 
 from app.common.enums import Tag, RoleName
 from app.common.exceptions import EntityNotFoundException, UserEmailAlreadyExistsException, ActionForbiddenException
+from app.common.responses import common_responses_dict
 from app.core.logger import get_logger
 from app.db_models import User
-from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters
+from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters, ErrorResponse
 from app.services import UserService, get_user_service
 from app.services.security import get_password_hash, get_current_user, get_current_admin
 
@@ -16,12 +17,31 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/users", tags=[Tag.user])
 
 
-@router.get("/me", response_model=UserOut, status_code=200, summary="get information about the current user")
+@router.get(
+    "/me",
+    response_model=UserOut,
+    status_code=200,
+    description="get information about the current user",
+    responses=common_responses_dict,
+)
 async def get_user_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@router.get("/{user_id}", response_model=UserOut, status_code=200, summary="get one user by their id")
+@router.get(
+    "/{user_id}",
+    response_model=UserOut,
+    status_code=200,
+    description="get one user by their id",
+    responses={
+        **common_responses_dict,
+        404: {
+            "description": "user not found",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "user with id 100 not found"}}},
+        },
+    },
+)
 async def get_user(
     user_id: int, service: UserService = Depends(get_user_service), current_admin: User = Depends(get_current_admin)
 ) -> UserOut:
@@ -33,7 +53,13 @@ async def get_user(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.get("", response_model=list[UserOut], status_code=200, summary="get all users with optional filters")
+@router.get(
+    "",
+    response_model=list[UserOut],
+    status_code=200,
+    description="get all users with optional filters",
+    responses=common_responses_dict,
+)
 async def get_users(
     filters: Annotated[UserFilters, Query()],
     service: UserService = Depends(get_user_service),
@@ -45,7 +71,20 @@ async def get_users(
     return users
 
 
-@router.post("", response_model=UserOut, status_code=201, summary="create a new user")
+@router.post(
+    "",
+    response_model=UserOut,
+    status_code=201,
+    description="create a new user",
+    responses={
+        **common_responses_dict,
+        422: {
+            "description": "user email already exists",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "user with email test@example.com already exists"}}},
+        },
+    },
+)
 async def create_user(new_user: UserCreate, service: UserService = Depends(get_user_service)) -> UserOut:
     logger.info("creating a new user")
     try:
@@ -56,13 +95,34 @@ async def create_user(new_user: UserCreate, service: UserService = Depends(get_u
             create_schema=new_user, password_hash=get_password_hash(new_user.password), role_id=user_role.id
         )
         return user
-    except EntityNotFoundException as e:
-        raise HTTPException(status_code=404, detail=str(e))
     except UserEmailAlreadyExistsException as e:
         raise HTTPException(status_code=422, detail=str(e))
 
 
-@router.put("/{user_id}", response_model=UserOut, status_code=200, summary="update a user by their id")
+@router.put(
+    "/{user_id}",
+    response_model=UserOut,
+    status_code=200,
+    description="update a user by their id",
+    responses={
+        **common_responses_dict,
+        403: {
+            "description": "action forbidden",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "cannot update role of protected user"}}},
+        },
+        404: {
+            "description": "user or role not found",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "user with id 100 not found"}}},
+        },
+        422: {
+            "description": "user email already exists",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "user with email test@example.com already exists"}}},
+        },
+    },
+)
 async def update_user(
     user_id: int,
     updated_user: UserUpdate,
@@ -86,7 +146,25 @@ async def update_user(
         raise HTTPException(status_code=403, detail=str(e))
 
 
-@router.delete("/{user_id}", response_model=UserOut, status_code=200, summary="delete a user by their id")
+@router.delete(
+    "/{user_id}",
+    response_model=UserOut,
+    status_code=200,
+    description="delete a user by their id",
+    responses={
+        **common_responses_dict,
+        403: {
+            "description": "action forbidden",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "cannot delete protected user"}}},
+        },
+        404: {
+            "description": "user not found",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "user with id 100 not found"}}},
+        },
+    },
+)
 async def delete_user(
     user_id: int, service: UserService = Depends(get_user_service), current_user: User = Depends(get_current_user)
 ) -> UserOut:

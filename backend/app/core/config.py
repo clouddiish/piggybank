@@ -14,6 +14,13 @@ class Settings(BaseSettings):
     # environment settings
     env: str = "docker"
 
+    # app settings
+    title: str = "piggybankAPI"
+    version: str = "0.1.0"
+    api_prefix: str = ""
+    summary: str = "piggybankAPI is a personal finance management system"
+    description: str = ""
+
     # database settings
     postgres_user: str = "postgres"
     postgres_password: str = "changethis"

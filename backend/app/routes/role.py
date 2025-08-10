@@ -4,8 +4,9 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 
 from app.common.enums import Tag
 from app.common.exceptions import EntityNotFoundException
+from app.common.responses import common_responses_dict
 from app.core.logger import get_logger
-from app.schemas import RoleOut, RoleFilters
+from app.schemas import RoleOut, RoleFilters, ErrorResponse
 from app.services import RoleService, get_role_service
 from app.services.security import get_current_admin
 
@@ -15,7 +16,20 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/roles", tags=[Tag.role], dependencies=[Depends(get_current_admin)])
 
 
-@router.get("/{role_id}", response_model=RoleOut, status_code=200, summary="get one role by its id")
+@router.get(
+    "/{role_id}",
+    response_model=RoleOut,
+    status_code=200,
+    description="get one role by its id",
+    responses={
+        **common_responses_dict,
+        404: {
+            "description": "role not found",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "role with id 100 not found"}}},
+        },
+    },
+)
 async def get_role(role_id: int, service: RoleService = Depends(get_role_service)) -> RoleOut:
     logger.info(f"fetching role with id {role_id}")
     try:
@@ -25,7 +39,13 @@ async def get_role(role_id: int, service: RoleService = Depends(get_role_service
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.get("", response_model=list[RoleOut], status_code=200, summary="get all roles with optional filters")
+@router.get(
+    "",
+    response_model=list[RoleOut],
+    status_code=200,
+    description="get all roles with optional filters",
+    responses=common_responses_dict,
+)
 async def get_roles(
     filters: Annotated[RoleFilters, Query()], service: RoleService = Depends(get_role_service)
 ) -> list[RoleOut]:

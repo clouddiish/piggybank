@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.common.enums import Tag
+from app.common.responses import common_responses_dict
 from app.core.config import get_settings
 from app.schemas import Token
 from app.services import UserService, get_user_service
@@ -15,7 +16,7 @@ settings = get_settings()
 router = APIRouter(prefix="/token", tags=[Tag.security])
 
 
-@router.post("")
+@router.post("", responses=common_responses_dict)
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], user_service: UserService = Depends(get_user_service)
 ):

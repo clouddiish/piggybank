@@ -1,11 +1,11 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.enums import EntityType, RoleName
+from app.common.enums import EntityType, RoleName, TypeName
 from app.common.exceptions import EntityNotFoundException
 from app.core.config import get_settings
 from app.core.logger import get_logger
-from app.db_models import User, Role
+from app.db_models import User, Role, Type
 from app.services.security import get_password_hash
 
 
@@ -45,5 +45,17 @@ async def seed_initial_data(session: AsyncSession) -> None:
         logger.info(f"created initial admin user with email {settings.initial_admin_email}")
     else:
         logger.info(f"user with email {settings.initial_admin_email} already exists")
+
+    logger.debug("creating initial transaction types")
+    for type_enum in TypeName:
+        result = await session.execute(select(Type).where(Type.name == type_enum.value))
+        ttype = result.scalar_one_or_none()
+        if not ttype:
+            new_type = Type(name=type_enum)
+            session.add(new_type)
+            await session.flush()
+            logger.info(f"created {type_enum.value} type")
+        else:
+            logger.info(f"{type_enum.value} type already exists")
 
     await session.commit()

@@ -8,13 +8,13 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 import app.db_models
 from app.main import app as fastapi_app
-from app.common.enums import RoleName
+from app.common.enums import RoleName, TypeName
 from app.core.config import get_settings
 from app.core.seeder import seed_initial_data
 from app.core.session import get_session
-from app.db_models import User, Role
+from app.db_models import User, Role, Type
 from app.db_models.base import Base
-from app.services import UserService, RoleService
+from app.services import UserService, RoleService, TypeService
 
 
 settings = get_settings()
@@ -109,3 +109,13 @@ def mock_users() -> list[User]:
         User(id=2, role_id=2, email="test2@email.com", password_hash="hash2", is_protected=True),
         User(id=3, role_id=2, email="test3@email.com", password_hash="hash3", is_protected=False),
     ]
+
+
+@pytest.fixture
+def mock_type_service(mock_session: AsyncMock) -> TypeService:
+    return TypeService(session=mock_session)
+
+
+@pytest.fixture
+def mock_types() -> list[Type]:
+    return [Type(id=i, name=type_name) for i, type_name in enumerate(TypeName)]

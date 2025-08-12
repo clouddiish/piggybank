@@ -31,3 +31,8 @@ class LogLevel(Enum):
 class RoleName(Enum):
     admin = "admin"
     user = "user"
+
+
+class TypeName(Enum):
+    income = "income"
+    expense = "expense"

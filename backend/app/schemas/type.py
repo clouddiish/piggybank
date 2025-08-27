@@ -20,6 +20,6 @@ class TypeOut(TypeBase):
 
 
 class TypeFilters(BaseModel):
-    model_config = {"extra": "forbid"}
-
     name: list[TypeName] | None = None
+
+    model_config = {"extra": "forbid"}

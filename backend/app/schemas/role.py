@@ -20,6 +20,6 @@ class RoleOut(RoleBase):
 
 
 class RoleFilters(BaseModel):
-    model_config = {"extra": "forbid"}
-
     name: list[RoleName] | None = None
+
+    model_config = {"extra": "forbid"}

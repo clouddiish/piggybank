@@ -28,7 +28,7 @@ class UserOut(UserBase):
 
 
 class UserFilters(BaseModel):
-    model_config = {"extra": "forbid"}
-
     role_id: list[int] | None = None
     email: list[str] | None = None
+
+    model_config = {"extra": "forbid"}

@@ -58,7 +58,14 @@ async def get_user(
     response_model=list[UserOut],
     status_code=200,
     description="get all users with optional filters",
-    responses=common_responses_dict,
+    responses={
+        **common_responses_dict,
+        403: {
+            "description": "action forbidden",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "users is not an admin"}}},
+        },
+    },
 )
 async def get_users(
     filters: Annotated[UserFilters, Query()],

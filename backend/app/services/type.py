@@ -8,7 +8,7 @@ from app.core.logger import get_logger
 from app.core.session import get_session
 from app.db_models import Type
 from app.schemas import TypeCreate, TypeUpdate, TypeFilters
-from app.services import BaseService
+from app.services.base import BaseService
 
 
 logger = get_logger(__name__)

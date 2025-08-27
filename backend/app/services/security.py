@@ -11,7 +11,7 @@ from app.common.enums import RoleName
 from app.core.config import get_settings
 from app.db_models import User
 from app.schemas import TokenData
-from app.services import UserService, get_user_service
+from app.services.user import UserService, get_user_service
 
 
 settings = get_settings()

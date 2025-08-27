@@ -8,7 +8,8 @@ from app.core.session import get_session
 from app.core.logger import get_logger
 from app.db_models import User
 from app.schemas import UserCreate, UserUpdate, UserFilters
-from app.services import BaseService, get_role_service
+from app.services.base import BaseService
+from app.services.role import get_role_service
 
 
 logger = get_logger(__name__)
@@ -36,6 +37,25 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         entity = query.scalar_one_or_none()
         return entity
 
+    async def is_admin(self, user_id: int) -> bool:
+        """
+        Check if user has the admin role.
+
+        Args:
+            user_id (int): Id of the user to check.
+
+        Returns:
+            bool: True if user is an admin, False otherwise.
+
+        Raises:
+            EntityNotFoundException: If the user with provided id is not found.
+        """
+        user_db = await self.get_by_id(entity_id=user_id)
+        admin_role = await self.role_service.get_by_name(role_name=RoleName.admin)
+        if user_db.role_id == admin_role.id:
+            return True
+        return False
+
     async def _validate_create(self, create_schema: UserCreate) -> None:
         """
         Validate UserCreate schema.
@@ -47,7 +67,6 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
             None
 
         Raises:
-            EntityNotFoundException: If the role with the given id does not exist.
             UserEmailAlreadyExists: If user with provided email already exists.
         """
         # verify user with same email exists
@@ -75,8 +94,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         user_db = await self.get_by_id(entity_id=entity_id)
 
         # verify if they can update at all
-        admin_role = await self.role_service.get_by_name(role_name=RoleName.admin)
-        if not (updated_by.id == user_db.id or updated_by.role_id == admin_role.id):
+        if not (updated_by.id == user_db.id or await self.is_admin(user_id=updated_by.id)):
             raise ActionForbiddenException(detail="only admins can update other users")
 
         # verify role exists
@@ -85,7 +103,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         # verify if they can update roles
         if user_db.is_protected and user_db.role_id != update_schema.role_id:
             raise ActionForbiddenException(detail="cannot update role of protected user")
-        if updated_by.role_id != admin_role.id and user_db.role_id != update_schema.role_id:
+        if not await self.is_admin(user_id=updated_by.id) and user_db.role_id != update_schema.role_id:
             raise ActionForbiddenException(detail="only admins can update role of users")
 
         # verify user with same email exists, and is not the same as the user being updated
@@ -110,12 +128,11 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
             EntityNotFoundException: If the user with the given id does not exist.
             ActionForbiddenException: If trying to delete initial admin user, or if user doing the delete is not allowed to perform the delete.
         """
-        # validate user exists
+        # verify user exists
         user_db = await self.get_by_id(entity_id=entity_id)
 
-        # check if they can delete
-        admin_role = await self.role_service.get_by_name(role_name=RoleName.admin)
-        if not (deleted_by.id == user_db.id or deleted_by.role_id == admin_role.id):
+        # verify they can delete
+        if not (deleted_by.id == user_db.id or await self.is_admin(user_id=deleted_by.id)):
             raise ActionForbiddenException(detail="only admins can delete other users")
 
         # disallow deleting initial admin

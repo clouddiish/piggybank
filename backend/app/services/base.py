@@ -24,12 +24,13 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         self.db_model_class = db_model_class
         self.entity_type = entity_type
 
-    async def get_by_id(self, entity_id: int) -> DatabaseModelT:
+    async def get_by_id(self, entity_id: int, **kwargs) -> DatabaseModelT:
         """
         Get entity by its id.
 
         Args:
             entity_id (int): The id of the entity to retrieve.
+            kwargs: Additional arguments for getting the entity.
 
         Returns:
             DatabaseModelT: The database model instance.
@@ -48,7 +49,7 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
 
         return entity
 
-    async def get_all_with_filters(self, filters: FilterSchemaT = None) -> list[DatabaseModelT]:
+    async def get_all_with_filters(self, filters: FilterSchemaT = None, **kwargs) -> list[DatabaseModelT]:
         """
         Get all entities of specified type, matching optional filters.
 

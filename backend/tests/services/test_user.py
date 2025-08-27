@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from app.common.enums import EntityType
+from app.common.enums import EntityType, RoleName
 from app.common.exceptions import EntityNotFoundException, UserEmailAlreadyExistsException, ActionForbiddenException
 from app.db_models import User, Role
 from app.schemas import UserFilters, UserCreate, UserUpdate
@@ -65,6 +65,43 @@ class TestUserServices:
         mock_session.execute.assert_called_once()
         mock_query.scalar_one_or_none.assert_called_once()
         assert user is None
+
+    @pytest.mark.anyio
+    async def test_is_admin__role_matches(self, mock_user_service: UserService, mock_users: list[User]):
+        admin_role = Role(id=1, name=RoleName.admin)
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=admin_role)
+
+        result = await mock_user_service.is_admin(user_id=1)
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
+        assert result is True
+
+    @pytest.mark.anyio
+    async def test_is_admin__role_does_not_match(self, mock_user_service: UserService, mock_users: list[User]):
+        admin_role = Role(id=1, name=RoleName.admin)
+        mock_user_service.get_by_id = AsyncMock(return_value=mock_users[1])
+        mock_user_service.role_service.get_by_name = AsyncMock(return_value=admin_role)
+
+        result = await mock_user_service.is_admin(user_id=1)
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_called_once()
+        assert result is False
+
+    @pytest.mark.anyio
+    async def test_is_admin__user_not_found(self, mock_user_service: UserService, mock_users: list[User]):
+        mock_user_service.get_by_id = AsyncMock(
+            side_effect=EntityNotFoundException(entity_id=100, entity_type=EntityType.user)
+        )
+        mock_user_service.role_service.get_by_name = AsyncMock()
+
+        with pytest.raises(EntityNotFoundException):
+            await mock_user_service.is_admin(user_id=100)
+
+        mock_user_service.get_by_id.assert_called_once()
+        mock_user_service.role_service.get_by_name.assert_not_called()
 
     @pytest.mark.anyio
     async def test_get_all_with_filters__no_filters(
@@ -174,7 +211,7 @@ class TestUserServices:
     @pytest.mark.anyio
     async def test_validate_update__all_ok_admin(self, mock_user_service: UserService, mock_users: list[User]) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=True)
         mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test admin"))
         mock_user_service.get_by_email = AsyncMock(return_value=None)
 
@@ -184,7 +221,9 @@ class TestUserServices:
         )
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        assert (
+            mock_user_service.is_admin.call_count == 2
+        )  # first when checking if can update at all, second when checking if can update roles
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
         assert user == mock_users[2]
@@ -194,7 +233,7 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=False)
         mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
         mock_user_service.get_by_email = AsyncMock(return_value=None)
 
@@ -204,7 +243,7 @@ class TestUserServices:
         )
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_called_once()  # skipped at first because first condition of or is true already
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
         assert user == mock_users[2]
@@ -232,7 +271,7 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=False)
         mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
         mock_user_service.get_by_email = AsyncMock(return_value=None)
 
@@ -241,7 +280,7 @@ class TestUserServices:
             await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[1])
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_not_called()
         mock_user_service.get_by_email.assert_not_called()
 
@@ -250,7 +289,7 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=True)
         mock_user_service.role_service.get_by_id = AsyncMock(
             side_effect=EntityNotFoundException(entity_id=100, entity_type=EntityType.role)
         )
@@ -261,7 +300,7 @@ class TestUserServices:
             await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[0])
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_not_called()  # skipped because first condition of or is true already
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_not_called()
 
@@ -270,7 +309,7 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=False)
         mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
         mock_user_service.get_by_email = AsyncMock(return_value=None)
 
@@ -279,7 +318,7 @@ class TestUserServices:
             await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[2])
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_not_called()
 
@@ -288,7 +327,7 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[1])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=True)
         mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
         mock_user_service.get_by_email = AsyncMock(return_value=None)
 
@@ -297,7 +336,7 @@ class TestUserServices:
             await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[0])
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_not_called()
 
@@ -306,7 +345,7 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=True)
         mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=2, name="test role"))
         mock_user_service.get_by_email = AsyncMock(return_value=mock_users[1])
 
@@ -315,7 +354,7 @@ class TestUserServices:
             await mock_user_service._validate_update(entity_id=1, update_schema=user_update, updated_by=mock_users[0])
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
 
@@ -324,7 +363,7 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[0])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=False)
         mock_user_service.role_service.get_by_id = AsyncMock(return_value=Role(id=1, name="test admin"))
         mock_user_service.get_by_email = AsyncMock(return_value=mock_users[0])
 
@@ -334,7 +373,7 @@ class TestUserServices:
         )
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_called_once()
         mock_user_service.role_service.get_by_id.assert_called_once()
         mock_user_service.get_by_email.assert_called_once()
         assert user == mock_users[0]
@@ -429,35 +468,35 @@ class TestUserServices:
         self, mock_user_service: UserService, mock_users: list[User]
     ) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=False)
 
         user = await mock_user_service._validate_delete(entity_id=1, deleted_by=mock_users[2])
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_not_called()  # skipped because first condition of or is true already
         assert user == mock_users[2]
 
     @pytest.mark.anyio
     async def test_vaidate_delete__all_ok_admin(self, mock_user_service: UserService, mock_users: list[User]) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=True)
 
         user = await mock_user_service._validate_delete(entity_id=1, deleted_by=mock_users[0])
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_called_once()
         assert user == mock_users[2]
 
     @pytest.mark.anyio
     async def test_vaidate_delete__different_user(self, mock_user_service: UserService, mock_users: list[User]) -> None:
         mock_user_service.get_by_id = AsyncMock(return_value=mock_users[2])
-        mock_user_service.role_service.get_by_name = AsyncMock(return_value=Role(id=1, name="test admin"))
+        mock_user_service.is_admin = AsyncMock(return_value=False)
 
         with pytest.raises(ActionForbiddenException):
             await mock_user_service._validate_delete(entity_id=1, deleted_by=mock_users[1])
 
         mock_user_service.get_by_id.assert_called_once()
-        mock_user_service.role_service.get_by_name.assert_called_once()
+        mock_user_service.is_admin.assert_called_once()
 
     @pytest.mark.anyio
     async def test_vaidate_delete__protected_user(self, mock_user_service: UserService, mock_users: list[User]) -> None:

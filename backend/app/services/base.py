@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Type, Any
+from typing import Generic, TypeVar, Any
 
 from pydantic import BaseModel
 from sqlalchemy import select, or_
@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 
 class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSchemaT]):
-    def __init__(self, session: AsyncSession, db_model_class: Type[DatabaseModelT], entity_type: EntityType) -> None:
+    def __init__(self, session: AsyncSession, db_model_class: type[DatabaseModelT], entity_type: EntityType) -> None:
         self.session = session
         self.db_model_class = db_model_class
         self.entity_type = entity_type

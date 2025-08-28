@@ -12,9 +12,9 @@ from app.common.enums import RoleName, TypeName
 from app.core.config import get_settings
 from app.core.seeder import seed_initial_data
 from app.core.session import get_session
-from app.db_models import User, Role, Type
+from app.db_models import User, Role, Type, Category
 from app.db_models.base import Base
-from app.services import UserService, RoleService, TypeService
+from app.services import UserService, RoleService, TypeService, CategoryService
 
 
 settings = get_settings()
@@ -119,3 +119,16 @@ def mock_type_service(mock_session: AsyncMock) -> TypeService:
 @pytest.fixture
 def mock_types() -> list[Type]:
     return [Type(id=i, name=type_name) for i, type_name in enumerate(TypeName)]
+
+
+@pytest.fixture
+def mock_category_service(mock_session: AsyncMock) -> CategoryService:
+    return CategoryService(session=mock_session)
+
+
+@pytest.fixture
+def mock_categories() -> list[Category]:
+    return [
+        Category(id=1, user_id=1, type_id=1, name="salary"),
+        Category(id=2, user_id=1, type_id=2, name="groceries"),
+    ]

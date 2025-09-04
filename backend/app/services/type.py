@@ -45,4 +45,4 @@ class TypeService(BaseService[Type, TypeCreate, TypeUpdate, TypeFilters]):
 
 
 def get_type_service(session: AsyncSession = Depends(get_session)) -> TypeService:
-    return TypeService(session)
+    return TypeService(session=session)

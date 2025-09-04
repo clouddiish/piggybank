@@ -56,12 +56,13 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
             return True
         return False
 
-    async def _validate_create(self, create_schema: UserCreate) -> None:
+    async def _validate_create(self, create_schema: UserCreate, **kwargs) -> None:
         """
         Validate UserCreate schema.
 
         Args:
             schema (UserCreate): The schema to validate.
+            kwargs: Additional arguments for creation.
 
         Returns:
             None
@@ -81,6 +82,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
             entity_id (int): The id of the user to validate.
             schema (UserUpdate): The schema to validate.
             updated_by (User): The user doing the update.
+            kwargs: Additional arguments for update.
 
         Returns:
             User: The validated user.
@@ -113,13 +115,14 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
 
         return user_db
 
-    async def _validate_delete(self, entity_id: int, deleted_by: User) -> User:
+    async def _validate_delete(self, entity_id: int, deleted_by: User, **kwargs) -> User:
         """
         Validate deletion of a user.
 
         Args:
             entity_id (int): The id of the user to validate.
             deleted_by (User): The user doing the delete.
+            kwargs: Additional arguments for deletion.
 
         Returns:
             User: The validated user.
@@ -143,4 +146,4 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
 
 
 def get_user_service(session: AsyncSession = Depends(get_session)) -> UserService:
-    return UserService(session)
+    return UserService(session=session)

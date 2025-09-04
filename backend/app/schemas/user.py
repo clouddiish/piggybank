@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from pydantic import BaseModel, Field
 
 
@@ -30,5 +32,10 @@ class UserOut(UserBase):
 class UserFilters(BaseModel):
     role_id: list[int] | None = None
     email: list[str] | None = None
+
+    list_filters: ClassVar[list[str]] = ["role_id", "email"]
+    gt_filters: ClassVar[list[str]] = []
+    lt_filters: ClassVar[list[str]] = []
+    kw_filters: ClassVar[list[str]] = []
 
     model_config = {"extra": "forbid"}

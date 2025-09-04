@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from app.core.config import get_settings
 from app.core.session import get_session_context
 from app.core.seeder import seed_initial_data
-from app.routes import role, security, type, user, category
+from app.routes import role, security, type, user, category, transaction
 
 
 settings = get_settings()
@@ -32,6 +32,7 @@ app.include_router(security.router)
 app.include_router(user.router)
 app.include_router(type.router)
 app.include_router(category.router)
+app.include_router(transaction.router)
 
 
 @app.get("/")

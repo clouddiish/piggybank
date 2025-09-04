@@ -18,3 +18,9 @@ class ActionForbiddenException(Exception):
     def __init__(self, detail: str = ""):
         self.detail = detail
         super().__init__(f"action forbidden{f': {detail}' if detail else ''}")
+
+
+class EntityNotAssociatedException(Exception):
+    def __init__(self, detail: str = ""):
+        self.detail = detail
+        super().__init__(f"entity not associated{f': {detail}' if detail else ''}")

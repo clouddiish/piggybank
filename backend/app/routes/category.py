@@ -56,14 +56,7 @@ async def get_category(
     response_model=list[CategoryOut],
     status_code=200,
     description="get all categories with optional filters",
-    responses={
-        **common_responses_dict,
-        403: {
-            "description": "action forbidden",
-            "model": ErrorResponse,
-            "content": {"application/json": {"example": {"detail": "users is not an admin"}}},
-        },
-    },
+    responses=common_responses_dict,
 )
 async def get_categories(
     filters: Annotated[CategoryFilters, Query()],
@@ -97,7 +90,7 @@ async def create_category(
 ) -> CategoryOut:
     logger.info("creating a new category")
     try:
-        category = await service.create(create_schema=new_category, user_id=current_user.id)
+        category = await service.create(create_schema=new_category, created_by=current_user, user_id=current_user.id)
         return category
     except EntityNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -114,6 +107,11 @@ async def create_category(
             "description": "action forbidden",
             "model": ErrorResponse,
             "content": {"application/json": {"example": {"detail": "users can only update their own categories"}}},
+        },
+        404: {
+            "description": "type not found",
+            "model": ErrorResponse,
+            "content": {"application/json": {"example": {"detail": "type with id 100 not found"}}},
         },
     },
 )

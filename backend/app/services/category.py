@@ -37,7 +37,7 @@ class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, Cate
             ActionForbiddenException: If the user doing the getting is not allowed to perform the get.
         """
         # get the category if exists
-        category_db = await super().get_by_id(entity_id)
+        category_db = await super().get_by_id(entity_id=entity_id)
 
         # verify if they can get
         if not (gotten_by.id == category_db.user_id or await self.user_service.is_admin(user_id=gotten_by.id)):
@@ -45,7 +45,7 @@ class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, Cate
 
         return category_db
 
-    async def get_all_with_filters(self, filters: CategoryFilters = None, gotten_by: User = None):
+    async def get_all_with_filters(self, filters: CategoryFilters = None, gotten_by: User = None) -> list[Category]:
         """
         Get all categories, matching optional filters.
 
@@ -58,7 +58,7 @@ class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, Cate
         if not await self.user_service.is_admin(user_id=gotten_by.id):
             # if user is not an admin, always add filters to filter for only their own categories
             filters.user_id = [gotten_by.id]
-        return await super().get_all_with_filters(filters)
+        return await super().get_all_with_filters(filters=filters)
 
     async def _validate_create(self, create_schema: CategoryCreate, **kwargs) -> None:
         """
@@ -66,6 +66,7 @@ class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, Cate
 
         Args:
             schema (CategoryCreate): The schema to validate.
+            kwargs: Additional arguments for creation.
 
         Returns:
             None
@@ -76,9 +77,7 @@ class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, Cate
         # verify type exists
         await self.type_service.get_by_id(entity_id=create_schema.type_id)
 
-    async def _validate_update(
-        self, entity_id: int, update_schema: CategoryUpdate, updated_by: User, **kwargs
-    ) -> Category:
+    async def _validate_update(self, entity_id: int, update_schema: CategoryUpdate, updated_by: User) -> Category:
         """
         Validate CategoryUpdate schema.
 
@@ -132,4 +131,4 @@ class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, Cate
 
 
 def get_category_service(session: AsyncSession = Depends(get_session)) -> CategoryService:
-    return CategoryService(session)
+    return CategoryService(session=session)

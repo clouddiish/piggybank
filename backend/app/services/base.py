@@ -65,23 +65,40 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
 
         if filters:
             for filter_name, filter_values in filters:
-                column = getattr(self.db_model_class, filter_name, None)
+                clean_filter_name = filter_name.replace("_gt", "").replace("_lt", "")
+                column = getattr(self.db_model_class, clean_filter_name, None)
+
                 if not column:
                     logger.warning(f"ignoring invalid filter: {filter_name}")
                     continue
-                if filter_values:
-                    statement = statement.where(or_(*(column == val for val in filter_values)))
+
+                # list filters (IN-style filter)
+                if filter_name in filters.list_filters and filter_values:
+                    statement = statement.where(column.in_(filter_values))
+
+                # greater-than filters
+                elif filter_name in filters.gt_filters and filter_values is not None:
+                    statement = statement.where(column >= filter_values)
+
+                # less-than filters
+                elif filter_name in filters.lt_filters and filter_values is not None:
+                    statement = statement.where(column <= filter_values)
+
+                # keyword filters (ILIKE with ORs)
+                elif filter_name in filters.kw_filters and filter_values:
+                    statement = statement.where(or_(*(column.ilike(f"%{kw}%") for kw in filter_values)))
 
         query = await self.session.execute(statement)
         entities = query.scalars().all()
         return entities
 
-    async def _validate_create(self, create_schema: CreateSchemaT) -> None:
+    async def _validate_create(self, create_schema: CreateSchemaT, **kwargs) -> None:
         """
         Validate create schmea.
 
         Args:
             schema (CreateSchemaT): The schema to validate.
+            kwargs: Additional arguments for creation.
 
         Returns:
             None
@@ -120,7 +137,7 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         """
         logger.info(f"executing query to create a new {self.entity_type.value}")
 
-        await self._validate_create(create_schema=create_schema)
+        await self._validate_create(create_schema=create_schema, **kwargs)
 
         valid_fields = self._get_create_or_update_valid_fields(schema=create_schema, **kwargs)
         entity_db = self.db_model_class(**valid_fields)
@@ -175,7 +192,7 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
         await self.session.refresh(entity_db)
         return entity_db
 
-    async def _validate_delete(self, entity_id: int) -> DatabaseModelT:
+    async def _validate_delete(self, entity_id: int, **kwargs) -> DatabaseModelT:
         """
         Validate deletion of an entity.
 
@@ -184,6 +201,7 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
 
         Returns:
             DatabaseModelT: The validated entity.
+            kwargs: Additional arguments for delete.
 
         Raises:
             EntityNotFoundException: If the entity with the given id does not exist.

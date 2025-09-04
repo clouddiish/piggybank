@@ -45,4 +45,4 @@ class RoleService(BaseService[Role, RoleCreate, RoleUpdate, RoleFilters]):
 
 
 def get_role_service(session: AsyncSession = Depends(get_session)) -> RoleService:
-    return RoleService(session)
+    return RoleService(session=session)

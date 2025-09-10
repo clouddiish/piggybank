@@ -1,3 +1,4 @@
+from datetime import date
 from typing import AsyncGenerator
 from unittest.mock import AsyncMock
 
@@ -12,9 +13,9 @@ from app.common.enums import RoleName, TypeName
 from app.core.config import get_settings
 from app.core.seeder import seed_initial_data
 from app.core.session import get_session
-from app.db_models import User, Role, Type, Category
+from app.db_models import User, Role, Type, Category, Transaction
 from app.db_models.base import Base
-from app.services import UserService, RoleService, TypeService, CategoryService
+from app.services import UserService, RoleService, TypeService, CategoryService, TransactionService
 
 
 settings = get_settings()
@@ -131,4 +132,21 @@ def mock_categories() -> list[Category]:
     return [
         Category(id=1, user_id=1, type_id=1, name="salary"),
         Category(id=2, user_id=1, type_id=2, name="groceries"),
+    ]
+
+
+@pytest.fixture
+def mock_transaction_service(mock_session: AsyncMock) -> TransactionService:
+    return TransactionService(session=mock_session)
+
+
+@pytest.fixture
+def mock_transactions() -> list[Transaction]:
+    return [
+        Transaction(
+            id=1, user_id=1, type_id=1, category_id=1, date=date(2025, 9, 1), value=10.5, comment="Test comment"
+        ),
+        Transaction(
+            id=2, user_id=2, type_id=2, category_id=2, date=date(2025, 10, 1), value=101.5, comment="Test comment 2"
+        ),
     ]

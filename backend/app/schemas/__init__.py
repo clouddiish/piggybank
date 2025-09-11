@@ -1,5 +1,6 @@
 from app.schemas.category import CategoryCreate, CategoryUpdate, CategoryOut, CategoryFilters
 from app.schemas.error_response import ErrorResponse
+from app.schemas.goal import GoalCreate, GoalUpdate, GoalOut, GoalFilters
 from app.schemas.role import RoleCreate, RoleUpdate, RoleOut, RoleFilters
 from app.schemas.security import Token, TokenData
 from app.schemas.transaction import TransactionCreate, TransactionUpdate, TransactionOut, TransactionFilters

@@ -1,5 +1,6 @@
 from app.services.base import BaseService
 from app.services.category import CategoryService, get_category_service
+from app.services.goal import GoalService, get_goal_service
 from app.services.role import RoleService, get_role_service
 from app.services.transaction import TransactionService, get_transaction_service
 from app.services.type import TypeService, get_type_service

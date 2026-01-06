@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock
+
+import pytest
 
 from app.common.enums import EntityType, RoleName
 from app.common.exceptions import EntityNotFoundException

@@ -1,7 +1,7 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from app.common.enums import EntityType
+import pytest
+
 from app.common.exceptions import (
     EntityNotFoundException,
     ActionForbiddenException,

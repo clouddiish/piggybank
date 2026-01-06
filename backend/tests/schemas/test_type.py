@@ -1,5 +1,5 @@
-from pydantic import ValidationError
 import pytest
+from pydantic import ValidationError
 
 from app.common.enums import TypeName
 from app.schemas import TypeCreate, TypeUpdate, TypeOut, TypeFilters

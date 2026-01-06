@@ -22,11 +22,11 @@ class TestTransactionRoutes:
         response = await client_fixture.get("/transactions/1", headers={"Authorization": f"Bearer {admin_token}"})
 
         assert response.status_code == 200
-        trx = response.json()
-        assert trx["id"] == 1
-        assert trx["type_id"] == 1
-        assert trx["value"] == 100.5
-        assert trx["user_id"] == 1
+        transaction = response.json()
+        assert transaction["id"] == 1
+        assert transaction["type_id"] == 1
+        assert transaction["value"] == 100.5
+        assert transaction["user_id"] == 1
 
     @pytest.mark.anyio
     async def test_get_transaction__id_does_not_exist(self, client_fixture: AsyncClient, admin_token: str) -> None:
@@ -40,7 +40,13 @@ class TestTransactionRoutes:
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {admin_token}"},
-            json={"type_id": 1, "category_id": None, "date": "2025-01-01", "value": 200, "comment": "admin trx"},
+            json={
+                "type_id": 1,
+                "category_id": None,
+                "date": "2025-01-01",
+                "value": 200,
+                "comment": "admin transaction",
+            },
         )
 
         response = await client_fixture.get("/transactions/1", headers={"Authorization": f"Bearer {user_token}"})
@@ -58,12 +64,12 @@ class TestTransactionRoutes:
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {admin_token}"},
-            json={"type_id": 1, "category_id": None, "date": "2025-01-02", "value": 50, "comment": "admin trx"},
+            json={"type_id": 1, "category_id": None, "date": "2025-01-02", "value": 50, "comment": "admin transaction"},
         )
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {user_token}"},
-            json={"type_id": 2, "category_id": None, "date": "2025-01-03", "value": 75, "comment": "user trx"},
+            json={"type_id": 2, "category_id": None, "date": "2025-01-03", "value": 75, "comment": "user transaction"},
         )
 
         response = await client_fixture.get("/transactions", headers={"Authorization": f"Bearer {admin_token}"})
@@ -79,12 +85,12 @@ class TestTransactionRoutes:
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {admin_token}"},
-            json={"type_id": 1, "category_id": None, "date": "2025-01-02", "value": 50, "comment": "admin trx"},
+            json={"type_id": 1, "category_id": None, "date": "2025-01-02", "value": 50, "comment": "admin transaction"},
         )
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {user_token}"},
-            json={"type_id": 2, "category_id": None, "date": "2025-01-03", "value": 75, "comment": "user trx"},
+            json={"type_id": 2, "category_id": None, "date": "2025-01-03", "value": 75, "comment": "user transaction"},
         )
 
         response = await client_fixture.get("/transactions", headers={"Authorization": f"Bearer {user_token}"})
@@ -98,12 +104,18 @@ class TestTransactionRoutes:
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {admin_token}"},
-            json={"type_id": 1, "category_id": None, "date": "2025-01-05", "value": 10, "comment": "filtered trx"},
+            json={
+                "type_id": 1,
+                "category_id": None,
+                "date": "2025-01-05",
+                "value": 10,
+                "comment": "filtered transaction",
+            },
         )
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {admin_token}"},
-            json={"type_id": 2, "category_id": None, "date": "2025-01-06", "value": 20, "comment": "other trx"},
+            json={"type_id": 2, "category_id": None, "date": "2025-01-06", "value": 20, "comment": "other transaction"},
         )
 
         response = await client_fixture.get(
@@ -124,14 +136,20 @@ class TestTransactionRoutes:
         response = await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {user_token}"},
-            json={"type_id": 1, "category_id": None, "date": "2025-01-10", "value": 999.9, "comment": "new trx"},
+            json={
+                "type_id": 1,
+                "category_id": None,
+                "date": "2025-01-10",
+                "value": 999.9,
+                "comment": "new transaction",
+            },
         )
         assert response.status_code == 201
-        trx = response.json()
-        assert isinstance(trx["id"], int)
-        assert trx["type_id"] == 1
-        assert trx["value"] == 999.9
-        assert trx["user_id"] == 2
+        transaction = response.json()
+        assert isinstance(transaction["id"], int)
+        assert transaction["type_id"] == 1
+        assert transaction["value"] == 999.9
+        assert transaction["user_id"] == 2
 
     @pytest.mark.anyio
     async def test_create_transaction__type_not_found(self, client_fixture: AsyncClient, user_token: str) -> None:
@@ -182,9 +200,9 @@ class TestTransactionRoutes:
             json={"type_id": 2, "category_id": None, "date": "2025-01-13", "value": 60, "comment": "after"},
         )
         assert response.status_code == 200
-        trx = response.json()
-        assert trx["type_id"] == 2
-        assert trx["value"] == 60
+        transaction = response.json()
+        assert transaction["type_id"] == 2
+        assert transaction["value"] == 60
 
     @pytest.mark.anyio
     async def test_update_transaction__admin_other_user(
@@ -193,7 +211,7 @@ class TestTransactionRoutes:
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {user_token}"},
-            json={"type_id": 1, "category_id": None, "date": "2025-01-14", "value": 100, "comment": "user trx"},
+            json={"type_id": 1, "category_id": None, "date": "2025-01-14", "value": 100, "comment": "user transaction"},
         )
 
         response = await client_fixture.put(
@@ -202,9 +220,9 @@ class TestTransactionRoutes:
             json={"type_id": 2, "category_id": None, "date": "2025-01-14", "value": 200, "comment": "admin edit"},
         )
         assert response.status_code == 200
-        trx = response.json()
-        assert trx["type_id"] == 2
-        assert trx["value"] == 200
+        transaction = response.json()
+        assert transaction["type_id"] == 2
+        assert transaction["value"] == 200
 
     @pytest.mark.anyio
     async def test_update_transaction__different_user_forbidden(
@@ -213,7 +231,7 @@ class TestTransactionRoutes:
         await client_fixture.post(
             "/transactions",
             headers={"Authorization": f"Bearer {admin_token}"},
-            json={"type_id": 1, "category_id": None, "date": "2025-01-15", "value": 25, "comment": "admin trx"},
+            json={"type_id": 1, "category_id": None, "date": "2025-01-15", "value": 25, "comment": "admin transaction"},
         )
 
         response = await client_fixture.put(
@@ -250,9 +268,9 @@ class TestTransactionRoutes:
 
         response = await client_fixture.delete("/transactions/1", headers={"Authorization": f"Bearer {user_token}"})
         assert response.status_code == 200
-        trx = response.json()
-        assert trx["id"] == 1
-        assert trx["value"] == 88
+        transaction = response.json()
+        assert transaction["id"] == 1
+        assert transaction["value"] == 88
 
     @pytest.mark.anyio
     async def test_delete_transaction__admin_other_user(

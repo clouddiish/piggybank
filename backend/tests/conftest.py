@@ -13,9 +13,9 @@ from app.common.enums import RoleName, TypeName
 from app.core.config import get_settings
 from app.core.seeder import seed_initial_data
 from app.core.session import get_session
-from app.db_models import User, Role, Type, Category, Transaction
+from app.db_models import User, Role, Type, Category, Transaction, Goal
 from app.db_models.base import Base
-from app.services import UserService, RoleService, TypeService, CategoryService, TransactionService
+from app.services import UserService, RoleService, TypeService, CategoryService, TransactionService, GoalService
 
 
 settings = get_settings()
@@ -160,5 +160,46 @@ def mock_transactions() -> list[Transaction]:
         ),
         Transaction(
             id=2, user_id=2, type_id=2, category_id=2, date=date(2025, 10, 1), value=101.5, comment="Test comment 2"
+        ),
+    ]
+
+
+@pytest.fixture
+def mock_goal_service(
+    mock_session: AsyncMock,
+    mock_category_service: CategoryService,
+    mock_type_service: TypeService,
+    mock_user_service: UserService,
+) -> GoalService:
+    return GoalService(
+        session=mock_session,
+        category_service=mock_category_service,
+        type_service=mock_type_service,
+        user_service=mock_user_service,
+    )
+
+
+@pytest.fixture
+def mock_goals() -> list[Goal]:
+    return [
+        Goal(
+            id=1,
+            user_id=1,
+            type_id=1,
+            category_id=1,
+            name="goal1",
+            start_date="2026-01-01",
+            end_date="2026-12-31",
+            target_value=100,
+        ),
+        Goal(
+            id=2,
+            user_id=2,
+            type_id=2,
+            category_id=2,
+            name="goal2",
+            start_date="2026-02-01",
+            end_date="2026-12-31",
+            target_value=200,
         ),
     ]

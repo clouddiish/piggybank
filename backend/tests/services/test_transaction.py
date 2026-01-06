@@ -27,12 +27,14 @@ class TestTransactionService:
         mock_query.scalar_one_or_none.return_value = mock_transactions[0]
         mock_transaction_service.user_service.is_admin = AsyncMock(return_value=False)
 
-        tx = await mock_transaction_service.get_by_id(entity_id=mock_transactions[0].id, gotten_by=mock_users[0])
+        transaction = await mock_transaction_service.get_by_id(
+            entity_id=mock_transactions[0].id, gotten_by=mock_users[0]
+        )
 
         mock_session.execute.assert_called_once()
         mock_query.scalar_one_or_none.assert_called_once()
         mock_transaction_service.user_service.is_admin.assert_not_called()
-        assert tx == mock_transactions[0]
+        assert transaction == mock_transactions[0]
 
     @pytest.mark.anyio
     async def test_get_by_id__all_ok_admin(
@@ -47,12 +49,14 @@ class TestTransactionService:
         mock_query.scalar_one_or_none.return_value = mock_transactions[0]
         mock_transaction_service.user_service.is_admin = AsyncMock(return_value=True)
 
-        tx = await mock_transaction_service.get_by_id(entity_id=mock_transactions[0].id, gotten_by=mock_users[1])
+        transaction = await mock_transaction_service.get_by_id(
+            entity_id=mock_transactions[0].id, gotten_by=mock_users[1]
+        )
 
         mock_session.execute.assert_called_once()
         mock_query.scalar_one_or_none.assert_called_once()
         mock_transaction_service.user_service.is_admin.assert_called_once()
-        assert tx == mock_transactions[0]
+        assert transaction == mock_transactions[0]
 
     @pytest.mark.anyio
     async def test_get_by_id__id_does_not_exist(
@@ -101,11 +105,11 @@ class TestTransactionService:
         mock_query.scalars.return_value.all.return_value = mock_transactions
         mock_transaction_service.user_service.is_admin = AsyncMock(return_value=True)
 
-        txs = await mock_transaction_service.get_all_with_filters(gotten_by=mock_users[1])
+        transactions = await mock_transaction_service.get_all_with_filters(gotten_by=mock_users[1])
 
         mock_transaction_service.user_service.is_admin.assert_called_once()
         mock_session.execute.assert_called_once()
-        assert txs == mock_transactions
+        assert transactions == mock_transactions
 
     @pytest.mark.anyio
     async def test_get_all_with_filters__non_admin_adds_user_filter(
@@ -121,12 +125,12 @@ class TestTransactionService:
         mock_transaction_service.user_service.is_admin = AsyncMock(return_value=False)
 
         filters = TransactionFilters(type_id=[1])
-        txs = await mock_transaction_service.get_all_with_filters(filters=filters, gotten_by=mock_users[0])
+        transactions = await mock_transaction_service.get_all_with_filters(filters=filters, gotten_by=mock_users[0])
 
         assert filters.user_id == [mock_users[0].id]
         mock_transaction_service.user_service.is_admin.assert_called_once()
         mock_session.execute.assert_called_once()
-        assert txs == [mock_transactions[0]]
+        assert transactions == [mock_transactions[0]]
 
     @pytest.mark.anyio
     async def test_validate_create__all_ok(
@@ -168,13 +172,13 @@ class TestTransactionService:
         mock_transaction_service.user_service.is_admin = AsyncMock(return_value=True)
         mock_transaction_service.type_service.get_by_id = AsyncMock(return_value=mock_types[0])
 
-        tx = await mock_transaction_service._validate_update(
+        transaction = await mock_transaction_service._validate_update(
             entity_id=1,
             update_schema=TransactionUpdate(type_id=1, date="2024-01-01", value=50.0),
             updated_by=mock_users[1],
         )
 
-        assert tx == mock_transactions[0]
+        assert transaction == mock_transactions[0]
 
     @pytest.mark.anyio
     async def test_validate_update__different_user_forbidden(
@@ -201,9 +205,9 @@ class TestTransactionService:
         mock_transaction_service.get_by_id = AsyncMock(return_value=mock_transactions[0])
         mock_transaction_service.user_service.is_admin = AsyncMock(return_value=True)
 
-        tx = await mock_transaction_service._validate_delete(entity_id=1, deleted_by=mock_users[1])
+        transaction = await mock_transaction_service._validate_delete(entity_id=1, deleted_by=mock_users[1])
 
-        assert tx == mock_transactions[0]
+        assert transaction == mock_transactions[0]
 
     @pytest.mark.anyio
     async def test_validate_delete__different_user_forbidden(
@@ -223,16 +227,16 @@ class TestTransactionService:
         )
 
         create_schema = TransactionCreate(type_id=1, date="2024-01-01", value=200.0)
-        tx = await mock_transaction_service.create(create_schema=create_schema)
+        transaction = await mock_transaction_service.create(create_schema=create_schema)
 
         mock_transaction_service._validate_create.assert_called_once()
         mock_transaction_service._get_create_or_update_valid_fields.assert_called_once()
         mock_session.add.assert_called_once()
         mock_session.commit.assert_called_once()
-        assert isinstance(tx, Transaction)
-        assert tx.type_id == 1
-        assert tx.value == 200.0
-        assert tx.user_id == 1
+        assert isinstance(transaction, Transaction)
+        assert transaction.type_id == 1
+        assert transaction.value == 200.0
+        assert transaction.user_id == 1
 
     @pytest.mark.anyio
     async def test_update__all_ok(
@@ -246,14 +250,16 @@ class TestTransactionService:
         mock_transaction_service._get_create_or_update_valid_fields = MagicMock(return_value={"value": 300.0})
 
         update_schema = TransactionUpdate(type_id=1, date="2024-01-01", value=300.0)
-        tx = await mock_transaction_service.update(entity_id=1, update_schema=update_schema, updated_by=mock_users[0])
+        transaction = await mock_transaction_service.update(
+            entity_id=1, update_schema=update_schema, updated_by=mock_users[0]
+        )
 
         mock_transaction_service._validate_update.assert_called_once()
         mock_transaction_service._get_create_or_update_valid_fields.assert_called_once()
         mock_session.add.assert_called_once()
         mock_session.commit.assert_called_once()
         mock_session.refresh.assert_called_once()
-        assert tx.value == 300.0
+        assert transaction.value == 300.0
 
     @pytest.mark.anyio
     async def test_delete__all_ok(
@@ -264,9 +270,9 @@ class TestTransactionService:
     ) -> None:
         mock_transaction_service._validate_delete = AsyncMock(return_value=mock_transactions[0])
 
-        tx = await mock_transaction_service.delete(entity_id=mock_transactions[0].id)
+        transaction = await mock_transaction_service.delete(entity_id=mock_transactions[0].id)
 
         mock_transaction_service._validate_delete.assert_called_once()
         mock_session.delete.assert_called_once()
         mock_session.commit.assert_called_once()
-        assert tx == mock_transactions[0]
+        assert transaction == mock_transactions[0]

@@ -9,15 +9,15 @@ from app.core.logger import get_logger
 from app.db_models import User
 from app.schemas import UserCreate, UserUpdate, UserFilters
 from app.services.base import BaseService
-from app.services.role import get_role_service
+from app.services.role import get_role_service, RoleService
 
 
 logger = get_logger(__name__)
 
 
 class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
-    def __init__(self, session: AsyncSession) -> None:
-        self.role_service = get_role_service(session=session)
+    def __init__(self, session: AsyncSession, role_service: RoleService) -> None:
+        self.role_service = role_service
         super().__init__(session=session, db_model_class=User, entity_type=EntityType.user)
 
     async def get_by_email(self, email: str) -> User | None:
@@ -145,5 +145,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         return user_db
 
 
-def get_user_service(session: AsyncSession = Depends(get_session)) -> UserService:
-    return UserService(session=session)
+def get_user_service(
+    session: AsyncSession = Depends(get_session), role_service: RoleService = Depends(get_role_service)
+) -> UserService:
+    return UserService(session=session, role_service=role_service)

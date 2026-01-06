@@ -99,8 +99,8 @@ def mock_roles() -> list[Role]:
 
 
 @pytest.fixture
-def mock_user_service(mock_session: AsyncMock) -> UserService:
-    return UserService(session=mock_session)
+def mock_user_service(mock_session: AsyncMock, mock_role_service: RoleService) -> UserService:
+    return UserService(session=mock_session, role_service=mock_role_service)
 
 
 @pytest.fixture
@@ -123,8 +123,10 @@ def mock_types() -> list[Type]:
 
 
 @pytest.fixture
-def mock_category_service(mock_session: AsyncMock) -> CategoryService:
-    return CategoryService(session=mock_session)
+def mock_category_service(
+    mock_session: AsyncMock, mock_user_service: UserService, mock_type_service: TypeService
+) -> CategoryService:
+    return CategoryService(session=mock_session, user_service=mock_user_service, type_service=mock_type_service)
 
 
 @pytest.fixture
@@ -136,8 +138,18 @@ def mock_categories() -> list[Category]:
 
 
 @pytest.fixture
-def mock_transaction_service(mock_session: AsyncMock) -> TransactionService:
-    return TransactionService(session=mock_session)
+def mock_transaction_service(
+    mock_session: AsyncMock,
+    mock_category_service: CategoryService,
+    mock_type_service: TypeService,
+    mock_user_service: UserService,
+) -> TransactionService:
+    return TransactionService(
+        session=mock_session,
+        category_service=mock_category_service,
+        type_service=mock_type_service,
+        user_service=mock_user_service,
+    )
 
 
 @pytest.fixture

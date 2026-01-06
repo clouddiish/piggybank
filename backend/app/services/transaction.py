@@ -8,19 +8,25 @@ from app.core.logger import get_logger
 from app.db_models import Transaction, User
 from app.schemas import TransactionCreate, TransactionUpdate, TransactionFilters
 from app.services.base import BaseService
-from app.services.category import get_category_service
-from app.services.type import get_type_service
-from app.services.user import get_user_service
+from app.services.category import get_category_service, CategoryService
+from app.services.type import get_type_service, TypeService
+from app.services.user import get_user_service, UserService
 
 
 logger = get_logger(__name__)
 
 
 class TransactionService(BaseService[Transaction, TransactionCreate, TransactionUpdate, TransactionFilters]):
-    def __init__(self, session: AsyncSession) -> None:
-        self.category_service = get_category_service(session=session)
-        self.type_service = get_type_service(session=session)
-        self.user_service = get_user_service(session=session)
+    def __init__(
+        self,
+        session: AsyncSession,
+        category_service: CategoryService,
+        type_service: TypeService,
+        user_service: UserService,
+    ) -> None:
+        self.category_service = category_service
+        self.type_service = type_service
+        self.user_service = user_service
         super().__init__(session=session, db_model_class=Transaction, entity_type=EntityType.transaction)
 
     async def get_by_id(self, entity_id: int, gotten_by: User) -> Transaction:
@@ -91,5 +97,15 @@ class TransactionService(BaseService[Transaction, TransactionCreate, Transaction
         return transaction_db
 
 
-def get_transaction_service(session: AsyncSession = Depends(get_session)) -> TransactionService:
-    return TransactionService(session=session)
+def get_transaction_service(
+    session: AsyncSession = Depends(get_session),
+    category_service: CategoryService = Depends(get_category_service),
+    type_service: TypeService = Depends(get_type_service),
+    user_service: UserService = Depends(get_user_service),
+) -> TransactionService:
+    return TransactionService(
+        session=session,
+        category_service=category_service,
+        type_service=type_service,
+        user_service=user_service,
+    )

@@ -8,17 +8,17 @@ from app.core.logger import get_logger
 from app.db_models import Category, User
 from app.schemas import CategoryCreate, CategoryUpdate, CategoryFilters
 from app.services.base import BaseService
-from app.services.type import get_type_service
-from app.services.user import get_user_service
+from app.services.type import get_type_service, TypeService
+from app.services.user import get_user_service, UserService
 
 
 logger = get_logger(__name__)
 
 
 class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, CategoryFilters]):
-    def __init__(self, session: AsyncSession) -> None:
-        self.user_service = get_user_service(session=session)
-        self.type_service = get_type_service(session=session)
+    def __init__(self, session: AsyncSession, user_service: UserService, type_service: TypeService) -> None:
+        self.user_service = user_service
+        self.type_service = type_service
         super().__init__(session=session, db_model_class=Category, entity_type=EntityType.category)
 
     async def get_by_id(self, entity_id: int, gotten_by: User) -> Category:
@@ -130,5 +130,9 @@ class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, Cate
         return category_db
 
 
-def get_category_service(session: AsyncSession = Depends(get_session)) -> CategoryService:
-    return CategoryService(session=session)
+def get_category_service(
+    session: AsyncSession = Depends(get_session),
+    user_service: UserService = Depends(get_user_service),
+    type_service: TypeService = Depends(get_type_service),
+) -> CategoryService:
+    return CategoryService(session=session, user_service=user_service, type_service=type_service)

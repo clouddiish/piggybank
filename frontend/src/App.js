@@ -1,11 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import './App.css';
+import CategoriesPage from "./pages/CategoriesPage";
+import GoalsPage from "./pages/GoalsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import RegisterSuccessPage from "./pages/RegisterSuccessPage";
 import StartPage from "./pages/StartPage";
-import HomeTest from "./pages/HomeTest";
+import TransactionsPage from "./pages/TransactionsPage";
 
 
 function App() {
@@ -24,8 +26,10 @@ function App() {
           </>
         ) : (
           <>
-            <Route path="/" element={<HomeTest />} />
-            <Route path="/*" element={<Navigate to="/" replace />} />
+            <Route path="/transactions" element={<TransactionsPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/goals" element={<GoalsPage />} />
+            <Route path="/*" element={<Navigate to="/transactions" replace />} />
           </>
         )}
       </Routes>

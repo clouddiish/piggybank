@@ -13,3 +13,7 @@ export function login(email, password) {
 export function register(email, password) {
     return client.post("/users", { "email": email, "password": password });
 }
+
+export function logout() {
+    localStorage.removeItem("token");
+}

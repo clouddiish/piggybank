@@ -1,9 +1,12 @@
-import './App.css';
-
-import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+import './App.css';
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import RegisterSuccessPage from "./pages/RegisterSuccessPage";
+import StartPage from "./pages/StartPage";
 import HomeTest from "./pages/HomeTest";
+
 
 function App() {
   const token = localStorage.getItem("token");
@@ -13,7 +16,11 @@ function App() {
       <Routes>
         {!token ? (
           <>
-            <Route path="/*" element={<LoginPage />} />
+            <Route path="/" element={<StartPage />} />
+            <Route path="/login" element={<LoginPage />} /> 
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/register-success" element={<RegisterSuccessPage />} />
+            <Route path="/*" element={<Navigate to="/" replace />} />
           </>
         ) : (
           <>

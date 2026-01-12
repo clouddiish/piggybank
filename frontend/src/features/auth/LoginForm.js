@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
+import Button from "../../components/Button";
+
 
 const LoginForm = ({ onLogin }) => {
 	const [email, setEmail] = useState("");
@@ -16,16 +19,16 @@ const LoginForm = ({ onLogin }) => {
 				value={email}
 				onChange={(e) => setEmail(e.target.value)}
 				required
-				placeholder="Email"
+				placeholder="email"
 			/>
 			<input
 				type="password"
 				value={password}
 				onChange={(e) => setPassword(e.target.value)}
 				required
-				placeholder="Password"
+				placeholder="password"
 			/>
-			<button type="submit">Login</button>
+			<Button type="submit" variant="primary">Login</Button>
 		</form>
 	);
 };

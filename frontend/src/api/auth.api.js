@@ -1,5 +1,6 @@
 import client from "./client";
 
+
 export function login(email, password) {
     const formData = new URLSearchParams();
     formData.append("username", email);
@@ -9,6 +10,6 @@ export function login(email, password) {
     });
 }
 
-export function register(data) {
-    return client.post("/users/", data);
+export function register(email, password) {
+    return client.post("/users", { "email": email, "password": password });
 }

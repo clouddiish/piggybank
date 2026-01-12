@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
+import { IoSettingsOutline } from "react-icons/io5";
 
 import { logout } from "../api/auth.api";
 import Button from "./Button";
 
 
 const Menu = ({ onClose }) => {
+    const navigate = useNavigate();
+
     const handleLogout = () => {
         logout();
         window.location.reload();
@@ -27,6 +30,7 @@ const Menu = ({ onClose }) => {
             <li><Link to="/goals" onClick={onClose}>goals</Link></li>
             <li><Link to="/categories" onClick={onClose}>categories</Link></li>
         </ul>
+        <Button variant="secondary" icon={IoSettingsOutline} onClick={() => navigate("/settings")}>settings</Button>
         <Button variant="secondary" icon={BsArrowLeft} onClick={handleLogout}>logout</Button>
     </div>
 };

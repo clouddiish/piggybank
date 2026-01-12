@@ -6,6 +6,7 @@ import GoalsPage from "./pages/GoalsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import RegisterSuccessPage from "./pages/RegisterSuccessPage";
+import SettingsPage from "./pages/SettingsPage";
 import StartPage from "./pages/StartPage";
 import TransactionsPage from "./pages/TransactionsPage";
 
@@ -29,6 +30,7 @@ function App() {
             <Route path="/transactions" element={<TransactionsPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/goals" element={<GoalsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/*" element={<Navigate to="/transactions" replace />} />
           </>
         )}

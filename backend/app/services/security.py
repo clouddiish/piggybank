@@ -5,27 +5,18 @@ import jwt
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
-from passlib.context import CryptContext
 
 from app.common.enums import RoleName
 from app.core.config import get_settings
 from app.db_models import User
 from app.schemas import TokenData
 from app.services.user import UserService, get_user_service
+from app.utils.password_utils import verify_password
 
 
 settings = get_settings()
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
 
 
 async def authenticate_user(email: str, password: str, user_service: UserService) -> User | bool:

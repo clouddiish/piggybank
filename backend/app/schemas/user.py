@@ -15,7 +15,8 @@ class UserCreate(UserBase):
 
 class UserUpdate(UserBase):
     role_id: int
-    password: str = Field(min_length=8)
+    old_password: str = Field(min_length=8)
+    new_password: str = Field(min_length=8)
 
     model_config = {"extra": "forbid"}
 

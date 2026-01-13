@@ -9,7 +9,7 @@ from app.common.enums import LogLevel
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parents[3] / ".env")
+    model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parents[2] / ".env")
 
     # environment settings
     env: str = "docker"

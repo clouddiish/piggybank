@@ -9,7 +9,8 @@ from app.core.logger import get_logger
 from app.db_models import User
 from app.schemas import UserCreate, UserUpdate, UserOut, UserFilters, ErrorResponse
 from app.services import UserService, get_user_service
-from app.services.security import get_password_hash, get_current_user, get_current_admin
+from app.services.security import get_current_user, get_current_admin
+from app.utils.password_utils import get_password_hash
 
 
 logger = get_logger(__name__)
@@ -141,7 +142,7 @@ async def update_user(
         user = await service.update(
             entity_id=user_id,
             update_schema=updated_user,
-            password_hash=get_password_hash(updated_user.password),
+            password_hash=get_password_hash(updated_user.new_password),
             updated_by=current_user,
         )
         return user

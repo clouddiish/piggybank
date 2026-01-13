@@ -10,6 +10,7 @@ from app.db_models import User
 from app.schemas import UserCreate, UserUpdate, UserFilters
 from app.services.base import BaseService
 from app.services.role import get_role_service, RoleService
+from app.utils.password_utils import verify_password
 
 
 logger = get_logger(__name__)
@@ -112,6 +113,10 @@ class UserService(BaseService[User, UserCreate, UserUpdate, UserFilters]):
         existing = await self.get_by_email(email=update_schema.email)
         if existing and existing.id != user_db.id:
             raise UserEmailAlreadyExistsException(email=update_schema.email)
+
+        # verify old password matches
+        if not verify_password(plain_password=update_schema.old_password, hashed_password=user_db.password_hash):
+            raise ActionForbiddenException(detail="old password does not match")
 
         return user_db
 

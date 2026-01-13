@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:17.5
-    env_file: .env
+    env_file: ./backend/.env
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -11,7 +11,7 @@ services:
     build: ./backend
     depends_on:
       - db
-    env_file: .env
+    env_file: ./backend/.env
     ports:
      - "8000:8000"
 
@@ -19,6 +19,7 @@ services:
   #   build: ./frontend
   #   depends_on:
   #     - backend
+  #   env_file: ./frontend/.env
   #   ports:
   #     - "3000:3000"
 

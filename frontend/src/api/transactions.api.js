@@ -6,11 +6,11 @@ export function getTransaction(id) {
 }
 
 export function getTransactions() {
-    return client.get("/transactions/");
+    return client.get("/transactions");
 }
 
 export function createTransaction(data) {
-    return client.post("/transactions/", data);
+    return client.post("/transactions", data);
 }
 
 export function updateTransaction(id, data) {

@@ -51,19 +51,26 @@ class TestUserSchemas:
 
     @pytest.mark.anyio
     async def test_UserUpdate__all_ok(self):
-        data = {"role_id": 2, "email": "new@example.com", "password": "newstrongpass"}
+        data = {
+            "role_id": 2,
+            "email": "new@example.com",
+            "old_password": "oldpassword",
+            "new_password": "newstrongpass",
+        }
         user = UserUpdate(**data)
 
         assert user.role_id == 2
         assert user.email == "new@example.com"
-        assert user.password == "newstrongpass"
+        assert user.old_password == "oldpassword"
+        assert user.new_password == "newstrongpass"
 
     @pytest.mark.anyio
     async def test_UserUpdate__extra_field(self):
         data = {
             "role_id": 2,
             "email": "new@example.com",
-            "password": "newstrongpass",
+            "old_password": "oldpassword",
+            "new_password": "newstrongpass",
             "extra": "not allowed",
         }
         with pytest.raises(ValidationError) as e:
@@ -80,7 +87,12 @@ class TestUserSchemas:
 
     @pytest.mark.anyio
     async def test_UserUpdate__invalid_type(self):
-        data = {"role_id": "wrong", "email": 123, "password": "strongpass"}
+        data = {
+            "role_id": "wrong",
+            "email": 123,
+            "old_password": "oldpassword",
+            "new_password": "newstrongpass",
+        }
         with pytest.raises(ValidationError) as e:
             UserUpdate(**data)
 
@@ -89,7 +101,7 @@ class TestUserSchemas:
 
     @pytest.mark.anyio
     async def test_UserUpdate__password_too_short(self):
-        data = {"role_id": 1, "email": "test@example.com", "password": "short"}
+        data = {"role_id": 1, "email": "test@example.com", "old_password": "oldpassword", "new_password": "short"}
         with pytest.raises(ValidationError) as e:
             UserUpdate(**data)
 

@@ -115,7 +115,12 @@ class TestUserRoutes:
     async def test_update_user__all_ok_same_user(self, client_fixture: AsyncClient, user_token: str) -> None:
         response = await client_fixture.put(
             "/users/2",
-            json={"role_id": 2, "email": "updated@example.com", "password": "longpassword123"},
+            json={
+                "role_id": 2,
+                "email": "updated@example.com",
+                "old_password": "longpassword123",
+                "new_password": "newpassword",
+            },
             headers={"Authorization": f"Bearer {user_token}"},
         )
 
@@ -131,7 +136,12 @@ class TestUserRoutes:
     ) -> None:
         response = await client_fixture.put(
             "/users/2",
-            json={"role_id": 1, "email": "updated@example.com", "password": "longpassword123"},
+            json={
+                "role_id": 1,
+                "email": "updated@example.com",
+                "old_password": "longpassword123",
+                "new_password": "newpassword",
+            },
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
@@ -147,7 +157,12 @@ class TestUserRoutes:
     ) -> None:
         response = await client_fixture.put(
             "/users/2",
-            json={"role_id": 1, "email": "updated@example.com", "password": "longpassword123"},
+            json={
+                "role_id": 1,
+                "email": "updated@example.com",
+                "old_password": "longpassword123",
+                "new_password": "newpassword",
+            },
             headers={"Authorization": f"Bearer {user_token}"},
         )
 
@@ -157,7 +172,12 @@ class TestUserRoutes:
     async def test_update_user__different_user(self, client_fixture: AsyncClient, user_token: str) -> None:
         response = await client_fixture.put(
             "/users/1",
-            json={"role_id": 1, "email": "updated@example.com", "password": "longpassword123"},
+            json={
+                "role_id": 1,
+                "email": "updated@example.com",
+                "old_password": "longpassword123",
+                "new_password": "newpassword",
+            },
             headers={"Authorization": f"Bearer {user_token}"},
         )
 
@@ -167,7 +187,12 @@ class TestUserRoutes:
     async def test_update_user__user_id_does_not_exist(self, client_fixture: AsyncClient, admin_token: str) -> None:
         response = await client_fixture.put(
             "/users/100",
-            json={"role_id": 1, "email": "updated@example.com", "password": "longpassword123"},
+            json={
+                "role_id": 1,
+                "email": "updated@example.com",
+                "old_password": "longpassword123",
+                "new_password": "newpassword",
+            },
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
@@ -177,7 +202,12 @@ class TestUserRoutes:
     async def test_update_user__role_id_does_not_exist(self, client_fixture: AsyncClient, admin_token: str) -> None:
         response = await client_fixture.put(
             "/users/1",
-            json={"role_id": 100, "email": "updated@example.com", "password": "longpassword123"},
+            json={
+                "role_id": 100,
+                "email": "updated@example.com",
+                "old_password": "longpassword123",
+                "new_password": "newpassword",
+            },
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
@@ -196,16 +226,42 @@ class TestUserRoutes:
 
         response = await client_fixture.put(
             f"/users/{new_user["id"]}",
-            json={"role_id": 2, "email": settings.initial_admin_email, "password": "longpassword123"},
+            json={
+                "role_id": 2,
+                "email": settings.initial_admin_email,
+                "old_password": "longpassword123",
+                "new_password": "newpassword",
+            },
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
         assert response.status_code == 422
 
     @pytest.mark.anyio
+    async def test_update_user__old_password_wrong(self, client_fixture: AsyncClient, user_token: str) -> None:
+        response = await client_fixture.put(
+            "/users/2",
+            json={
+                "role_id": 2,
+                "email": "test@email.com",
+                "old_password": "wrongpassword",
+                "new_password": "newpassword",
+            },
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+
+        assert response.status_code == 403
+
+    @pytest.mark.anyio
     async def test_update_user__not_logged(self, client_fixture: AsyncClient) -> None:
         response = await client_fixture.put(
-            "/users/1", json={"role_id": 1, "email": "updated@example.com", "password": "longpassword123"}
+            "/users/1",
+            json={
+                "role_id": 1,
+                "email": "updated@example.com",
+                "old_password": "longpassword123",
+                "new_password": "newpassword",
+            },
         )
 
         assert response.status_code == 401

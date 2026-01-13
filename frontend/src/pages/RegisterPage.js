@@ -8,7 +8,11 @@ import RegisterFrom from "../features/auth/RegisterForm";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
-    const handleRegister = async (email, password) => {
+    const handleRegister = async (email, password, confirmPassword) => {
+        if (password !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
         const response = await register(email, password);
         navigate("/register-success");
     };

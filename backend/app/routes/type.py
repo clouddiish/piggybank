@@ -8,12 +8,12 @@ from app.common.responses import common_responses_dict
 from app.core.logger import get_logger
 from app.schemas import TypeOut, TypeFilters, ErrorResponse
 from app.services import TypeService, get_type_service
-from app.services.security import get_current_admin
+from app.services.security import get_current_user
 
 
 logger = get_logger(__name__)
 
-router = APIRouter(prefix="/types", tags=[Tag.type], dependencies=[Depends(get_current_admin)])
+router = APIRouter(prefix="/types", tags=[Tag.type], dependencies=[Depends(get_current_user)])
 
 
 @router.get(

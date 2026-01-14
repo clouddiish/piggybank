@@ -25,12 +25,6 @@ class TestTypeRoutes:
         assert response.status_code == 404
 
     @pytest.mark.anyio
-    async def test_get_type__not_admin(self, client_fixture: AsyncClient, user_token: str) -> None:
-        response = await client_fixture.get("/types/1", headers={"Authorization": f"Bearer {user_token}"})
-
-        assert response.status_code == 403
-
-    @pytest.mark.anyio
     async def test_get_type__not_logged(self, client_fixture: AsyncClient) -> None:
         response = await client_fixture.get("/types/1")
 
@@ -53,12 +47,6 @@ class TestTypeRoutes:
         types = response.json()
         assert isinstance(types, list)
         assert len(types) == 1
-
-    @pytest.mark.anyio
-    async def test_get_types__not_admin(self, client_fixture: AsyncClient, user_token: str) -> None:
-        response = await client_fixture.get("/types", headers={"Authorization": f"Bearer {user_token}"})
-
-        assert response.status_code == 403
 
     @pytest.mark.anyio
     async def test_get_types__not_logged(self, client_fixture: AsyncClient) -> None:

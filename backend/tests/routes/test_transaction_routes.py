@@ -132,6 +132,116 @@ class TestTransactionRoutes:
         assert response.status_code == 401
 
     @pytest.mark.anyio
+    async def test_get_transactions_total__no_filters_admin(
+        self, client_fixture: AsyncClient, admin_token: str, user_token: str
+    ) -> None:
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type_id": 1, "category_id": None, "date": "2025-01-02", "value": 50, "comment": "admin transaction"},
+        )
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {user_token}"},
+            json={"type_id": 2, "category_id": None, "date": "2025-01-03", "value": 75, "comment": "user transaction"},
+        )
+
+        response = await client_fixture.get("/transactions/total", headers={"Authorization": f"Bearer {admin_token}"})
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total"] == 125.0
+
+    @pytest.mark.anyio
+    async def test_get_transactions_total__no_filters_user(
+        self, client_fixture: AsyncClient, admin_token: str, user_token: str
+    ) -> None:
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type_id": 1, "category_id": None, "date": "2025-01-02", "value": 50, "comment": "admin transaction"},
+        )
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {user_token}"},
+            json={"type_id": 2, "category_id": None, "date": "2025-01-03", "value": 75, "comment": "user transaction"},
+        )
+
+        response = await client_fixture.get("/transactions/total", headers={"Authorization": f"Bearer {user_token}"})
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total"] == 75.0
+
+    @pytest.mark.anyio
+    async def test_get_transactions_total__with_filters(self, client_fixture: AsyncClient, admin_token: str) -> None:
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={
+                "type_id": 1,
+                "category_id": None,
+                "date": "2025-01-05",
+                "value": 10,
+                "comment": "filtered transaction",
+            },
+        )
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type_id": 2, "category_id": None, "date": "2025-01-06", "value": 20, "comment": "other transaction"},
+        )
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={
+                "type_id": 2,
+                "category_id": None,
+                "date": "2025-01-06",
+                "value": 30,
+                "comment": "another transaction",
+            },
+        )
+
+        response = await client_fixture.get(
+            "/transactions/total?type_id=2", headers={"Authorization": f"Bearer {admin_token}"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total"] == 50.0
+
+    @pytest.mark.anyio
+    async def test_get_transactions_total__no_match_returns_zero(
+        self, client_fixture: AsyncClient, admin_token: str
+    ) -> None:
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type_id": 2, "category_id": None, "date": "2025-01-06", "value": 20, "comment": "other transaction"},
+        )
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={
+                "type_id": 2,
+                "category_id": None,
+                "date": "2025-01-06",
+                "value": 30,
+                "comment": "another transaction",
+            },
+        )
+
+        response = await client_fixture.get(
+            "/transactions/total?type_id=1", headers={"Authorization": f"Bearer {admin_token}"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total"] == 0.0
+
+    @pytest.mark.anyio
+    async def test_get_transactions_total__not_logged(self, client_fixture: AsyncClient) -> None:
+        response = await client_fixture.get("/transactions/total")
+        assert response.status_code == 401
+
+    @pytest.mark.anyio
     async def test_create_transaction__all_ok(self, client_fixture: AsyncClient, user_token: str) -> None:
         response = await client_fixture.post(
             "/transactions",

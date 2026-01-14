@@ -25,6 +25,10 @@ class TransactionOut(TransactionBase):
     user_id: int
 
 
+class TransactionTotalOut(BaseModel):
+    total: float
+
+
 class TransactionFilters(BaseModel):
     user_id: list[int] | None = None
     type_id: list[int] | None = None

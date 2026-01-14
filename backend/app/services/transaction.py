@@ -1,4 +1,5 @@
 from fastapi import Depends
+from sqlalchemy import func, select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.enums import EntityType
@@ -46,6 +47,39 @@ class TransactionService(BaseService[Transaction, TransactionCreate, Transaction
             # if user is not an admin, always add filters to filter for only their own transactions
             filters.user_id = [gotten_by.id]
         return await super().get_all_with_filters(filters=filters)
+
+    async def get_total_with_filters(self, filters=None, gotten_by: User = None) -> float:
+        if not await self.user_service.is_admin(user_id=gotten_by.id):
+            # if user is not an admin, always add filters to filter for only their own transactions
+            filters.user_id = [gotten_by.id]
+        statement = select(func.sum(self.db_model_class.value))
+        if filters:
+            for filter_name, filter_values in filters:
+                clean_filter_name = filter_name.replace("_gt", "").replace("_lt", "")
+                column = getattr(self.db_model_class, clean_filter_name, None)
+
+                if not column:
+                    logger.warning(f"ignoring invalid filter: {filter_name}")
+                    continue
+
+                # list filters (IN-style filter)
+                if filter_name in filters.list_filters and filter_values:
+                    statement = statement.where(column.in_(filter_values))
+
+                # greater-than filters
+                elif filter_name in filters.gt_filters and filter_values is not None:
+                    statement = statement.where(column >= filter_values)
+
+                # less-than filters
+                elif filter_name in filters.lt_filters and filter_values is not None:
+                    statement = statement.where(column <= filter_values)
+
+                # keyword filters (ILIKE with ORs)
+                elif filter_name in filters.kw_filters and filter_values:
+                    statement = statement.where(or_(*(column.ilike(f"%{kw}%") for kw in filter_values)))
+        query = await self.session.execute(statement)
+        result = query.scalar()
+        return result or 0.0
 
     async def _validate_create(self, create_schema: TransactionCreate, created_by: User, **kwargs) -> None:
         # verify type exists

@@ -133,6 +133,46 @@ class TestTransactionService:
         assert transactions == [mock_transactions[0]]
 
     @pytest.mark.anyio
+    async def test_get_total_with_filters__admin(
+        self,
+        mock_session: AsyncMock,
+        mock_transaction_service: TransactionService,
+        mock_transactions: list[Transaction],
+        mock_users: list[User],
+    ) -> None:
+        mock_query = MagicMock()
+        mock_session.execute.return_value = mock_query
+        mock_query.scalar.return_value = 1500.0
+        mock_transaction_service.user_service.is_admin = AsyncMock(return_value=True)
+
+        total = await mock_transaction_service.get_total_with_filters(gotten_by=mock_users[1])
+
+        mock_transaction_service.user_service.is_admin.assert_called_once()
+        mock_session.execute.assert_called_once()
+        assert total == 1500.0
+
+    @pytest.mark.anyio
+    async def test_get_total_with_filters__non_admin_adds_user_filter(
+        self,
+        mock_session: AsyncMock,
+        mock_transaction_service: TransactionService,
+        mock_transactions: list[Transaction],
+        mock_users: list[User],
+    ) -> None:
+        mock_query = MagicMock()
+        mock_session.execute.return_value = mock_query
+        mock_query.scalar.return_value = 500.0
+        mock_transaction_service.user_service.is_admin = AsyncMock(return_value=False)
+
+        filters = TransactionFilters(type_id=[1])
+        total = await mock_transaction_service.get_total_with_filters(filters=filters, gotten_by=mock_users[0])
+
+        assert filters.user_id == [mock_users[0].id]
+        mock_transaction_service.user_service.is_admin.assert_called_once()
+        mock_session.execute.assert_called_once()
+        assert total == 500.0
+
+    @pytest.mark.anyio
     async def test_validate_create__all_ok(
         self, mock_transaction_service: TransactionService, mock_types: list[Type], mock_users: list[User]
     ) -> None:

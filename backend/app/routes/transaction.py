@@ -7,7 +7,14 @@ from app.common.exceptions import EntityNotFoundException, ActionForbiddenExcept
 from app.common.responses import common_responses_dict
 from app.core.logger import get_logger
 from app.db_models import User
-from app.schemas import TransactionCreate, TransactionUpdate, TransactionOut, TransactionFilters, ErrorResponse
+from app.schemas import (
+    TransactionCreate,
+    TransactionUpdate,
+    TransactionOut,
+    TransactionTotalOut,
+    TransactionFilters,
+    ErrorResponse,
+)
 from app.services import TransactionService, get_transaction_service
 from app.services.security import get_current_user
 
@@ -15,6 +22,24 @@ from app.services.security import get_current_user
 logger = get_logger(__name__)
 
 router = APIRouter(prefix="/transactions", tags=[Tag.transaction])
+
+
+@router.get(
+    "/total",
+    response_model=TransactionTotalOut,
+    status_code=200,
+    description="get total value of transactions with optional filters",
+    responses=common_responses_dict,
+)
+async def get_transactions_total(
+    filters: Annotated[TransactionFilters, Query()],
+    service: TransactionService = Depends(get_transaction_service),
+    current_user: User = Depends(get_current_user),
+) -> TransactionTotalOut:
+    logger.info(f"fetching total value of transactions with filters {filters}")
+    total = await service.get_total_with_filters(filters=filters, gotten_by=current_user)
+    logger.info(f"total value of transactions is {total}")
+    return TransactionTotalOut(total=total)
 
 
 @router.get(

@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from pydantic import ValidationError
 
-from app.schemas import TransactionCreate, TransactionUpdate, TransactionOut, TransactionFilters
+from app.schemas import TransactionCreate, TransactionUpdate, TransactionOut, TransactionTotalOut, TransactionFilters
 
 
 @pytest.mark.unit
@@ -146,6 +146,29 @@ class TestTransactionSchemas:
             TransactionOut(**data)
 
         assert "Input should be a valid integer" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_TransactionTotalOut__all_ok(self):
+        data = {"total": 1500.75}
+        total_out = TransactionTotalOut(**data)
+
+        assert total_out.total == 1500.75
+
+    @pytest.mark.anyio
+    async def test_TransactionTotalOut__invalid_type(self):
+        data = {"total": "should be float"}
+        with pytest.raises(ValidationError) as e:
+            TransactionTotalOut(**data)
+
+        assert "Input should be a valid number" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_TransactionTotalOut__missing_field(self):
+        data = {}
+        with pytest.raises(ValidationError) as e:
+            TransactionTotalOut(**data)
+
+        assert "Field required" in str(e.value)
 
     @pytest.mark.anyio
     async def test_TransactionFilters__all_ok(self):

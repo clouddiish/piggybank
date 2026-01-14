@@ -5,8 +5,12 @@ export function getTransaction(id) {
     return client.get(`/transactions/${id}`);
 }
 
-export function getTransactions() {
-    return client.get("/transactions");
+export function getTransactions(params = {}) {
+    return client.get("/transactions", { params });
+}
+
+export function getTransactionsTotal(params = {}) {
+    return client.get("/transactions/total", { params });
 }
 
 export function createTransaction(data) {

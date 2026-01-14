@@ -9,8 +9,8 @@ export function getUser(id) {
     return client.get(`/users/${id}`);
 }
 
-export function getUsers() {
-    return client.get("/users/");
+export function getUsers(params = {}) {
+    return client.get("/users/", { params });
 }
 
 export function createUser(data) {

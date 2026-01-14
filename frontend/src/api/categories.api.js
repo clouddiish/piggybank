@@ -5,7 +5,7 @@ export function getCategory(id) {
     return client.get(`/categories/${id}`);
 }
 
-export function getCategories() {
+export function getCategories(params = {}) {
     return client.get("/categories");
 }
 

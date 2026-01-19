@@ -10,10 +10,10 @@ const DeleteAccount = ({ onDeleteAccount }) => {
 	};
 
 	return (
-        <>
-            <h2>delete account</h2>
-            <Button onClick={handleDeleteAccount} variant="secondary" icon={FiTrash}>delete account</Button>
-        </>
+    <>
+      <h2>delete account</h2>
+      <Button onClick={handleDeleteAccount} variant="secondary" icon={FiTrash}>delete account</Button>
+    </>
 	);
 };
 

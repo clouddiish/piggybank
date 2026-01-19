@@ -7,27 +7,27 @@ import RegisterFrom from "../features/auth/RegisterForm";
 
 
 const RegisterPage = () => {
-    const navigate = useNavigate();
-    const handleRegister = async (email, password, confirmPassword) => {
-        if (password !== confirmPassword) {
-            alert("Passwords do not match!");
-            return;
-        }
-        const response = await register(email, password);
-        navigate("/register-success");
-    };
+  const navigate = useNavigate();
+  const handleRegister = async (email, password, confirmPassword) => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    const response = await register(email, password);
+    navigate("/register-success");
+  };
 
-    return (
-        <>
-            <Button 
-                variant="secondary" 
-                icon={BsChevronLeft}
-                onClick={() => navigate("/")}
-            />
-            <h1>hello! register to get started</h1>
-            <RegisterFrom onRegister={handleRegister} />
-        </>
-    );
+  return (
+    <>
+      <Button 
+        variant="secondary" 
+        icon={BsChevronLeft}
+        onClick={() => navigate("/")}
+      />
+      <h1>hello! register to get started</h1>
+      <RegisterFrom onRegister={handleRegister} />
+    </>
+  );
 };
 
 export default RegisterPage;

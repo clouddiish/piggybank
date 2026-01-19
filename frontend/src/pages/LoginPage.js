@@ -7,24 +7,24 @@ import LoginForm from "../features/auth/LoginForm";
 
 
 const LoginPage = () => {
-    const navigate = useNavigate();
-    const handleLogin = async (email, password) => {
-        const response = await login(email, password);
-        localStorage.setItem("token", response.data.access_token);
-        window.location.reload();
-    };
+  const navigate = useNavigate();
+  const handleLogin = async (email, password) => {
+    const response = await login(email, password);
+    localStorage.setItem("token", response.data.access_token);
+    window.location.reload();
+  };
 
-    return (
-        <>
-            <Button 
-                variant="secondary" 
-                icon={BsChevronLeft}
-                onClick={() => navigate("/")}
-            />
-            <h1>welcome back! please log in</h1>
-            <LoginForm onLogin={handleLogin} />
-        </>
-    );
+  return (
+    <>
+      <Button 
+        variant="secondary" 
+        icon={BsChevronLeft}
+        onClick={() => navigate("/")}
+      />
+      <h1>welcome back! please log in</h1>
+      <LoginForm onLogin={handleLogin} />
+    </>
+  );
 };
 
 export default LoginPage;

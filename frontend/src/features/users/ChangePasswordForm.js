@@ -14,26 +14,26 @@ const ChangePasswordForm = ({ onChangePassword }) => {
 	};
 
 	return (
-        <>
-            <h2>change password</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="password"
-                    value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)}
-                    required
-                    placeholder="old password"
-                />
-                <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
-                    placeholder="new password"
-                />
-                <Button type="submit" variant="secondary" icon={FiEdit}>change password</Button>
-            </form>
-        </>
+    <>
+      <h2>change password</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="password"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+          required
+          placeholder="old password"
+        />
+        <input
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          required
+          placeholder="new password"
+        />
+        <Button type="submit" variant="secondary" icon={FiEdit}>change password</Button>
+      </form>
+    </>
 	);
 };
 

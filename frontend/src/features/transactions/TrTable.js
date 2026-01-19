@@ -1,12 +1,13 @@
 import TrTableRow from "./TrTableRow";
 
 
-const TrTable = ({transactions}) => {
+const TrTable = ({transactions, onEditTransaction }) => {
   let rows = transactions.map((transaction) => {
     return (
       <TrTableRow
         key={transaction.id}
         transaction={transaction}
+        onClick={() => onEditTransaction(transaction.id)}
       />
     );
   });

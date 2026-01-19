@@ -3,11 +3,12 @@ import { FiPlus } from "react-icons/fi";
 import { FiFilter } from "react-icons/fi";
 
 import { getCategories } from "../api/categories.api";
-import { getTransactions, getTransactionsTotal, createTransaction } from "../api/transactions.api";
+import { getTransactions, getTransactionsTotal, createTransaction, updateTransaction, deleteTransaction } from "../api/transactions.api";
 import { getTypes } from "../api/types.api";
 import Button from "../components/Button";
 import Navbar from "../components/Navbar";
 import TrAddModal from "../features/transactions/TrAddModal";
+import TrEditModal from "../features/transactions/TrEditModal";
 import TrFilterModal from "../features/transactions/TrFilterModal";
 import TrSummaryCard from "../features/transactions/TrSummaryCard";
 import TrTable from "../features/transactions/TrTable";
@@ -22,6 +23,8 @@ const TransactionsPage = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filters, setFilters] = useState({});
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingTransactionId, setEditingTransactionId] = useState(null);
 
   useEffect(() => {
     Promise.all([getTypes(), getCategories()])
@@ -83,6 +86,31 @@ const TransactionsPage = () => {
       });
   };
 
+  const handleEdit = (form) => {
+    const query = {};
+    if (form.type) query.type_id = form.type;
+    if (form.category && form.category !== "") query.category_id = form.category;
+    if (form.date) query.date = form.date;
+    if (form.value) query.value = form.value;
+    if (form.comment) query.comment = form.comment;
+
+    updateTransaction(editingTransactionId, query)
+      .then(() => {
+        setIsEditModalOpen(false);
+        setEditingTransactionId(null);
+        setFilters({ ...filters });
+      });
+  };
+
+  const handleDelete = (transactionId) => {
+    deleteTransaction(transactionId)
+      .then(() => {
+        setIsEditModalOpen(false);
+        setEditingTransactionId(null);
+        setFilters({ ...filters });
+      });
+  };
+
   const mappedTransactions = transactions.map(tr => ({
     ...tr,
     type: typeMap[tr.type_id] || tr.type_id,
@@ -107,7 +135,10 @@ const TransactionsPage = () => {
       <TrSummaryCard title="income" value={incomeTotal} />
       <TrSummaryCard title="expenses" value={expensesTotal} />
       <TrSummaryCard title="balance" value={balanceTotal} />
-      <TrTable transactions={mappedTransactions}></TrTable>
+      <TrTable transactions={mappedTransactions} onEditTransaction={(id) => {
+        setEditingTransactionId(id);
+        setIsEditModalOpen(true);
+      }}></TrTable>
       <TrFilterModal
         open={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
@@ -121,6 +152,18 @@ const TransactionsPage = () => {
         typeOptions={typeOptions}
         categoryOptions={categoryOptions}
         onAdd={handleAdd}
+      />
+      <TrEditModal
+        open={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingTransactionId(null);
+        }}
+        transactionId={editingTransactionId}
+        typeOptions={typeOptions}
+        categoryOptions={categoryOptions}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
     </>
   );

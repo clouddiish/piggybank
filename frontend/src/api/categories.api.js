@@ -6,7 +6,7 @@ export function getCategory(id) {
 }
 
 export function getCategories(params = {}) {
-    return client.get("/categories");
+    return client.get("/categories", { params });
 }
 
 export function createCategory(data) {

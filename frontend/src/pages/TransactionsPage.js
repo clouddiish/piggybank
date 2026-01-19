@@ -3,10 +3,11 @@ import { FiPlus } from "react-icons/fi";
 import { FiFilter } from "react-icons/fi";
 
 import { getCategories } from "../api/categories.api";
-import { getTransactions, getTransactionsTotal } from "../api/transactions.api";
+import { getTransactions, getTransactionsTotal, createTransaction } from "../api/transactions.api";
 import { getTypes } from "../api/types.api";
 import Button from "../components/Button";
 import Navbar from "../components/Navbar";
+import TrAddModal from "../features/transactions/TrAddModal";
 import TrFilterModal from "../features/transactions/TrFilterModal";
 import TrSummaryCard from "../features/transactions/TrSummaryCard";
 import TrTable from "../features/transactions/TrTable";
@@ -20,6 +21,7 @@ const TransactionsPage = () => {
   const [expensesTotal, setExpensesTotal] = useState(0);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filters, setFilters] = useState({});
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([getTypes(), getCategories()])
@@ -66,12 +68,26 @@ const TransactionsPage = () => {
     setFilters(query);
   };
 
+  const handleAdd = (form) => {
+    const query = {};
+    if (form.type) query.type_id = form.type;
+    if (form.category) query.category_id = form.category;
+    if (form.date) query.date = form.date;
+    if (form.value) query.value = form.value;
+    if (form.comment) query.comment = form.comment;
+
+    createTransaction(query)
+      .then(() => {
+        setIsAddModalOpen(false);
+        setFilters({ ...filters });
+      });
+  };
+
   const mappedTransactions = transactions.map(tr => ({
     ...tr,
     type: typeMap[tr.type_id] || tr.type_id,
     category: categoryMap[tr.category_id] || tr.category_id
   }));
-
   const balanceTotal = incomeTotal - expensesTotal;
   const typeOptions = Object.entries(typeMap).map(([id, name]) => ({ id, name }));
   const categoryOptions = Object.entries(categoryMap).map(([id, name]) => ({ id, name }));
@@ -87,7 +103,7 @@ const TransactionsPage = () => {
       >
         filter
       </Button>
-      <Button variant="primary" icon={FiPlus}>add</Button>
+      <Button variant="primary" icon={FiPlus} onClick={() => setIsAddModalOpen(true)}>add</Button>
       <TrSummaryCard title="income" value={incomeTotal} />
       <TrSummaryCard title="expenses" value={expensesTotal} />
       <TrSummaryCard title="balance" value={balanceTotal} />
@@ -98,6 +114,13 @@ const TransactionsPage = () => {
         typeOptions={typeOptions}
         categoryOptions={categoryOptions}
         onFilter={handleFilter}
+      />
+      <TrAddModal
+        open={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        typeOptions={typeOptions}
+        categoryOptions={categoryOptions}
+        onAdd={handleAdd}
       />
     </>
   );

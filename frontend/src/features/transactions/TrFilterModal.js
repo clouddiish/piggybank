@@ -4,8 +4,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import Button from "../../components/Button";
 
 
-const TrFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], onFilter }) => {
-  const initialState = {
+const initialState = {
     dateFrom: "",
     dateTo: "",
     type: "",
@@ -13,7 +12,9 @@ const TrFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
     valueFrom: "",
     valueTo: "",
     comment: ""
-  };
+};
+
+const TrFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], onFilter }) => {
   const [form, setForm] = useState(initialState);
 
   if (!open) return null;

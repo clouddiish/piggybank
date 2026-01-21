@@ -5,14 +5,15 @@ import { getCategories } from "../../api/categories.api";
 import Button from "../../components/Button";
 
 
-const TrAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
-  const initialState = {
+const initialState = {
     type: "",
     category: "",
     date: "",
     value: "",
     comment: ""
-  };
+};
+
+const TrAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
   const [form, setForm] = useState(initialState);
   const [ categoryOptions, setCategoryOptions ] = useState([]);
 

@@ -3,9 +3,7 @@ import { IoCloseOutline } from "react-icons/io5";
 
 import Button from "../../components/Button";
 
-
-const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], onFilter }) => {
-  const initialState = {
+const initialState = {
     startDateFrom: "",
     startDateTo: "",
     endDateFrom: "",
@@ -15,7 +13,9 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
     targetValueFrom: "",
     targetValueTo: "",
     name: ""
-  };
+};
+
+const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], onFilter }) => {
   const [form, setForm] = useState(initialState);
 
   if (!open) return null;

@@ -7,16 +7,17 @@ import { getCategories } from "../../api/categories.api";
 import Button from "../../components/Button";
 
 
-const TrEditModal = ({ open, onClose, transactionId, typeOptions = [], onEdit, onDelete}) => {
-  const initialState = {
+const initialState = {
     type: "",
     category: "",
     date: "",
     value: "",
     comment: ""
-  };
+};
+
+const TrEditModal = ({ open, onClose, transactionId, typeOptions = [], onEdit, onDelete}) => {
   const [form, setForm] = useState(initialState);
-  const [ categoryOptions, setCategoryOptions ] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
 
   useEffect(() => {
     if (open && transactionId) {
@@ -48,8 +49,6 @@ const TrEditModal = ({ open, onClose, transactionId, typeOptions = [], onEdit, o
     }
   }, [form.type]);
 
-  if (!open) return null;
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => {
@@ -71,6 +70,8 @@ const TrEditModal = ({ open, onClose, transactionId, typeOptions = [], onEdit, o
     if (onDelete) onDelete(transactionId);
     if (onClose) onClose();
   }
+
+  if (!open) return null;
 
   return (
     <>

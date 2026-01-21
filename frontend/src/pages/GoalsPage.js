@@ -3,7 +3,7 @@ import { FiPlus } from "react-icons/fi";
 import { FiFilter } from "react-icons/fi";
 
 import { getCategories } from "../api/categories.api";
-import { getGoals, createGoal } from "../api/goals.api";
+import { getGoals, createGoal, updateGoal, deleteGoal } from "../api/goals.api";
 import { getTransactionsTotal } from "../api/transactions.api";
 import { getTypes } from "../api/types.api";
 import Button from "../components/Button";
@@ -11,6 +11,7 @@ import Navbar from "../components/Navbar";
 import GoCard from "../features/goals/GoCard";
 import GoAddModal from "../features/goals/GoAddModal";
 import GoFilterModal from "../features/goals/GoFilterModal";
+import GoEditModal from "../features/goals/GoEditModal";
 
 const GoalsPage = () => {
   const [goals, setGoals] = useState([]);
@@ -20,6 +21,8 @@ const GoalsPage = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filters, setFilters] = useState({});
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingGoalId, setEditingGoalId] = useState(null);
 
   useEffect(() => {
     Promise.all([getTypes(), getCategories()])
@@ -76,20 +79,46 @@ const GoalsPage = () => {
   };
 
   const handleAdd = (form) => {
-      const query = {};
-      if (form.type) query.type_id = form.type;
-      if (form.category) query.category_id = form.category;
-      if (form.name) query.name = form.name;
-      if (form.start_date) query.start_date = form.start_date;
-      if (form.end_date) query.end_date = form.end_date;
-      if (form.target_value) query.target_value = form.target_value;
+    const query = {};
+    if (form.type) query.type_id = form.type;
+    if (form.category) query.category_id = form.category;
+    if (form.name) query.name = form.name;
+    if (form.start_date) query.start_date = form.start_date;
+    if (form.end_date) query.end_date = form.end_date;
+    if (form.target_value) query.target_value = form.target_value;
+
+    createGoal(query)
+      .then(() => {
+        setIsAddModalOpen(false);
+        setFilters({ ...filters });
+      });
+  };
   
-      createGoal(query)
-        .then(() => {
-          setIsAddModalOpen(false);
-          setFilters({ ...filters });
-        });
-    };
+  const handleEdit = (form) => {
+    const query = {};
+    if (form.type) query.type_id = form.type;
+    if (form.category && form.category !== "") query.category_id = form.category;
+    if (form.name) query.name = form.name;
+    if (form.start_date) query.start_date = form.start_date;
+    if (form.end_date) query.end_date = form.end_date;
+    if (form.target_value) query.target_value = form.target_value;
+
+    updateGoal(editingGoalId, query)
+      .then(() => {
+        setIsEditModalOpen(false);
+        setEditingGoalId(null);
+        setFilters({ ...filters });
+      });
+  };
+  
+  const handleDelete = (goalId) => {
+    deleteGoal(goalId)
+      .then(() => {
+        setIsEditModalOpen(false);
+        setEditingGoalId(null);
+        setFilters({ ...filters });
+      });
+  };
 
   const mappedGoals = goals.map(goal => ({
     ...goal,
@@ -97,7 +126,18 @@ const GoalsPage = () => {
     type: typeMap[goal.type_id] || goal.type_id,
     category: categoryMap[goal.category_id] || goal.category_id
   }));
-  const goCards = mappedGoals.map(goal => (<GoCard key={goal.id} goal={goal} />));
+
+  const goCards = mappedGoals.map(goal => (
+    <GoCard 
+      key={goal.id} 
+      goal={goal} 
+      onClick={() => {
+        setEditingGoalId(goal.id);
+        setIsEditModalOpen(true);
+      }} 
+    />
+  ));
+
   const typeOptions = Object.entries(typeMap).map(([id, name]) => ({ id, name }));
   const categoryOptions = Object.entries(categoryMap).map(([id, name]) => ({ id, name }));
 
@@ -133,6 +173,18 @@ const GoalsPage = () => {
         typeOptions={typeOptions}
         categoryOptions={categoryOptions}
         onAdd={handleAdd}
+      />
+      <GoEditModal
+        open={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingGoalId(null);
+        }}
+        goalId={editingGoalId}
+        typeOptions={typeOptions}
+        categoryOptions={categoryOptions}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
     </>
   );

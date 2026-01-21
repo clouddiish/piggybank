@@ -131,7 +131,12 @@ const TransactionsPage = () => {
       >
         filter
       </Button>
-      <Button variant="primary" icon={FiPlus} onClick={() => setIsAddModalOpen(true)}>add</Button>
+      <Button 
+        variant="primary" 
+        icon={FiPlus} 
+        onClick={() => setIsAddModalOpen(true)}>
+          add
+        </Button>
       <TrSummaryCard title="income" value={incomeTotal} />
       <TrSummaryCard title="expenses" value={expensesTotal} />
       <TrSummaryCard title="balance" value={balanceTotal} />

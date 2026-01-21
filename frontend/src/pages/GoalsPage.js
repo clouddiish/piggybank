@@ -5,18 +5,18 @@ import { FiFilter } from "react-icons/fi";
 import { getCategories } from "../api/categories.api";
 import { getGoals } from "../api/goals.api";
 import { getTransactionsTotal } from "../api/transactions.api";
-import Button from "../components/Button";
 import { getTypes } from "../api/types.api";
+import Button from "../components/Button";
 import Navbar from "../components/Navbar";
 import GoCard from "../features/goals/GoCard";
-
-
+import GoFilterModal from "../features/goals/GoFilterModal";
 
 const GoalsPage = () => {
   const [goals, setGoals] = useState([]);
   const [goalTotals, setGoalTotals] = useState({});
   const [typeMap, setTypeMap] = useState(new Map());
   const [categoryMap, setCategoryMap] = useState(new Map());
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filters, setFilters] = useState({});
 
   useEffect(() => {
@@ -59,6 +59,20 @@ const GoalsPage = () => {
     if (goals.length > 0) fetchTotals();
   }, [goals]);
 
+  const handleFilter = (form) => {
+    const query = {};
+    if (form.startDateFrom) query.start_date_gt = form.startDateFrom;
+    if (form.startDateTo) query.start_date_lt = form.startDateTo;
+    if (form.endDateFrom) query.end_date_gt = form.endDateFrom;
+    if (form.endDateTo) query.end_date_lt = form.endDateTo;
+    if (form.type) query.type_id = form.type;
+    if (form.category) query.category_id = form.category;
+    if (form.targetValueFrom) query.target_value_gt = form.targetValueFrom;
+    if (form.targetValueTo) query.target_value_lt = form.targetValueTo;
+    if (form.name) query.name = form.name;
+    setFilters(query);
+  };
+
   const mappedGoals = goals.map(goal => ({
     ...goal,
     current_value: goalTotals[goal.id] ?? "",
@@ -66,14 +80,29 @@ const GoalsPage = () => {
     category: categoryMap[goal.category_id] || goal.category_id
   }));
   const goCards = mappedGoals.map(goal => (<GoCard key={goal.id} goal={goal} />));
+  const typeOptions = Object.entries(typeMap).map(([id, name]) => ({ id, name }));
+  const categoryOptions = Object.entries(categoryMap).map(([id, name]) => ({ id, name }));
 
 	return (
     <>
       <Navbar />
       <h1>goals</h1>
-      <Button variant="secondary" icon={FiFilter}>filter</Button>
+      <Button
+        variant="secondary"
+        icon={FiFilter}
+        onClick={() => setIsFilterModalOpen(true)}
+      >
+        filter
+      </Button>
       <Button variant="primary" icon={FiPlus}>add</Button>
       {goCards}
+      <GoFilterModal
+        open={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        typeOptions={typeOptions}
+        categoryOptions={categoryOptions}
+        onFilter={handleFilter}
+      />
     </>
   );
 };

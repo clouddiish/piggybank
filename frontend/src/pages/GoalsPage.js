@@ -3,12 +3,13 @@ import { FiPlus } from "react-icons/fi";
 import { FiFilter } from "react-icons/fi";
 
 import { getCategories } from "../api/categories.api";
-import { getGoals } from "../api/goals.api";
+import { getGoals, createGoal } from "../api/goals.api";
 import { getTransactionsTotal } from "../api/transactions.api";
 import { getTypes } from "../api/types.api";
 import Button from "../components/Button";
 import Navbar from "../components/Navbar";
 import GoCard from "../features/goals/GoCard";
+import GoAddModal from "../features/goals/GoAddModal";
 import GoFilterModal from "../features/goals/GoFilterModal";
 
 const GoalsPage = () => {
@@ -18,6 +19,7 @@ const GoalsPage = () => {
   const [categoryMap, setCategoryMap] = useState(new Map());
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filters, setFilters] = useState({});
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([getTypes(), getCategories()])
@@ -73,6 +75,22 @@ const GoalsPage = () => {
     setFilters(query);
   };
 
+  const handleAdd = (form) => {
+      const query = {};
+      if (form.type) query.type_id = form.type;
+      if (form.category) query.category_id = form.category;
+      if (form.name) query.name = form.name;
+      if (form.start_date) query.start_date = form.start_date;
+      if (form.end_date) query.end_date = form.end_date;
+      if (form.target_value) query.target_value = form.target_value;
+  
+      createGoal(query)
+        .then(() => {
+          setIsAddModalOpen(false);
+          setFilters({ ...filters });
+        });
+    };
+
   const mappedGoals = goals.map(goal => ({
     ...goal,
     current_value: goalTotals[goal.id] ?? "",
@@ -94,7 +112,13 @@ const GoalsPage = () => {
       >
         filter
       </Button>
-      <Button variant="primary" icon={FiPlus}>add</Button>
+      <Button 
+        variant="primary" 
+        icon={FiPlus}
+        onClick={() => setIsAddModalOpen(true)}
+      >
+        add
+      </Button>
       {goCards}
       <GoFilterModal
         open={isFilterModalOpen}
@@ -102,6 +126,13 @@ const GoalsPage = () => {
         typeOptions={typeOptions}
         categoryOptions={categoryOptions}
         onFilter={handleFilter}
+      />
+      <GoAddModal
+        open={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        typeOptions={typeOptions}
+        categoryOptions={categoryOptions}
+        onAdd={handleAdd}
       />
     </>
   );

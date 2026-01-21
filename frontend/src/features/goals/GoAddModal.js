@@ -5,13 +5,14 @@ import { getCategories } from "../../api/categories.api";
 import Button from "../../components/Button";
 
 
-const TrAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
+const GoAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
   const initialState = {
     type: "",
     category: "",
-    date: "",
-    value: "",
-    comment: ""
+    name: "",
+    start_date: "",
+    end_date: "",
+    target_value: "",
   };
   const [form, setForm] = useState(initialState);
   const [ categoryOptions, setCategoryOptions ] = useState([]);
@@ -41,13 +42,13 @@ const TrAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
     if (onAdd) onAdd(form);
     if (onClose) onClose();
   };
-
+  
   if (!open) return null;
 
   return (
     <>
       <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
-      <h1>add transaction</h1>
+      <h1>add goal</h1>
       <form onSubmit={handleSubmit}>
         <label>type: 
         <select name="type" value={form.type} onChange={handleChange}>
@@ -64,13 +65,14 @@ const TrAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
           ))}
         </select>
         </label>
-        <label>date: <input type="date" name="date" value={form.date} onChange={handleChange} /></label>
-        <label>value: <input type="number" name="value" value={form.value} onChange={handleChange} /></label>
-        <label>comment: <input type="text" name="comment" value={form.comment} onChange={handleChange} /></label>
+        <label>name: <input type="text" name="name" value={form.name} onChange={handleChange} /></label>
+        <label>start date: <input type="date" name="start_date" value={form.start_date} onChange={handleChange} /></label>
+        <label>end date: <input type="date" name="end_date" value={form.end_date} onChange={handleChange} /></label>
+        <label>target value: <input type="number" name="target_value" value={form.target_value} onChange={handleChange} /></label>
         <Button type="submit" variant="primary">add</Button>
       </form>
     </>
   );
 };
 
-export default TrAddModal;
+export default GoAddModal;

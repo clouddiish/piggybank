@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 import jwt
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Cookie, Request
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 
@@ -64,8 +64,24 @@ def verify_refresh_token(token: str) -> dict:
         ) from e
 
 
+async def get_token_from_header_or_cookie(request: Request, access_token: str = Cookie(None)) -> str:
+    auth = request.headers.get("Authorization")
+    if auth and auth.startswith("Bearer "):
+        return auth.split(" ")[1]
+
+    if access_token:
+        return access_token
+
+    raise HTTPException(
+        status_code=401,
+        detail="could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)], user_service: Annotated[UserService, Depends(get_user_service)]
+    token: Annotated[str, Depends(get_token_from_header_or_cookie)],
+    user_service: Annotated[UserService, Depends(get_user_service)],
 ) -> User:
     credentials_exception = HTTPException(
         status_code=401, detail="could not validate credentials", headers={"WWW-Authenticate": "Bearer"}

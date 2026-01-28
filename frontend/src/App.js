@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import './App.css';
+import client from "./api/client";
 import CategoriesPage from "./pages/CategoriesPage";
 import GoalsPage from "./pages/GoalsPage";
 import LoginPage from "./pages/LoginPage";
@@ -12,12 +14,26 @@ import TransactionsPage from "./pages/TransactionsPage";
 
 
 function App() {
-  const token = localStorage.getItem("token");
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("refreshFailed")) {
+      setIsAuthenticated(false);
+      return;
+    }
+    client.get("/users/me")
+      .then(() => setIsAuthenticated(true))
+      .catch(() => setIsAuthenticated(false));
+  }, []);
+
+  if (isAuthenticated === null) {
+    return <div>loading...</div>;
+  }
 
   return (
     <Router>
       <Routes>
-        {!token ? (
+        {!isAuthenticated ? (
           <>
             <Route path="/" element={<StartPage />} />
             <Route path="/login" element={<LoginPage />} /> 

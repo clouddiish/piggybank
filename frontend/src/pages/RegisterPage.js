@@ -13,7 +13,7 @@ const RegisterPage = () => {
       alert("Passwords do not match!");
       return;
     }
-    const response = await register(email, password);
+    await register(email, password);
     navigate("/register-success");
   };
 

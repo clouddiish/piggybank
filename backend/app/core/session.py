@@ -8,7 +8,7 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-engine = create_async_engine(settings.docker_async_database_url, echo=settings.echo_sql)
+engine = create_async_engine(settings.async_database_url, echo=settings.echo_sql)
 
 async_session = async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
 

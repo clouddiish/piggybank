@@ -13,6 +13,7 @@ from app.services.security import (
     create_access_token,
     create_refresh_token,
     verify_refresh_token,
+    get_token_from_header_or_cookie,
     get_current_user,
     get_current_admin,
 )
@@ -133,6 +134,34 @@ class TestSecurityServices:
         with patch("app.services.security.jwt.decode", side_effect=InvalidTokenError):
             with pytest.raises(HTTPException) as e:
                 verify_refresh_token("badtoken")
+
+        assert e.value.status_code == 401
+
+    @pytest.mark.anyio
+    async def test_get_token_from_header_or_cookie__from_header(self) -> None:
+        mock_request = AsyncMock()
+        mock_request.headers = {"Authorization": "Bearer header_token"}
+
+        token = await get_token_from_header_or_cookie(mock_request, access_token=None)
+
+        assert token == "header_token"
+
+    @pytest.mark.anyio
+    async def test_get_token_from_header_or_cookie__from_cookie(self) -> None:
+        mock_request = AsyncMock()
+        mock_request.headers = {}
+
+        token = await get_token_from_header_or_cookie(mock_request, access_token="cookie_token")
+
+        assert token == "cookie_token"
+
+    @pytest.mark.anyio
+    async def test_get_token_from_header_or_cookie__no_token(self) -> None:
+        mock_request = AsyncMock()
+        mock_request.headers = {}
+
+        with pytest.raises(HTTPException) as e:
+            await get_token_from_header_or_cookie(mock_request, access_token=None)
 
         assert e.value.status_code == 401
 

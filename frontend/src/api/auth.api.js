@@ -7,6 +7,10 @@ export function login(email, password) {
   formData.append("password", password);
   return client.post("/token", formData, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    withCredentials: true,
+  }).then((res) => {
+    sessionStorage.removeItem("refreshFailed");
+    return res;
   });
 }
 
@@ -15,5 +19,5 @@ export function register(email, password) {
 }
 
 export function logout() {
-  localStorage.removeItem("token");
+  return client.post("/token/logout", {}, { withCredentials: true });
 }

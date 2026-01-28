@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Cookie, HTTPException, Depends, Response
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.common.enums import Tag
@@ -18,7 +18,9 @@ router = APIRouter(prefix="/token", tags=[Tag.security])
 
 @router.post("", responses=common_responses_dict)
 async def login(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], user_service: UserService = Depends(get_user_service)
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    user_service: UserService = Depends(get_user_service),
+    response: Response = None,
 ):
     user_db = await authenticate_user(email=form_data.username, password=form_data.password, user_service=user_service)
     if not user_db:
@@ -32,11 +34,30 @@ async def login(
     refresh_token_expires = timedelta(hours=settings.refresh_token_expire_hours)
     refresh_token = create_refresh_token(data={"sub": user_db.email}, expires_delta=refresh_token_expires)
 
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=settings.secure_cookies,
+        samesite="lax",
+        max_age=int(access_token_expires.total_seconds()),
+        path="/",
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=settings.secure_cookies,
+        samesite="lax",
+        max_age=int(refresh_token_expires.total_seconds()),
+        path="/",
+    )
+
     return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
 
 
 @router.post("/refresh", responses=common_responses_dict)
-async def refresh_token(refresh_token: str):
+async def refresh_token(refresh_token: str = Cookie(None), response: Response = None):
     payload = verify_refresh_token(refresh_token)
     email: str = payload.get("sub")
     if email is None:
@@ -45,4 +66,21 @@ async def refresh_token(refresh_token: str):
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(data={"sub": email}, expires_delta=access_token_expires)
 
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=settings.secure_cookies,
+        samesite="lax",
+        max_age=int(access_token_expires.total_seconds()),
+        path="/",
+    )
+
     return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+
+
+@router.post("/logout", responses=common_responses_dict)
+async def logout(response: Response = None):
+    response.delete_cookie(key="access_token", path="/")
+    response.delete_cookie(key="refresh_token", path="/")
+    return {"detail": "Successfully logged out"}

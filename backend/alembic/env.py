@@ -10,15 +10,11 @@ from app import db_models
 
 
 settings = get_settings()
-if settings.env == "dev":
-    db_url = settings.dev_sync_database_url
-else:
-    db_url = settings.docker_sync_database_url
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", db_url)
+config.set_main_option("sqlalchemy.url", settings.sync_database_url)
 
 
 # Interpret the config file for Python logging.

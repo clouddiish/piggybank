@@ -40,14 +40,16 @@ class TestSecurityRoutes:
 
     @pytest.mark.anyio
     async def test_refresh_token__valid_refresh_token(self, client_fixture: AsyncClient) -> None:
-        # log in to get a valid refresh token
+        # log in to get a valid refresh token and set cookies
         login_payload = {"username": settings.initial_admin_email, "password": settings.initial_admin_password}
         login_response = await client_fixture.post("/token", data=login_payload)
-        refresh_token = login_response.json()["refresh_token"]
+        assert login_response.status_code == 200
+        cookies = login_response.cookies
+        refresh_token = cookies.get("refresh_token")
+        assert refresh_token is not None
 
-        # use the refresh token to get a new access token
-        refresh_payload = {"refresh_token": refresh_token}
-        refresh_response = await client_fixture.post("/token/refresh", params=refresh_payload)
+        # use the refresh token cookie to get a new access token
+        refresh_response = await client_fixture.post("/token/refresh", cookies={"refresh_token": refresh_token})
 
         assert refresh_response.status_code == 200
         token_data = refresh_response.json()
@@ -57,9 +59,21 @@ class TestSecurityRoutes:
 
     @pytest.mark.anyio
     async def test_refresh_token__invalid_refresh_token(self, client_fixture: AsyncClient) -> None:
-        refresh_payload = {"refresh_token": "invalidtoken"}
-        response = await client_fixture.post("/token/refresh", params=refresh_payload)
+        response = await client_fixture.post("/token/refresh", cookies={"refresh_token": "invalidtoken"})
 
         assert response.status_code == 401
         error_data = response.json()
         assert error_data["detail"] == "invalid refresh token"
+
+    @pytest.mark.anyio
+    async def test_logout(self, client_fixture: AsyncClient) -> None:
+        # log in to set cookies
+        login_payload = {"username": settings.initial_admin_email, "password": settings.initial_admin_password}
+        login_response = await client_fixture.post("/token", data=login_payload)
+        assert login_response.status_code == 200
+        cookies = login_response.cookies
+
+        logout_response = await client_fixture.post("/token/logout", cookies=cookies)
+        assert logout_response.status_code == 200
+        data = logout_response.json()
+        assert data["detail"] == "Successfully logged out"

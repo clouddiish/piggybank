@@ -9,9 +9,9 @@ import Button from "./Button";
 const Menu = ({ onClose }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    window.location.reload();
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = "/";
   };
 
   return <div style={{

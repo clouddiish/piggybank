@@ -9,8 +9,7 @@ import LoginForm from "../features/auth/LoginForm";
 const LoginPage = () => {
   const navigate = useNavigate();
   const handleLogin = async (email, password) => {
-    const response = await login(email, password);
-    localStorage.setItem("token", response.data.access_token);
+    await login(email, password);
     window.location.reload();
   };
 

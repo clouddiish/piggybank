@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parents[2] / ".env")
 
     # environment settings
-    env: str = "docker"
+    env: str = "prod"
 
     # app settings
     title: str = "piggybankAPI"
@@ -26,19 +26,27 @@ class Settings(BaseSettings):
     postgres_password: str = "changethis"
     postgres_db: str = "piggybankdb"
 
-    docker_async_database_url: str = (
-        f"postgresql+asyncpg://${postgres_user}:${postgres_password}@db:5432/${postgres_db}"
-    )
-    docker_sync_database_url: str = (
-        f"postgresql+psycopg2://${postgres_user}:${postgres_password}@db:5432/${postgres_db}"
-    )
+    @property
+    def async_database_url(self) -> str:
+        if self.env == "local":
+            return (
+                f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@localhost:5432/{self.postgres_db}"
+            )
+        if self.env == "docker":
+            return f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@db:5432/{self.postgres_db}"
+        else:
+            raise ValueError(f"Unknown environment: {self.env}")
 
-    dev_async_database_url: str = (
-        f"postgresql+asyncpg://${postgres_user}:${postgres_password}@localhost:5432/${postgres_db}"
-    )
-    dev_sync_database_url: str = (
-        f"postgresql+psycopg2://${postgres_user}:${postgres_password}@localhost:5432/${postgres_db}"
-    )
+    @property
+    def sync_database_url(self) -> str:
+        if self.env == "local":
+            return (
+                f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}@localhost:5432/{self.postgres_db}"
+            )
+        if self.env == "docker":
+            return f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}@db:5432/{self.postgres_db}"
+        else:
+            raise ValueError(f"Unknown environment: {self.env}")
 
     initial_admin_email: str = "changethis"
     initial_admin_password: str = "changethis"
@@ -59,13 +67,19 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 15
     refresh_token_expire_hours: int = 24
 
+    @property
+    def secure_cookies(self) -> bool:
+        if self.env == "prod":
+            return True
+        return False
+
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = f"The value of {var_name} is 'changethis'. For security, please change it."
-            if self.env == "dev":
-                print(message)
-            else:
+            if self.env == "prod":
                 raise ValueError(message)
+            else:
+                print(f"WARNING: {message}")
 
     @model_validator(mode="after")
     def _enforce_non_default_secrets(self) -> Self:

@@ -103,7 +103,6 @@ const CategoriesPage = () => {
         open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         categoryId={editingCategoryId}
-        typeOptions={typeOptions}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

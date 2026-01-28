@@ -4,12 +4,13 @@ from pydantic import BaseModel
 
 
 class CategoryBase(BaseModel):
-    type_id: int
     name: str
 
 
 class CategoryCreate(CategoryBase):
     model_config = {"extra": "forbid"}
+
+    type_id: int
 
 
 class CategoryUpdate(CategoryBase):
@@ -18,6 +19,7 @@ class CategoryUpdate(CategoryBase):
 
 class CategoryOut(CategoryBase):
     id: int
+    type_id: int
     user_id: int
 
 

@@ -173,14 +173,14 @@ class TestUserRoutes:
 
         response = await client_fixture.put(
             "/categories/1",
-            json={"type_id": 2, "name": "updated category"},
+            json={"name": "updated category"},
             headers={"Authorization": f"Bearer {user_token}"},
         )
 
         assert response.status_code == 200
         category = response.json()
         assert category["id"] == 1
-        assert category["type_id"] == 2
+        assert category["type_id"] == 1
         assert category["name"] == "updated category"
         assert category["user_id"] == 2
 
@@ -197,14 +197,14 @@ class TestUserRoutes:
 
         response = await client_fixture.put(
             "/categories/1",
-            json={"type_id": 2, "name": "updated category"},
+            json={"name": "updated category"},
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
         assert response.status_code == 200
         category = response.json()
         assert category["id"] == 1
-        assert category["type_id"] == 2
+        assert category["type_id"] == 1
         assert category["name"] == "updated category"
         assert category["user_id"] == 2
 
@@ -221,7 +221,7 @@ class TestUserRoutes:
 
         response = await client_fixture.put(
             "/categories/1",
-            json={"type_id": 2, "name": "updated category"},
+            json={"name": "updated category"},
             headers={"Authorization": f"Bearer {user_token}"},
         )
 
@@ -233,17 +233,7 @@ class TestUserRoutes:
     ) -> None:
         response = await client_fixture.put(
             "/categories/100",
-            json={"type_id": 2, "name": "updated category"},
-            headers={"Authorization": f"Bearer {admin_token}"},
-        )
-
-        assert response.status_code == 404
-
-    @pytest.mark.anyio
-    async def test_update_category__type_id_does_not_exist(self, client_fixture: AsyncClient, admin_token: str) -> None:
-        response = await client_fixture.put(
-            "/categories/1",
-            json={"type_id": 100, "name": "updated category"},
+            json={"name": "updated category"},
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
@@ -253,7 +243,7 @@ class TestUserRoutes:
     async def test_update_category__not_logged(self, client_fixture: AsyncClient) -> None:
         response = await client_fixture.put(
             "/categories/1",
-            json={"type_id": 100, "name": "updated category"},
+            json={"name": "updated category"},
         )
 
         assert response.status_code == 401

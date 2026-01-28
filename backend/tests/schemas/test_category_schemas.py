@@ -40,15 +40,14 @@ class TestCategorySchemas:
 
     @pytest.mark.anyio
     async def test_CategoryUpdate__all_ok(self):
-        data = {"type_id": 2, "name": "Transport"}
+        data = {"name": "Transport"}
         category = CategoryUpdate(**data)
 
-        assert category.type_id == 2
         assert category.name == "Transport"
 
     @pytest.mark.anyio
     async def test_CategoryUpdate__extra_field(self):
-        data = {"type_id": 2, "name": "Transport", "extra": "not allowed"}
+        data = {"name": "Transport", "extra": "not allowed"}
         with pytest.raises(ValidationError) as e:
             CategoryUpdate(**data)
 
@@ -56,19 +55,11 @@ class TestCategorySchemas:
 
     @pytest.mark.anyio
     async def test_CategoryUpdate__missing_field(self):
-        data = {"name": "Transport"}
+        data = {}
         with pytest.raises(ValidationError) as e:
             CategoryUpdate(**data)
 
         assert "Field required" in str(e.value)
-
-    @pytest.mark.anyio
-    async def test_CategoryUpdate__invalid_type(self):
-        data = {"type_id": "wrong", "name": "Transport"}
-        with pytest.raises(ValidationError) as e:
-            CategoryUpdate(**data)
-
-        assert "validation error for" in str(e.value)
 
     @pytest.mark.anyio
     async def test_CategoryOut__all_ok(self):

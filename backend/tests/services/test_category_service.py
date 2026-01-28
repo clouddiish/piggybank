@@ -168,11 +168,11 @@ class TestCategoryServices:
     async def test_get_create_or_update_valid_fields__CategoryUpdate(
         self, mock_category_service: CategoryService
     ) -> None:
-        category_update = CategoryUpdate(type_id=1, name="test category")
+        category_update = CategoryUpdate(name="test category")
 
         valid_fields = mock_category_service._get_create_or_update_valid_fields(schema=category_update)
 
-        assert valid_fields == {"type_id": 1, "name": "test category"}
+        assert valid_fields == {"name": "test category"}
 
     @pytest.mark.anyio
     async def test_create__all_ok(self, mock_session: AsyncMock, mock_category_service: CategoryService) -> None:
@@ -204,15 +204,13 @@ class TestCategoryServices:
     ) -> None:
         mock_category_service.get_by_id = AsyncMock(return_value=mock_categories[1])
         mock_category_service.user_service.is_admin = AsyncMock(return_value=False)
-        mock_category_service.type_service.get_by_id = AsyncMock(return_value=mock_types[0])
 
         category = await mock_category_service._validate_update(
-            entity_id=1, update_schema=CategoryUpdate(type_id=1, name="test category"), updated_by=mock_users[0]
+            entity_id=1, update_schema=CategoryUpdate(name="test category"), updated_by=mock_users[0]
         )
 
         mock_category_service.get_by_id.assert_called_once()
         mock_category_service.user_service.is_admin.assert_not_called()
-        mock_category_service.type_service.get_by_id.assert_called_once()
         assert category == mock_categories[1]
 
     @pytest.mark.anyio
@@ -225,15 +223,13 @@ class TestCategoryServices:
     ) -> None:
         mock_category_service.get_by_id = AsyncMock(return_value=mock_categories[1])
         mock_category_service.user_service.is_admin = AsyncMock(return_value=True)
-        mock_category_service.type_service.get_by_id = AsyncMock(return_value=mock_types[0])
 
         category = await mock_category_service._validate_update(
-            entity_id=1, update_schema=CategoryUpdate(type_id=1, name="test category"), updated_by=mock_users[1]
+            entity_id=1, update_schema=CategoryUpdate(name="test category"), updated_by=mock_users[1]
         )
 
         mock_category_service.get_by_id.assert_called_once()
         mock_category_service.user_service.is_admin.assert_called_once()
-        mock_category_service.type_service.get_by_id.assert_called_once()
         assert category == mock_categories[1]
 
     @pytest.mark.anyio
@@ -244,16 +240,14 @@ class TestCategoryServices:
             side_effect=EntityNotFoundException(entity_id=100, entity_type=EntityType.category)
         )
         mock_category_service.user_service.is_admin = AsyncMock(return_value=True)
-        mock_category_service.type_service.get_by_id = AsyncMock(return_value=mock_types[0])
 
         with pytest.raises(EntityNotFoundException):
             await mock_category_service._validate_update(
-                entity_id=100, update_schema=CategoryUpdate(type_id=1, name="test category"), updated_by=mock_users[1]
+                entity_id=100, update_schema=CategoryUpdate(name="test category"), updated_by=mock_users[1]
             )
 
         mock_category_service.get_by_id.assert_called_once()
         mock_category_service.user_service.is_admin.assert_not_called()
-        mock_category_service.type_service.get_by_id.assert_not_called()
 
     @pytest.mark.anyio
     async def test_validate_update__different_user(
@@ -265,39 +259,14 @@ class TestCategoryServices:
     ) -> None:
         mock_category_service.get_by_id = AsyncMock(return_value=mock_categories[1])
         mock_category_service.user_service.is_admin = AsyncMock(return_value=False)
-        mock_category_service.type_service.get_by_id = AsyncMock(return_value=mock_types[0])
 
         with pytest.raises(ActionForbiddenException):
             await mock_category_service._validate_update(
-                entity_id=1, update_schema=CategoryUpdate(type_id=1, name="test category"), updated_by=mock_users[1]
+                entity_id=1, update_schema=CategoryUpdate(name="test category"), updated_by=mock_users[1]
             )
 
         mock_category_service.get_by_id.assert_called_once()
         mock_category_service.user_service.is_admin.assert_called_once()
-        mock_category_service.type_service.get_by_id.assert_not_called()
-
-    @pytest.mark.anyio
-    async def test_validate_update__type_does_not_exist(
-        self,
-        mock_category_service: CategoryService,
-        mock_categories: list[Category],
-        mock_users: list[User],
-        mock_types: list[Type],
-    ) -> None:
-        mock_category_service.get_by_id = AsyncMock(return_value=mock_categories[1])
-        mock_category_service.user_service.is_admin = AsyncMock(return_value=True)
-        mock_category_service.type_service.get_by_id = AsyncMock(
-            side_effect=EntityNotFoundException(entity_id=100, entity_type=EntityType.type)
-        )
-
-        with pytest.raises(EntityNotFoundException):
-            await mock_category_service._validate_update(
-                entity_id=1, update_schema=CategoryUpdate(type_id=1, name="test category"), updated_by=mock_users[1]
-            )
-
-        mock_category_service.get_by_id.assert_called_once()
-        mock_category_service.user_service.is_admin.assert_called_once()
-        mock_category_service.type_service.get_by_id.assert_called_once()
 
     @pytest.mark.anyio
     async def test_update__all_ok(
@@ -309,10 +278,10 @@ class TestCategoryServices:
     ) -> None:
         mock_category_service._validate_update = AsyncMock(return_value=mock_categories[1])
         mock_category_service._get_create_or_update_valid_fields = MagicMock(
-            return_value={"type_id": 1, "name": "test category", "user_id": 1}
+            return_value={"name": "test category", "user_id": 1}
         )
 
-        category_update = CategoryUpdate(type_id=1, name="test category")
+        category_update = CategoryUpdate(name="test category")
         category = await mock_category_service.update(
             entity_id=mock_categories[1].id, update_schema=category_update, updated_by=mock_users[0]
         )
@@ -324,7 +293,6 @@ class TestCategoryServices:
         mock_session.refresh.assert_called_once()
         assert category.id == mock_categories[1].id
         assert category.name == category_update.name
-        assert category.type_id == category_update.type_id
 
     @pytest.mark.anyio
     async def test_validate_delete__all_ok_same_user(

@@ -100,9 +100,6 @@ class CategoryService(BaseService[Category, CategoryCreate, CategoryUpdate, Cate
         if not (updated_by.id == category_db.user_id or await self.user_service.is_admin(user_id=updated_by.id)):
             raise ActionForbiddenException(detail="users can only update their own categories")
 
-        # verify type exists
-        await self.type_service.get_by_id(entity_id=update_schema.type_id)
-
         return category_db
 
     async def _validate_delete(self, entity_id: int, deleted_by: User) -> Category:

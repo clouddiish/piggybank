@@ -11,6 +11,8 @@ from app.services import UserService, RoleService
 from app.services.security import (
     authenticate_user,
     create_access_token,
+    create_refresh_token,
+    verify_refresh_token,
     get_current_user,
     get_current_admin,
 )
@@ -79,6 +81,60 @@ class TestSecurityServices:
         exp_time = args[0]["exp"]
         assert abs(exp_time - (datetime.now(timezone.utc) + timedelta(minutes=15))) < timedelta(seconds=5)
         assert token == "token123"
+
+    @pytest.mark.anyio
+    async def test_create_refresh_token__with_expiry(self) -> None:
+        data = {"sub": "user1"}
+        expires = timedelta(hours=12)
+
+        with patch("app.services.security.jwt.encode", return_value="token123") as mock_encode:
+            token = create_refresh_token(data, expires)
+
+        mock_encode.assert_called_once()
+        args, _ = mock_encode.call_args
+        assert "exp" in args[0]
+        assert isinstance(args[0]["exp"], datetime)
+        assert token == "token123"
+
+    @pytest.mark.anyio
+    async def test_create_refresh_token__default_expiry(self) -> None:
+        data = {"sub": "user1"}
+
+        with patch("app.services.security.jwt.encode", return_value="token123") as mock_encode:
+            token = create_refresh_token(data)
+
+        mock_encode.assert_called_once()
+        args, _ = mock_encode.call_args
+        exp_time = args[0]["exp"]
+        assert abs(exp_time - (datetime.now(timezone.utc) + timedelta(hours=24))) < timedelta(seconds=5)
+        assert token == "token123"
+
+    @pytest.mark.anyio
+    async def test_verify_refresh_token__valid_token(self) -> None:
+        payload = {"sub": "user1", "type": "refresh"}
+
+        with patch("app.services.security.jwt.decode", return_value=payload):
+            result = verify_refresh_token("validtoken")
+
+        assert result == payload
+
+    @pytest.mark.anyio
+    async def test_verify_refresh_token__invalid_token_type(self) -> None:
+        payload = {"sub": "user1", "type": "access"}
+
+        with patch("app.services.security.jwt.decode", return_value=payload):
+            with pytest.raises(HTTPException) as e:
+                verify_refresh_token("invalidtype")
+
+        assert e.value.status_code == 401
+
+    @pytest.mark.anyio
+    async def test_verify_refresh_token__decode_error(self) -> None:
+        with patch("app.services.security.jwt.decode", side_effect=InvalidTokenError):
+            with pytest.raises(HTTPException) as e:
+                verify_refresh_token("badtoken")
+
+        assert e.value.status_code == 401
 
     @pytest.mark.anyio
     async def test_get_current_user__success(self, mock_user_service: UserService, mock_users: list[User]) -> None:

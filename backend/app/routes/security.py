@@ -9,7 +9,7 @@ from app.common.responses import common_responses_dict
 from app.core.config import get_settings
 from app.schemas import Token
 from app.services import UserService, get_user_service
-from app.services.security import authenticate_user, create_access_token
+from app.services.security import authenticate_user, create_access_token, create_refresh_token, verify_refresh_token
 
 
 settings = get_settings()
@@ -25,6 +25,24 @@ async def login(
         raise HTTPException(
             status_code=401, detail="incorrect username or password", headers={"WWW-Authenticate": "Bearer"}
         )
+
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(data={"sub": user_db.email}, expires_delta=access_token_expires)
-    return Token(access_token=access_token, token_type="bearer")
+
+    refresh_token_expires = timedelta(hours=settings.refresh_token_expire_hours)
+    refresh_token = create_refresh_token(data={"sub": user_db.email}, expires_delta=refresh_token_expires)
+
+    return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+
+
+@router.post("/refresh", responses=common_responses_dict)
+async def refresh_token(refresh_token: str):
+    payload = verify_refresh_token(refresh_token)
+    email: str = payload.get("sub")
+    if email is None:
+        raise HTTPException(status_code=401, detail="invalid refresh token", headers={"WWW-Authenticate": "Bearer"})
+
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token = create_access_token(data={"sub": email}, expires_delta=access_token_expires)
+
+    return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")

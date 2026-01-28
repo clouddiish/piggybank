@@ -57,6 +57,7 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     secret_key: str = "changethis"
     access_token_expire_minutes: int = 15
+    refresh_token_expire_hours: int = 24
 
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":

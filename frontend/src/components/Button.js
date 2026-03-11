@@ -2,24 +2,19 @@ const Button = ({
   variant = "primary", 
   icon: Icon,         
   children,
+  className,
   ...props
 }) => {
-  const baseStyle = {
-    padding: "8px 16px",
-    border: "none",
-    borderRadius: "4px",
-    fontWeight: "bold",
-    display: "inline-flex",
-    alignItems: "center",
-    cursor: "pointer",
-    background: variant === "primary" ? "#1976d2" : "#e0e0e0",
-    color: variant === "primary" ? "#fff" : "#333",
-    gap: Icon ? "8px" : "0",
-  };
+  const variantClass = `btn-${variant}`;
+  const cls = ["btn", variantClass, className].filter(Boolean).join(" ");
 
   return (
-    <button style={baseStyle} {...props}>
-      {Icon && <Icon />}
+    <button className={cls} {...props}>
+      {Icon && (
+        <span className="btn-icon" aria-hidden="true">
+          <Icon />
+        </span>
+      )}
       {children}
     </button>
   );

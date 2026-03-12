@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { FaPiggyBank } from "react-icons/fa6";
 
 import Button from "../components/Button";
 
@@ -9,7 +10,10 @@ const StartPage = () => {
     <div className="mx-md-5 mx-2 py-5 align-items-center vh-100">
 
       <div className="my-5">
-        <h1 className="display-1 fw-bold">piggybank</h1>
+        <h1 className="display-1 fw-bold">
+          <FaPiggyBank className="me-3"/>
+          piggybank
+        </h1>
         <h2>manage your personal finances</h2>
       </div>
 

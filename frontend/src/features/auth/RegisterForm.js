@@ -14,30 +14,49 @@ const RegisterForm = ({ onRegister }) => {
   };
 
     return (
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          placeholder="email"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          placeholder="password"
-        />
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          placeholder="confirm password"
-        />
-        <Button type="submit" variant="primary">register</Button>
-      </form>
+      <div className="row">
+  			<div className="col-12 col-md-6">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="email" class="form-label">email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="email"
+                className="form-control"
+							  id="email"
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password" class="form-label">password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="password"
+                className="form-control"
+							  id="password"
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="cpassword" class="form-label">confirm password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                placeholder="confirm password"
+                className="form-control"
+							  id="cpassword"
+              />
+            </div>
+            <Button type="submit" variant="primary" className="w-100">register</Button>
+          </form>
+        </div>
+      </div>
     );
 };
 

@@ -18,15 +18,16 @@ const RegisterPage = () => {
   };
 
   return (
-    <>
+    <div className="mx-md-5 mx-2 py-5 align-items-center vh-100">
       <Button 
         variant="secondary" 
         icon={BsChevronLeft}
         onClick={() => navigate("/")}
+        className="mb-5"
       />
-      <h1>hello! register to get started</h1>
+      <h1 className="mb-5">hello! register to get started</h1>
       <RegisterFrom onRegister={handleRegister} />
-    </>
+    </div>
   );
 };
 

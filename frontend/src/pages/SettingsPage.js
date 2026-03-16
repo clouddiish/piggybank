@@ -39,10 +39,12 @@ const SettingsPage = () => {
   return (
     <>
       <Navbar />
-      <h1>settings</h1>
-      <AvatarWithText text={user ? user.email : "..."} />
-      <ChangePasswordForm onChangePassword={handleChangePassword} />
-      <DeleteAccount onDeleteAccount={handleDeleteAccount} />
+      <div className="mx-md-5 mx-2 py-3 align-items-center vh-100">
+        <h1 className="mb-3">settings</h1>
+        <AvatarWithText className="mb-5" text={user ? user.email : "..."} />
+        <ChangePasswordForm className="mb-5" onChangePassword={handleChangePassword} />
+        <DeleteAccount className="mb-5" onDeleteAccount={handleDeleteAccount} />
+      </div>
     </>
   );
 };

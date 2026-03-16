@@ -12,7 +12,7 @@ const Button = ({
     <button className={cls} {...props}>
       {Icon && (
         <span className="btn-icon" aria-hidden="true">
-          <Icon />
+          <Icon className="me-2"/>
         </span>
       )}
       {children}

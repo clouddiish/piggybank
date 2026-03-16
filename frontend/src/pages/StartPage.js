@@ -18,10 +18,10 @@ const StartPage = () => {
       </div>
 
       <div className="row g-3">
-        <div className="col-12 col-sm-auto">
+        <div className="col-12 col-md-auto">
           <Button variant="primary" className="w-100" onClick={() => navigate('/login')}>login</Button>
         </div>
-        <div className="col-12 col-sm-auto">
+        <div className="col-12 col-md-auto">
           <Button variant="secondary" className="w-100" onClick={() => navigate('/register')}>register</Button>
         </div>
       </div>

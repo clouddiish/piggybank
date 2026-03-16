@@ -39,7 +39,7 @@ const SettingsPage = () => {
   return (
     <>
       <Navbar />
-      <div className="mx-md-5 mx-2 py-3 align-items-center vh-100">
+      <div className="mx-md-5 mx-2 py-3 align-items-center">
         <h1 className="mb-3">settings</h1>
         <AvatarWithText className="mb-5" text={user ? user.email : "..."} />
         <ChangePasswordForm className="mb-5" onChangePassword={handleChangePassword} />

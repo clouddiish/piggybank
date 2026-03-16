@@ -20,7 +20,7 @@ const ChangePasswordForm = ({ onChangePassword, className }) => {
       <div className="col-12 col-md-6">
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="old-password" class="form-label">old password</label>
+            <label htmlFor="old-password" className="form-label">old password</label>
             <input
               type="password"
               value={oldPassword}
@@ -32,7 +32,7 @@ const ChangePasswordForm = ({ onChangePassword, className }) => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="new-password" class="form-label">new password</label>
+            <label htmlFor="new-password" className="form-label">new password</label>
             <input
               type="password"
               value={newPassword}

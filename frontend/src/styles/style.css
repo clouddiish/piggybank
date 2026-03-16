@@ -1,0 +1,11 @@
+.summary {
+    position: fixed;
+    top: 130px;
+    right: 1rem;
+}
+
+@media (max-width: 768px){
+    .summary {
+        position: static;
+    }
+}

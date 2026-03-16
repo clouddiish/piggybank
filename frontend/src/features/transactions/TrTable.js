@@ -1,7 +1,9 @@
 import TrTableRow from "./TrTableRow";
 
 
-const TrTable = ({transactions, onEditTransaction }) => {
+const TrTable = ({transactions, onEditTransaction, className }) => {
+  const cls = ["table", className].filter(Boolean).join(" ");
+
   let rows = transactions.map((transaction) => {
     return (
       <TrTableRow
@@ -13,7 +15,7 @@ const TrTable = ({transactions, onEditTransaction }) => {
   });
 
   return (
-    <table className="table my-3">
+    <table className={cls}>
       <thead>
         <tr>
           <th>date</th>
@@ -21,7 +23,9 @@ const TrTable = ({transactions, onEditTransaction }) => {
           <th>category</th>
         </tr>
       </thead>
-      <tbody>{rows}</tbody>
+      <tbody className="table-group-divider">
+        {rows}
+      </tbody>
     </table>
   );
 }

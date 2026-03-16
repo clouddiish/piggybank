@@ -18,7 +18,7 @@ const RegisterForm = ({ onRegister }) => {
   			<div className="col-12 col-md-6">
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label htmlFor="email" class="form-label">email</label>
+              <label htmlFor="email" className="form-label">email</label>
               <input
                 type="email"
                 value={email}
@@ -30,7 +30,7 @@ const RegisterForm = ({ onRegister }) => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="password" class="form-label">password</label>
+              <label htmlFor="password" className="form-label">password</label>
               <input
                 type="password"
                 value={password}
@@ -42,7 +42,7 @@ const RegisterForm = ({ onRegister }) => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="cpassword" class="form-label">confirm password</label>
+              <label htmlFor="cpassword" className="form-label">confirm password</label>
               <input
                 type="password"
                 value={confirmPassword}

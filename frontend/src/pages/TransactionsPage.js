@@ -123,27 +123,60 @@ const TransactionsPage = () => {
 	return (
     <>
       <Navbar />
-      <h1>transactions</h1>
-      <Button
-        variant="secondary"
-        icon={FiFilter}
-        onClick={() => setIsFilterModalOpen(true)}
-      >
-        filter
-      </Button>
-      <Button 
-        variant="primary" 
-        icon={FiPlus} 
-        onClick={() => setIsAddModalOpen(true)}>
-          add
-        </Button>
-      <TrSummaryCard title="income" value={incomeTotal} />
-      <TrSummaryCard title="expenses" value={expensesTotal} />
-      <TrSummaryCard title="balance" value={balanceTotal} />
-      <TrTable transactions={mappedTransactions} onEditTransaction={(id) => {
-        setEditingTransactionId(id);
-        setIsEditModalOpen(true);
-      }}></TrTable>
+      <div className="mx-md-5 mx-2 py-3 align-items-center">
+        <h1 className="mb-5">transactions</h1>
+        <div className="row mb-5">
+          <div className="col-6 col-md-auto">
+            <Button
+              variant="secondary"
+              icon={FiFilter}
+              onClick={() => setIsFilterModalOpen(true)}
+              className="w-100"
+            >
+              filter
+            </Button>
+          </div>
+          <div className="col-6 col-md-auto">
+            <Button 
+              variant="primary" 
+              icon={FiPlus} 
+              onClick={() => setIsAddModalOpen(true)}
+              className="w-100"
+            >
+                add
+            </Button>
+          </div>
+        </div>
+
+        <div className="row g-5">
+          <div className="col-12 col-md-3 order-md-2 summary">
+            <TrSummaryCard 
+              className="mb-3" 
+              title="income" 
+              value={incomeTotal} 
+            />
+            <TrSummaryCard 
+              className="mb-3" 
+              title="expenses" 
+              value={expensesTotal} 
+            />
+            <TrSummaryCard 
+              title="balance" 
+              value={balanceTotal > 0 ? "+" + balanceTotal : balanceTotal} 
+            />
+          </div>
+          <div className="col-12 col-md-9 order-md-1">
+            <TrTable 
+            transactions={mappedTransactions} onEditTransaction={(id) => {
+              setEditingTransactionId(id);
+              setIsEditModalOpen(true);
+            }}>
+            </TrTable>
+          </div>
+        </div>
+      
+      </div>
+
       <TrFilterModal
         open={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
@@ -170,6 +203,7 @@ const TransactionsPage = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
+
     </>
   );
 };

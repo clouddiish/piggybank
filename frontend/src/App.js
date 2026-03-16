@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import './App.css';
+import './styles/style.css';
 import client from "./api/client";
 import CategoriesPage from "./pages/CategoriesPage";
 import GoalsPage from "./pages/GoalsPage";

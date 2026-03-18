@@ -1,9 +1,8 @@
-const CaCard = ({ 
-  category,
-  onClick
-}) => {
+const CaCard = ({ category, onClick, className }) => {
+  const cls = ["border rounded text-bg-secondary pt-2 mb-3", className].filter(Boolean).join(" ");
+  
   return (
-    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }} className="col-md-12 col-sm-4 container my-1 border rounded pt-1">
+    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }} className={cls}>
       <p className="text-center">{category.name}</p>
     </div>
   );

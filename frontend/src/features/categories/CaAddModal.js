@@ -8,8 +8,20 @@ const initialState = {
     name: "",
 };
 
-const CaAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
+const CaAddModal = ({ open, onClose, typeOptions = [], onAdd, className }) => {
   const [form, setForm] = useState(initialState);
+
+  const cls = ["modal", "fade", open ? "show" : "", className].filter(Boolean).join(" ");
+  const style = open ? { display: "block" } : undefined;
+  
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+    return () => document.body.classList.remove("modal-open");
+  }, [open]);
 
   useEffect(() => {
     if (open && typeOptions.length > 0) {
@@ -33,19 +45,53 @@ const CaAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
 
   return (
     <>
-      <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
-      <h1>add category</h1>
-      <form onSubmit={handleSubmit}>
-        <label>type: 
-        <select name="type" value={form.type} onChange={handleChange}>
-          {typeOptions.map(opt => (
-          <option key={opt.id} value={opt.id}>{opt.name}</option>
-          ))}
-        </select>
-        </label>
-        <label>name: <input type="text" name="name" value={form.name} onChange={handleChange} /></label>
-        <Button type="submit" variant="primary">add</Button>
-      </form>
+      <div className={cls} tabIndex="-1" role="dialog" aria-modal="true" style={style}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+
+            <div className="modal-header justify-content-between">
+              <h1>add category</h1>
+              <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
+            </div>
+
+            <form onSubmit={handleSubmit}>
+
+              <div className="modal-body">
+                <label htmlFor="type" className="form-label">type:</label>
+                <select 
+                  name="type" 
+                  value={form.type} 
+                  onChange={handleChange}
+                  className="form-select mb-3"
+                  id="type"
+                >
+                  {typeOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+                
+                <label htmlFor="name" className="form-label">name:</label>
+                <input 
+                  type="text" 
+                  name="name" 
+                  value={form.name} 
+                  onChange={handleChange}
+                  className="form-control"
+                  id="name"
+                />
+              </div>
+
+              <div className="modal-footer">
+                <Button type="submit" variant="primary">add</Button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+      <div className="modal-backdrop fade show"></div>
     </>
   );
 };

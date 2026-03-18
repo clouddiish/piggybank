@@ -69,30 +69,49 @@ const CategoriesPage = () => {
 	return (
     <>
       <Navbar />
-      <h1>categories</h1>
-      <Button icon={FiPlus} variant="primary" onClick={() => setIsAddModalOpen(true)}>add</Button>
-      <h2>income</h2>
-      {incomeCategories.map(category => (
-        <CaCard 
-          key={category.id} 
-          category={category} 
-          onClick={() => {
-            setEditingCategoryId(category.id);
-            setIsEditModalOpen(true);
-          }} 
-        />
-      ))}
-      <h2>expense</h2>
-      {expenseCategories.map(category => (
-        <CaCard 
-          key={category.id} 
-          category={category} 
-          onClick={() => {
-            setEditingCategoryId(category.id);
-            setIsEditModalOpen(true);
-          }} 
-        />
-      ))}
+      <div className="mx-md-5 mx-2 py-3 align-items-center">
+        <h1 className="mb-5">categories</h1>
+        <div className="row mb-5">
+          <div className="col-12 col-md-auto">
+            <Button 
+              icon={FiPlus} 
+              variant="primary" 
+              onClick={() => setIsAddModalOpen(true)}
+              className="w-100"
+            >
+              add
+            </Button>
+          </div>
+        </div>
+        <div className="mb-5">
+        <h2 className="mb-3">income</h2>
+          {incomeCategories.map(category => (
+            <CaCard 
+              key={category.id} 
+              category={category} 
+              onClick={() => {
+                setEditingCategoryId(category.id);
+                setIsEditModalOpen(true);
+              }} 
+            />
+          ))}
+        </div>
+        <div className="mb-5">
+          <h2 className="mb-3">expense</h2>
+          {expenseCategories.map(category => (
+            <CaCard 
+              key={category.id} 
+              category={category} 
+              onClick={() => {
+                setEditingCategoryId(category.id);
+                setIsEditModalOpen(true);
+              }} 
+            />
+          ))}
+        </div>
+
+      </div>
+
       <CaAddModal
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}

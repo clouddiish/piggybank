@@ -184,7 +184,6 @@ const TransactionsPage = () => {
         categoryOptions={categoryOptions}
         onFilter={handleFilter}
       />
-      
       <TrAddModal
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}

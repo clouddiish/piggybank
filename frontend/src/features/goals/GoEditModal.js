@@ -16,9 +16,21 @@ const initialState = {
     target_value: "",
 };
 
-const GoEditModal = ({ open, onClose, goalId, typeOptions = [], onEdit, onDelete}) => {
+const GoEditModal = ({ open, onClose, goalId, typeOptions = [], onEdit, onDelete, className }) => {
   const [form, setForm] = useState(initialState);
   const [categoryOptions, setCategoryOptions] = useState([]);
+
+  const cls = ["modal", "fade", open ? "show" : "", className].filter(Boolean).join(" ");
+  const style = open ? { display: "block" } : undefined;
+
+  useEffect(() => {
+      if (open) {
+        document.body.classList.add("modal-open");
+      } else {
+        document.body.classList.remove("modal-open");
+      }
+      return () => document.body.classList.remove("modal-open");
+    }, [open]);
 
   useEffect(() => {
     if (open && goalId) {
@@ -77,31 +89,93 @@ const GoEditModal = ({ open, onClose, goalId, typeOptions = [], onEdit, onDelete
 
   return (
     <>
-      <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
-      <h1>edit goal</h1>
-      <form onSubmit={handleSubmit}>
-        <label>type: 
-        <select name="type" value={form.type} onChange={handleChange}>
-          {typeOptions.map(opt => (
-          <option key={opt.id} value={opt.id}>{opt.name}</option>
-          ))}
-        </select>
-        </label>
-        <label>category: 
-        <select name="category" value={form.category} onChange={handleChange}>
-          <option value="">-- select category --</option>
-          {categoryOptions.map(opt => (
-          <option key={opt.id} value={opt.id}>{opt.name}</option>
-          ))}
-        </select>
-        </label>
-        <label>name: <input type="text" name="name" value={form.name} onChange={handleChange} /></label>
-        <label>start date: <input type="date" name="start_date" value={form.start_date} onChange={handleChange} /></label>
-        <label>end date: <input type="date" name="end_date" value={form.end_date} onChange={handleChange} /></label>
-        <label>target value: <input type="number" name="target_value" value={form.target_value} onChange={handleChange} /></label>
-        <Button type="submit" variant="primary">save</Button>
-        <Button type="button" onClick={handleDelete} variant="secondary" icon={FiTrash}>delete</Button>
-      </form>
+      <div className={cls} tabIndex="-1" role="dialog" aria-modal="true" style={style}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+
+            <div className="modal-header justify-content-between">
+              <h1>edit goal</h1>
+              <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
+            </div>
+
+            <form onSubmit={handleSubmit}>
+
+              <div className="modal-body">
+                <label htmlFor="type" className="form-label">type:</label>
+                <select 
+                  name="type" 
+                  value={form.type} 
+                  onChange={handleChange}
+                  className="form-select mb-3"
+                  id="type"
+                >
+                  {typeOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+                <label htmlFor="category" className="form-label">category:</label>
+                <select 
+                  name="category" 
+                  value={form.category} 
+                  onChange={handleChange}
+                  className="form-select mb-3"
+                  id="category"
+                >
+                  <option value="">-- select category --</option>
+                  {categoryOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+                <label htmlFor="name" className="form-label">name:</label>
+                <input 
+                  type="text" 
+                  name="name" 
+                  value={form.name} 
+                  onChange={handleChange} 
+                  className="form-control mb-3"
+                  id="name"
+                />
+                <label htmlFor="start-date" className="form-label">start date:</label>
+                <input 
+                  type="date" 
+                  name="start_date" 
+                  value={form.start_date} 
+                  onChange={handleChange}
+                  className="form-control mb-3"
+                  id="start-date"
+                />
+                <label htmlFor="end-date" className="form-label">end date:</label> 
+                <input 
+                  type="date" 
+                  name="end_date" 
+                  value={form.end_date} 
+                  onChange={handleChange}
+                  className="form-control mb-3"
+                  id="end-date"
+                />
+                <label htmlFor="target-value" className="form-label">target value:</label>
+                <input 
+                  type="number" 
+                  name="target_value" 
+                  value={form.target_value} 
+                  onChange={handleChange}
+                  className="form-control"
+                  id="target-value"
+                />
+              </div>
+              
+              <div className="modal-footer">
+                <Button type="submit" variant="primary">save</Button>
+                <Button type="button" onClick={handleDelete} variant="secondary" icon={FiTrash}>delete</Button>
+              </div>
+            
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+      <div className="modal-backdrop fade show"></div>
     </>
   );
 };

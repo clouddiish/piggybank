@@ -1,9 +1,8 @@
-const GoCard = ({ 
-  goal,
-  onClick
-}) => {
+const GoCard = ({ goal, onClick, className }) => {
+  const cls = ["border rounded text-bg-secondary pt-2 mb-3", className].filter(Boolean).join(" ");
+
   return (
-    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }} className="col-md-12 col-sm-4 container my-1 border rounded pt-1">
+    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }} className={cls}>
       <p className="text-center fw-bold">{goal.name}</p>
       <p className="text-center fw-bold">{goal.current_value + "/" + goal.target_value}</p>
       <p className="text-center">{goal.start_date + " - " + goal.end_date}</p>

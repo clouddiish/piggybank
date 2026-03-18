@@ -144,22 +144,33 @@ const GoalsPage = () => {
 	return (
     <>
       <Navbar />
-      <h1>goals</h1>
-      <Button
-        variant="secondary"
-        icon={FiFilter}
-        onClick={() => setIsFilterModalOpen(true)}
-      >
-        filter
-      </Button>
-      <Button 
-        variant="primary" 
-        icon={FiPlus}
-        onClick={() => setIsAddModalOpen(true)}
-      >
-        add
-      </Button>
-      {goCards}
+      <div className="mx-md-5 mx-2 py-3 align-items-center">
+        <h1 className="mb-5">goals</h1>
+        <div className="row mb-5">
+          <div className="col-6 col-md-auto">
+            <Button
+              variant="secondary"
+              icon={FiFilter}
+              onClick={() => setIsFilterModalOpen(true)}
+              className="w-100"
+            >
+              filter
+            </Button>
+          </div>
+          <div className="col-6 col-md-auto">
+            <Button 
+              variant="primary" 
+              icon={FiPlus}
+              onClick={() => setIsAddModalOpen(true)}
+              className="w-100"
+            >
+              add
+            </Button>
+          </div>
+        </div>
+        {goCards}
+      </div>
+
       <GoFilterModal
         open={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}

@@ -13,9 +13,21 @@ const initialState = {
     comment: ""
 };
 
-const TrAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
+const TrAddModal = ({ open, onClose, typeOptions = [], onAdd, className}) => {
   const [form, setForm] = useState(initialState);
-  const [ categoryOptions, setCategoryOptions ] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+
+  const cls = ["modal", "fade", open ? "show" : "", className].filter(Boolean).join(" ");
+  const style = open ? { display: "block" } : undefined;
+
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+    return () => document.body.classList.remove("modal-open");
+  }, [open]);
 
   useEffect(() => {
     if (open && typeOptions.length > 0) {
@@ -47,29 +59,83 @@ const TrAddModal = ({ open, onClose, typeOptions = [], onAdd }) => {
 
   return (
     <>
-      <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
-      <h1>add transaction</h1>
-      <form onSubmit={handleSubmit}>
-        <label>type: 
-        <select name="type" value={form.type} onChange={handleChange}>
-          {typeOptions.map(opt => (
-          <option key={opt.id} value={opt.id}>{opt.name}</option>
-          ))}
-        </select>
-        </label>
-        <label>category: 
-        <select name="category" value={form.category} onChange={handleChange}>
-          <option value="">-- select category --</option>
-          {categoryOptions.map(opt => (
-          <option key={opt.id} value={opt.id}>{opt.name}</option>
-          ))}
-        </select>
-        </label>
-        <label>date: <input type="date" name="date" value={form.date} onChange={handleChange} /></label>
-        <label>value: <input type="number" name="value" value={form.value} onChange={handleChange} /></label>
-        <label>comment: <input type="text" name="comment" value={form.comment} onChange={handleChange} /></label>
-        <Button type="submit" variant="primary">add</Button>
-      </form>
+      <div className={cls} tabIndex="-1" role="dialog" aria-modal="true" style={style}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+
+            <div className="modal-header justify-content-between">
+              <h1>add transaction</h1>
+              <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
+            </div>
+
+            <form onSubmit={handleSubmit}>
+
+              <div className="modal-body">
+                <label htmlFor="type" className="form-label">type:</label>
+                <select 
+                  name="type" 
+                  value={form.type} 
+                  onChange={handleChange}
+                  className="form-select mb-3"
+                  id="type"
+                >
+                  {typeOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+                <label htmlFor="category" className="form-label">category:</label>
+                <select 
+                  name="category" 
+                  value={form.category} 
+                  onChange={handleChange}
+                  className="form-select mb-3"
+                  id="category"
+                >
+                  <option value="">-- select category --</option>
+                  {categoryOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+                <label htmlFor="date" className="form-label">date:</label> 
+                <input 
+                  type="date" 
+                  name="date" 
+                  value={form.date} 
+                  onChange={handleChange}
+                  className="form-control mb-3"
+                  id="date"
+                />
+                <label htmlFor="value" className="form-label">value:</label> 
+                <input 
+                  type="number" 
+                  name="value" 
+                  value={form.value} 
+                  onChange={handleChange}
+                  className="form-control mb-3"
+                  id="value"
+                />
+                <label htmlFor="comment" className="form-label">comment:</label>
+                <input 
+                  type="text" 
+                  name="comment" 
+                  value={form.comment} 
+                  onChange={handleChange}
+                  className="form-control"
+                  id="comment"
+                />
+              </div>
+              
+              <div className="modal-footer">
+                <Button type="submit" variant="primary">add</Button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+      <div className="modal-backdrop fade show"></div>
     </>
   );
 };

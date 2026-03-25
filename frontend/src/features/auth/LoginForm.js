@@ -20,6 +20,10 @@ const LoginForm = ({ onLogin }) => {
       setEmailError("email is required");
       return false;
     }
+    if (value.length > 254) {
+      setEmailError("email must be at most 254 characters long");
+      return false;
+    }
     if (!emailRegex.test(value)) {
       setEmailError("enter a valid email address");
       return false;
@@ -31,6 +35,14 @@ const LoginForm = ({ onLogin }) => {
   const validatePassword = (value = password) => {
     if (!value) {
       setPasswordError("password is required");
+      return false;
+    }
+    if (value.length < 8) {
+      setPasswordError("password must be at least 8 characters long");
+      return false;
+    }
+    if (value.length > 128 ) {
+      setPasswordError("password must be at most 128 characters long");
       return false;
     }
     setPasswordError(null);

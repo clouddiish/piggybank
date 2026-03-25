@@ -66,6 +66,7 @@ class Settings(BaseSettings):
     secret_key: str = "changethis"
     access_token_expire_minutes: int = 15
     refresh_token_expire_hours: int = 24
+    comment_disallowed_chars: str = r"[<>&\"'\\|~]"
 
     @property
     def secure_cookies(self) -> bool:

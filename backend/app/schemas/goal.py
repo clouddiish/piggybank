@@ -1,16 +1,23 @@
 from datetime import date
 from typing import ClassVar
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, Field, field_validator
 
 
 class GoalBase(BaseModel):
     type_id: int
     category_id: int | None = None
-    name: str
+    name: str = Field(min_length=1, max_length=255)
     start_date: date
     end_date: date
     target_value: float
+
+    @field_validator("name", mode="before")
+    def validate_name(cls, v: str) -> str:
+        v = v.strip()  # trim whitespace
+        if not v.replace(" ", "").isalnum():  # allow only alphanumeric + spaces
+            raise ValueError("name must only contain alphanumeric characters and spaces")
+        return v
 
     @model_validator(mode="after")
     def check_dates(cls, model):

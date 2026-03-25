@@ -21,7 +21,7 @@ class TestTransactionSchemas:
 
     @pytest.mark.anyio
     async def test_TransactionCreate__optional_fields_none(self):
-        data = {"type_id": 1, "category_id": None, "date": date.today(), "value": 20.0, "comment": None}
+        data = {"type_id": 1, "date": date.today(), "value": 20.0}
         transaction = TransactionCreate(**data)
 
         assert transaction.category_id is None
@@ -50,6 +50,36 @@ class TestTransactionSchemas:
             TransactionCreate(**data)
 
         assert "validation error for" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_TransactionCreate__comment_too_long(self):
+        data = {"type_id": 1, "category_id": 2, "date": date.today(), "value": 100.5, "comment": "A" * 256}
+        with pytest.raises(ValidationError) as e:
+            TransactionCreate(**data)
+
+        assert "comment should have at most 255 characters" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_TransactionCreate__comment_contains_invalid_characters(self):
+        data = {"type_id": 1, "category_id": 2, "date": date.today(), "value": 100.5, "comment": "Invalid < character"}
+        with pytest.raises(ValidationError) as e:
+            TransactionCreate(**data)
+
+        assert "comment contains invalid characters" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_TransactionCreate__comment_contains_control_characters(self):
+        data = {
+            "type_id": 1,
+            "category_id": 2,
+            "date": date.today(),
+            "value": 100.5,
+            "comment": "Invalid \x01 character",
+        }
+        with pytest.raises(ValidationError) as e:
+            TransactionCreate(**data)
+
+        assert "comment contains control characters" in str(e.value)
 
     @pytest.mark.anyio
     async def test_TransactionUpdate__all_ok(self):

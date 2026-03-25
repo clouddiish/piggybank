@@ -1,10 +1,17 @@
 from typing import ClassVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 
 class CategoryBase(BaseModel):
-    name: str
+    name: str = Field(min_length=1, max_length=255)
+
+    @field_validator("name", mode="before")
+    def validate_name(cls, v: str) -> str:
+        v = v.strip()  # trim whitespace
+        if not v.replace(" ", "").isalnum():  # allow only alphanumeric + spaces
+            raise ValueError("name must only contain alphanumeric characters and spaces")
+        return v
 
 
 class CategoryCreate(CategoryBase):

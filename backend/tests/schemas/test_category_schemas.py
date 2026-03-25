@@ -15,6 +15,14 @@ class TestCategorySchemas:
         assert category.name == "Food"
 
     @pytest.mark.anyio
+    async def test_CategoryCreate__name_trims_whitespaces(self):
+        data = {"type_id": 1, "name": "  Food  "}
+        category = CategoryCreate(**data)
+
+        assert category.type_id == 1
+        assert category.name == "Food"
+
+    @pytest.mark.anyio
     async def test_CategoryCreate__extra_field(self):
         data = {"type_id": 1, "name": "Food", "extra": "not allowed"}
         with pytest.raises(ValidationError) as e:
@@ -37,6 +45,28 @@ class TestCategorySchemas:
             CategoryCreate(**data)
 
         assert "validation error for" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_CategoryCreate__name_too_short(self):
+        data = {"type_id": 1, "name": ""}
+        with pytest.raises(ValidationError) as e:
+            CategoryCreate(**data)
+
+    @pytest.mark.anyio
+    async def test_CategoryCreate__name_too_long(self):
+        data = {"type_id": 1, "name": "A" * 256}
+        with pytest.raises(ValidationError) as e:
+            CategoryCreate(**data)
+
+        assert "String should have at most 255 characters" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_CategoryCreate__name_contains_special_characters(self):
+        data = {"type_id": 1, "name": "Food<"}
+        with pytest.raises(ValidationError) as e:
+            CategoryCreate(**data)
+
+        assert "name must only contain alphanumeric characters and spaces" in str(e.value)
 
     @pytest.mark.anyio
     async def test_CategoryUpdate__all_ok(self):

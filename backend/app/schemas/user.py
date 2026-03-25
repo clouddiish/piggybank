@@ -1,22 +1,28 @@
 from typing import ClassVar
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, field_validator
 
 
 class UserBase(BaseModel):
-    email: str
+    email: EmailStr
+
+    @field_validator("email", mode="before")
+    def strip_lower_email(cls, v: str) -> str:
+        if isinstance(v, str):
+            return v.strip().lower()
+        return v
 
 
 class UserCreate(UserBase):
-    password: str = Field(min_length=8)
+    password: str = Field(min_length=8, max_length=128)
 
     model_config = {"extra": "forbid"}
 
 
 class UserUpdate(UserBase):
     role_id: int
-    old_password: str = Field(min_length=8)
-    new_password: str = Field(min_length=8)
+    old_password: str = Field(min_length=8, max_length=128)
+    new_password: str = Field(min_length=8, max_length=128)
 
     model_config = {"extra": "forbid"}
 
@@ -32,7 +38,7 @@ class UserOut(UserBase):
 
 class UserFilters(BaseModel):
     role_id: list[int] | None = None
-    email: list[str] | None = None
+    email: list[EmailStr] | None = None
 
     list_filters: ClassVar[list[str]] = ["role_id", "email"]
     gt_filters: ClassVar[list[str]] = []

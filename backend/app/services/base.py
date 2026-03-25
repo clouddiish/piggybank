@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.enums import EntityType
 from app.common.exceptions import EntityNotFoundException
 from app.core.logger import get_logger
+from app.utils.sanitization_utils import escape_like
 
 
 DatabaseModelT = TypeVar("DatabaseModelT")
@@ -86,7 +87,9 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
 
                 # keyword filters (ILIKE with ORs)
                 elif filter_name in filters.kw_filters and filter_values:
-                    statement = statement.where(or_(*(column.ilike(f"%{kw}%") for kw in filter_values)))
+                    statement = statement.where(
+                        or_(*(column.ilike(f"%{escape_like(kw)}%", escape="\\") for kw in filter_values))
+                    )
 
         query = await self.session.execute(statement)
         entities = query.scalars().all()
@@ -94,7 +97,7 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
 
     async def _validate_create(self, create_schema: CreateSchemaT, **kwargs) -> None:
         """
-        Validate create schmea.
+        Validate create schema.
 
         Args:
             schema (CreateSchemaT): The schema to validate.
@@ -147,7 +150,7 @@ class BaseService(Generic[DatabaseModelT, CreateSchemaT, UpdateSchemaT, FilterSc
 
     async def _validate_update(self, entity_id: int, update_schema: UpdateSchemaT, **kwargs) -> DatabaseModelT:
         """
-        Validate create schmea.
+        Validate update schema.
 
         Args:
             entity_id (int): The id of the entity to validate.

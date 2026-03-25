@@ -28,6 +28,25 @@ class TestGoalSchemas:
         assert goal.target_value == 1000.0
 
     @pytest.mark.anyio
+    async def test_GoalCreate__name_trims_whitespaces(self):
+        data = {
+            "type_id": 1,
+            "category_id": 2,
+            "name": "  test goal  ",
+            "start_date": date(2026, 1, 1),
+            "end_date": date(2026, 12, 31),
+            "target_value": 1000.0,
+        }
+        goal = GoalCreate(**data)
+
+        assert goal.type_id == 1
+        assert goal.category_id == 2
+        assert goal.name == "test goal"
+        assert goal.start_date == date(2026, 1, 1)
+        assert goal.end_date == date(2026, 12, 31)
+        assert goal.target_value == 1000.0
+
+    @pytest.mark.anyio
     async def test_GoalCreate__extra_field(self):
         data = {
             "type_id": 1,
@@ -82,6 +101,49 @@ class TestGoalSchemas:
             GoalCreate(**data)
 
         assert "end_date must be later than start_date" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_GoalCreate__name_too_short(self):
+        data = {
+            "type_id": 1,
+            "category_id": 2,
+            "name": "",
+            "start_date": date(2026, 1, 1),
+            "end_date": date(2026, 12, 31),
+            "target_value": 1000.0,
+        }
+        with pytest.raises(ValidationError) as e:
+            GoalCreate(**data)
+
+    @pytest.mark.anyio
+    async def test_GoalCreate__name_too_long(self):
+        data = {
+            "type_id": 1,
+            "category_id": 2,
+            "name": "A" * 256,
+            "start_date": date(2026, 1, 1),
+            "end_date": date(2026, 12, 31),
+            "target_value": 1000.0,
+        }
+        with pytest.raises(ValidationError) as e:
+            GoalCreate(**data)
+
+        assert "String should have at most 255 characters" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_GoalCreate__name_contains_special_characters(self):
+        data = {
+            "type_id": 1,
+            "category_id": 2,
+            "name": "test goal!",
+            "start_date": date(2026, 1, 1),
+            "end_date": date(2026, 12, 31),
+            "target_value": 1000.0,
+        }
+        with pytest.raises(ValidationError) as e:
+            GoalCreate(**data)
+
+        assert "name must only contain alphanumeric characters and spaces" in str(e.value)
 
     @pytest.mark.anyio
     async def test_GoalUpdate__all_ok(self):

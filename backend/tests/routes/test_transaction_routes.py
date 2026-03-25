@@ -127,6 +127,34 @@ class TestTransactionRoutes:
         assert data[0]["type_id"] == 2
 
     @pytest.mark.anyio
+    async def test_get_transactions__with_filters_escaped_chars(
+        self, client_fixture: AsyncClient, admin_token: str
+    ) -> None:
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={
+                "type_id": 1,
+                "category_id": None,
+                "date": "2025-01-05",
+                "value": 10,
+                "comment": r"transaction with % in comment",
+            },
+        )
+        await client_fixture.post(
+            "/transactions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type_id": 2, "category_id": None, "date": "2025-01-06", "value": 20, "comment": "other transaction"},
+        )
+
+        response = await client_fixture.get(
+            r"/transactions?comment=%", headers={"Authorization": f"Bearer {admin_token}"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) == 1
+
+    @pytest.mark.anyio
     async def test_get_transactions__not_logged(self, client_fixture: AsyncClient) -> None:
         response = await client_fixture.get("/transactions")
         assert response.status_code == 401

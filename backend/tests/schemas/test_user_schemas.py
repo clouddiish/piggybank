@@ -15,6 +15,14 @@ class TestUserSchemas:
         assert user.password == "strongpass"
 
     @pytest.mark.anyio
+    async def test_UserCreate__all_ok_lowercase_email(self):
+        data = {"email": "Test@Example.com", "password": "strongpass"}
+        user = UserCreate(**data)
+
+        assert user.email == "test@example.com"
+        assert user.password == "strongpass"
+
+    @pytest.mark.anyio
     async def test_UserCreate__extra_field(self):
         data = {
             "email": "test@example.com",
@@ -42,12 +50,26 @@ class TestUserSchemas:
         assert "Input should be a valid string" in str(e.value)
 
     @pytest.mark.anyio
+    async def test_UserCreate__wrong_email_str(self):
+        data = {"email": "test", "password": "strongpass"}
+        with pytest.raises(ValidationError) as e:
+            UserCreate(**data)
+
+    @pytest.mark.anyio
     async def test_UserCreate__password_too_short(self):
         data = {"email": "test@example.com", "password": "short"}
         with pytest.raises(ValidationError) as e:
             UserCreate(**data)
 
         assert "String should have at least 8 characters" in str(e.value)
+
+    @pytest.mark.anyio
+    async def test_UserCreate__password_too_long(self):
+        data = {"email": "test@example.com", "password": "a" * 129}
+        with pytest.raises(ValidationError) as e:
+            UserCreate(**data)
+
+        assert "String should have at most 128 characters" in str(e.value)
 
     @pytest.mark.anyio
     async def test_UserUpdate__all_ok(self):

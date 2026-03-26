@@ -46,7 +46,7 @@ const RegisterForm = ({ onRegister }) => {
     return (
       <div className="row">
   			<div className="col-12 col-md-6">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} aria-busy={loading}>
             <div className="mb-1">
               <label htmlFor="email" className="form-label">email</label>
               <input

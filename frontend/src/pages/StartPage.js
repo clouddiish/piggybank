@@ -10,7 +10,7 @@ const StartPage = () => {
     <div className="mx-md-5 mx-2 py-5 align-items-center vh-100">
 
       <div className="my-5">
-        <h1 className="display-1 fw-bold">
+        <h1 className="display-1 fw-bold mb-3">
           <FaPiggyBank className="me-3"/>
           piggybank
         </h1>

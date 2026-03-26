@@ -36,10 +36,16 @@ client.interceptors.response.use(
         if (!publicPaths.includes(window.location.pathname)) {
           window.location.href = "/";
         }
-        // sessionStorage.setItem("refreshFailed", "true");
         return Promise.reject(error);
       }
+    } else if (
+      error.message === "Network Error" &&
+      window.location.pathname !== "/error"
+    ) {
+      console.error("Network error detected, redirecting to error page.");
+      window.location.href = "/error";
     }
+
     return Promise.reject(error);
   }
 );

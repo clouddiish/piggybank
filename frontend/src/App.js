@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import './styles/style.css';
 import client from "./api/client";
 import CategoriesPage from "./pages/CategoriesPage";
+import ErrorPage from "./pages/ErrorPage";
 import GoalsPage from "./pages/GoalsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -39,6 +40,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} /> 
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/register-success" element={<RegisterSuccessPage />} />
+            <Route path="/error" element={<ErrorPage />} />
             <Route path="/*" element={<Navigate to="/" replace />} />
           </>
         ) : (
@@ -47,6 +49,7 @@ function App() {
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/goals" element={<GoalsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/error" element={<ErrorPage />} />
             <Route path="/*" element={<Navigate to="/transactions" replace />} />
           </>
         )}

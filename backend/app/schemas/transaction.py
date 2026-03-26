@@ -27,7 +27,7 @@ class TransactionBase(BaseModel):
             raise ValueError("comment should have at most 255 characters")
 
         # disallow dangerous characters
-        if re.search(settings.comment_disallowed_chars, v):
+        if re.search(settings.comment_disallowed_chars_regex, v):
             raise ValueError("comment contains invalid characters")
 
         # disallow control characters

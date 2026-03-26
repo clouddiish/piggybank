@@ -1,65 +1,21 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import Button from "../../components/Button";
+import useAuthValidation from "../../hooks/useAuthValidation";
 
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const LoginForm = ({ onLogin }) => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+  const [loginError, setLoginError] = useState(null);
+  const { validationErrors, validateEmail, validatePassword } = useAuthValidation();
 
-  const validateEmail = (value = email) => {
-    if (!value) {
-      setEmailError("email is required");
-      return false;
-    }
-    if (value.length > 254) {
-      setEmailError("email must be at most 254 characters long");
-      return false;
-    }
-    if (!emailRegex.test(value)) {
-      setEmailError("enter a valid email address");
-      return false;
-    }
-    setEmailError(null);
-    return true;
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoginError(null);
 
-  const validatePassword = (value = password) => {
-    if (!value) {
-      setPasswordError("password is required");
-      return false;
-    }
-    if (value.length < 8) {
-      setPasswordError("password must be at least 8 characters long");
-      return false;
-    }
-    if (value.length > 128 ) {
-      setPasswordError("password must be at most 128 characters long");
-      return false;
-    }
-    setPasswordError(null);
-    return true;
-  };
-
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-    setError(null);
-
-    if (!validateEmail()) {
-      emailRef.current?.focus();
-      return;
-    }
-
-    if (!validatePassword()) {
-      passwordRef.current?.focus();
+    if (!validateEmail(email) || !validatePassword(password)) {
       return;
     }
 
@@ -74,35 +30,37 @@ const LoginForm = ({ onLogin }) => {
         data?.detail || data?.message || (typeof data === "string" ? data : null);
 
       if (status === 401) {
-        setError(backendMsg || "Invalid email or password.");
+        setLoginError(backendMsg || "invalid email or password");
       } else if (status >= 500) {
-        setError(backendMsg || "Server error - please try again later.");
+        setLoginError(backendMsg || "server error - please try again later");
       } else if (err?.request) {
-        setError("Network error - please check your connection.");
+        setLoginError("network error - please check your connection");
       } else {
-        setError(err?.message || "An unexpected error occurred.");
+        setLoginError(err?.message || "an unexpected error occurred");
       }
     } finally {
       setLoading(false);
     }
   };
 
-	return (
-		<div className="row">
+  return (
+    <div className="row">
       <div className="col-12 col-md-6">
         <form onSubmit={handleSubmit} aria-busy={loading}>
           <div className="mb-1">
             <label htmlFor="email" className="form-label">email</label>
             <input
               id="email"
-              ref={emailRef}
               type="email"
               value={email}
-              onChange={(e) => { setEmail(e.target.value); if (emailError) validateEmail(e.target.value); }}
-              onBlur={() => validateEmail()}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (validationErrors.email) validateEmail(e.target.value);
+              }}
+              onBlur={() => validateEmail(email)}
               required
               placeholder="email@example.com"
-              className={`form-control ${emailError ? "is-invalid" : ""}`}
+              className={`form-control ${validationErrors.email ? "is-invalid" : ""}`}
             />
             <div
               className="invalid-feedback"
@@ -110,25 +68,27 @@ const LoginForm = ({ onLogin }) => {
               aria-live="polite"
               style={{
                 display: "block",
-                visibility: emailError ? "visible" : "hidden",
+                visibility: validationErrors.email ? "visible" : "hidden",
                 minHeight: "1.25rem",
               }}
             >
-              {emailError || "\u00A0"}
+              {validationErrors.email || "\u00A0"}
             </div>
           </div>
           <div className="mb-1">
             <label htmlFor="password" className="form-label">password</label>
             <input
               id="password"
-              ref={passwordRef}
               type="password"
               value={password}
-              onChange={(e) => { setPassword(e.target.value); if (passwordError) validatePassword(e.target.value); }}
-              onBlur={() => validatePassword()}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (validationErrors.password) validatePassword(e.target.value);
+              }}
+              onBlur={() => validatePassword(password)}
               required
               placeholder="password"
-              className={`form-control ${passwordError ? "is-invalid" : ""}`}
+              className={`form-control ${validationErrors.password ? "is-invalid" : ""}`}
             />
             <div
               className="invalid-feedback"
@@ -136,32 +96,32 @@ const LoginForm = ({ onLogin }) => {
               aria-live="polite"
               style={{
                 display: "block",
-                visibility: passwordError ? "visible" : "hidden",
+                visibility: validationErrors.password ? "visible" : "hidden",
                 minHeight: "1.25rem",
               }}
             >
-              {passwordError || "\u00A0"}
+              {validationErrors.password || "\u00A0"}
             </div>
           </div>
-          <div 
-            className="alert alert-danger" 
-            role="alert" 
+          <div
+            className="alert alert-danger"
+            role="alert"
             aria-live="polite"
             style={{
               display: "block",
-              visibility: error ? "visible" : "hidden",
+              visibility: loginError ? "visible" : "hidden",
               minHeight: "1.25rem",
             }}
           >
-            {error || "\u00A0"}
+            {loginError || "\u00A0"}
           </div>
           <Button type="submit" variant="primary" className="w-100" disabled={loading}>
             {loading ? "logging in..." : "login"}
           </Button>
         </form>
       </div>
-		</div>
-	);
+    </div>
+  );
 };
 
 export default LoginForm;

@@ -27,36 +27,50 @@ const TransactionsPage = () => {
   const [editingTransactionId, setEditingTransactionId] = useState(null);
 
   useEffect(() => {
-    Promise.all([getTypes(), getCategories()])
-      .then(([typesRes, categoriesRes]) => {
-        const typeObj = {};
-        typesRes.data.forEach(t => { typeObj[t.id] = t.name; });
-        setTypeMap(typeObj);
+    const fetchTypesAndCategories = async () => {
+      const [typesRes, categoriesRes] = await Promise.all([getTypes(), getCategories()]);
 
-        const categoryObj = {};
-        categoriesRes.data.forEach(c => { categoryObj[c.id] = c.name; });
-        setCategoryMap(categoryObj);
-    });
+      const typeObj = {};
+      typesRes.data.forEach(t => { typeObj[t.id] = t.name; });
+      setTypeMap(typeObj);
+
+      const categoryObj = {};
+      categoriesRes.data.forEach(c => { categoryObj[c.id] = c.name; });
+      setCategoryMap(categoryObj);
+    }
+    fetchTypesAndCategories();
   }, []);
 
   useEffect(() => {
-    getTransactions(filters)
-      .then((res) => setTransactions(res.data))
-      .catch(() => setTransactions([]));
+    const fetchTransactions = async () => { 
+      const res = await getTransactions(filters);
+      setTransactions(res.data);
+    };
+    fetchTransactions();
   }, [filters]);
 
   useEffect(() => {
-    if (Object.keys(typeMap).length === 0) return;
+    const fetchTotals = async () => {
+      if (Object.keys(typeMap).length === 0) return;
 
-    const incomeTypeId = Object.keys(typeMap).find(id => typeMap[id] === "income");
-    const expenseTypeId = Object.keys(typeMap).find(id => typeMap[id] === "expense");
+      const incomeTypeId = Object.keys(typeMap).find(id => typeMap[id] === "income");
+      const expenseTypeId = Object.keys(typeMap).find(id => typeMap[id] === "expense");
 
-    if (incomeTypeId) {
-      getTransactionsTotal({ type_id: incomeTypeId, ...filters }).then(res => setIncomeTotal(res.data.total));
-    }
-    if (expenseTypeId) {
-      getTransactionsTotal({ type_id: expenseTypeId, ...filters }).then(res => setExpensesTotal(res.data.total));
-    }
+      try {
+        if (incomeTypeId) {
+          const incomeRes = await getTransactionsTotal({ type_id: incomeTypeId, ...filters });
+          setIncomeTotal(incomeRes.data.total);
+        }
+        if (expenseTypeId) {
+          const expenseRes = await getTransactionsTotal({ type_id: expenseTypeId, ...filters });
+          setExpensesTotal(expenseRes.data.total);
+        }
+      } catch (error) {
+        console.error("Failed to fetch totals:", error);
+      }
+    };
+
+    fetchTotals();
   }, [typeMap, filters]);
 
   const handleFilter = (form) => {
@@ -71,7 +85,7 @@ const TransactionsPage = () => {
     setFilters(query);
   };
 
-  const handleAdd = (form) => {
+  const handleAdd = async (form) => {
     const query = {};
     if (form.type) query.type_id = form.type;
     if (form.category) query.category_id = form.category;
@@ -79,14 +93,12 @@ const TransactionsPage = () => {
     if (form.value) query.value = form.value;
     if (form.comment) query.comment = form.comment;
 
-    createTransaction(query)
-      .then(() => {
-        setIsAddModalOpen(false);
-        setFilters({ ...filters });
-      });
+    await createTransaction(query);
+    setIsAddModalOpen(false);
+    setFilters({ ...filters });
   };
 
-  const handleEdit = (form) => {
+  const handleEdit = async (form) => {
     const query = {};
     if (form.type) query.type_id = form.type;
     if (form.category && form.category !== "") query.category_id = form.category;
@@ -94,21 +106,17 @@ const TransactionsPage = () => {
     if (form.value) query.value = form.value;
     if (form.comment) query.comment = form.comment;
 
-    updateTransaction(editingTransactionId, query)
-      .then(() => {
-        setIsEditModalOpen(false);
-        setEditingTransactionId(null);
-        setFilters({ ...filters });
-      });
+    await updateTransaction(editingTransactionId, query);
+    setIsEditModalOpen(false);
+    setEditingTransactionId(null);
+    setFilters({ ...filters });
   };
 
-  const handleDelete = (transactionId) => {
-    deleteTransaction(transactionId)
-      .then(() => {
-        setIsEditModalOpen(false);
-        setEditingTransactionId(null);
-        setFilters({ ...filters });
-      });
+  const handleDelete = async (transactionId) => {
+    await deleteTransaction(transactionId);
+    setIsEditModalOpen(false);
+    setEditingTransactionId(null);
+    setFilters({ ...filters });
   };
 
   const mappedTransactions = transactions.map(tr => ({

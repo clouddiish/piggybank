@@ -53,7 +53,7 @@ const TrAddModal = ({ open, onClose, typeOptions = [], onAdd, className}) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setAddError(null);
 
@@ -64,7 +64,7 @@ const TrAddModal = ({ open, onClose, typeOptions = [], onAdd, className}) => {
     setLoading(true);
 
     try {
-      if (onAdd) onAdd(form);
+      if (onAdd) await onAdd(form);
       if (onClose) onClose();
     } catch (err) {
       const status = err?.response?.status;
@@ -110,7 +110,7 @@ const TrAddModal = ({ open, onClose, typeOptions = [], onAdd, className}) => {
             <form onSubmit={handleSubmit} aria-busy={loading}>
 
               <div className="modal-body">
-                <label htmlFor="type" className="form-label">type:</label>
+                <label htmlFor="type" className="form-label">type: *</label>
                 <select 
                   id="type"
                   name="type" 
@@ -135,7 +135,7 @@ const TrAddModal = ({ open, onClose, typeOptions = [], onAdd, className}) => {
                   <option key={opt.id} value={opt.id}>{opt.name}</option>
                   ))}
                 </select>
-                <label htmlFor="date" className="form-label">date:</label> 
+                <label htmlFor="date" className="form-label">date: *</label> 
                 <input 
                   id="date"
                   type="date" 
@@ -161,7 +161,7 @@ const TrAddModal = ({ open, onClose, typeOptions = [], onAdd, className}) => {
                 >
                   {validationErrors.date || "\u00A0"}
                 </div>
-                <label htmlFor="value" className="form-label">value:</label> 
+                <label htmlFor="value" className="form-label">value: *</label>
                 <input
                   id="value"
                   type="number" 

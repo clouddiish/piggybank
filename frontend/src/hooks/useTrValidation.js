@@ -6,27 +6,27 @@ const commentDisallowedCharsRegex = /[<>&"'\\|~]/;
 const useTrValidation = () => {
   const [validationErrors, setValidationErrors] = useState({});
 
-  const validateDate = (dateStr) => {
-    if (!dateStr) {
-      setValidationErrors((prev) => ({ ...prev, date: "date is required" }));
+  const validateDate = (dateStr, isRequired = true, fieldName = "date") => {
+    if (!dateStr && isRequired) {
+      setValidationErrors((prev) => ({ ...prev, [fieldName]: `${fieldName} is required` }));
       return false;
     }
     const date = new Date(dateStr);
-    if (isNaN(date.getTime())) {
-      setValidationErrors((prev) => ({ ...prev, date: "enter a valid date" }));
+    if (dateStr !== "" && isNaN(date.getTime())) {
+      setValidationErrors((prev) => ({ ...prev, [fieldName]: "enter a valid date" }));
       return false;
     }
-    setValidationErrors((prev) => ({ ...prev, date: null }));
+    setValidationErrors((prev) => ({ ...prev, [fieldName]: null }));
     return true;
   };
 
-  const validateValue = (value) => {
-    if (value === "" || value === null || value === undefined || isNaN(Number(value))) {
-      setValidationErrors((prev) => ({ ...prev, value: "value is required and must be a number" }));
+  const validateValue = (value, isRequired = true, fieldName = "value") => {
+    if (isRequired && (value === "" || value === null || value === undefined || isNaN(Number(value)))) {
+      setValidationErrors((prev) => ({ ...prev, [fieldName]: `${fieldName} is required and must be a number` }));
       return false;
     }
 
-    setValidationErrors((prev) => ({ ...prev, value: null }));
+    setValidationErrors((prev) => ({ ...prev, [fieldName]: null }));
     return true;
   };
 

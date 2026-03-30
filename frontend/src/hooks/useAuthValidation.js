@@ -23,20 +23,20 @@ const useAuthValidation = () => {
     return true;
   };
 
-  const validatePassword = (password) => {
+  const validatePassword = (password, fieldName = "password") => {
     if (!password) {
-      setValidationErrors((prev) => ({ ...prev, password: "password is required" }));
+      setValidationErrors((prev) => ({ ...prev, [fieldName]: "password is required" }));
       return false;
     }
     if (password.length < 8) {
-      setValidationErrors((prev) => ({ ...prev, password: "password must be at least 8 characters long" }));
+      setValidationErrors((prev) => ({ ...prev, [fieldName]: "password must be at least 8 characters long" }));
       return false;
     }
     if (password.length > 128) {
-      setValidationErrors((prev) => ({ ...prev, password: "password must be at most 128 characters long" }));
+      setValidationErrors((prev) => ({ ...prev, [fieldName]: "password must be at most 128 characters long" }));
       return false;
     }
-    setValidationErrors((prev) => ({ ...prev, password: null }));
+    setValidationErrors((prev) => ({ ...prev, [fieldName]: null }));
     return true;
   };
 

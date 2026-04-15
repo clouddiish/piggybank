@@ -105,11 +105,11 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
               <div className="modal-body">
                 <label htmlFor="type" className="form-label">type:</label>
                 <select 
+                  id="type"
                   name="type" 
                   value={form.type} 
                   onChange={handleChange}
                   className="form-select mb-3"
-                  id="type"
                 >
                   <option value="">-- select type --</option>
                   {typeOptions.map(opt => (
@@ -118,11 +118,11 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
                 </select>
                 <label htmlFor="category" className="form-label">category:</label>
                 <select 
+                  id="category"
                   name="category" 
                   value={form.category} 
                   onChange={handleChange}
                   className="form-select mb-3"
-                  id="category"
                 >
                   <option value="">-- select category --</option>
                   {categoryOptions.map(opt => (

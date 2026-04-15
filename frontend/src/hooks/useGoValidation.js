@@ -41,16 +41,16 @@ const useGoValidation = () => {
   const validateEndDateAfterStartDate = (startDateStr, endDateStr) => {
     if (!startDateStr || !endDateStr) {
       // if either date is missing, we can't validate this rule, so we consider it valid
-      setValidationErrors((prev) => ({ ...prev, end_date: null }));
+      setValidationErrors((prev) => ({ ...prev, endDate: null }));
       return true;
-    }
+    } 
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
-    if (endDate < startDate) {
-      setValidationErrors((prev) => ({ ...prev, end_date: "end date must be after start date" }));
+    if (endDate <= startDate) {
+      setValidationErrors((prev) => ({ ...prev, endDate: "end date must be after start date" }));
       return false;
     }
-    setValidationErrors((prev) => ({ ...prev, end_date: null }));
+    setValidationErrors((prev) => ({ ...prev, endDate: null }));
     return true;
   };
 

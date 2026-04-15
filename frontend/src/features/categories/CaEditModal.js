@@ -4,6 +4,7 @@ import { FiTrash } from "react-icons/fi";
 
 import { getCategory } from "../../api/categories.api";
 import Button from "../../components/Button";
+import useCaValidation from "../../hooks/useCaValidation";
 
 
 const initialState = {
@@ -12,6 +13,9 @@ const initialState = {
 
 const CaEditModal = ({ open, onClose, categoryId, onEdit, onDelete, className }) => {
   const [form, setForm] = useState(initialState);
+  const [loading, setLoading] = useState(false);
+  const [editError, setEditError] = useState(null);
+  const { validationErrors, validateName } = useCaValidation();
 
   const cls = ["modal", "fade", open ? "show" : "", className].filter(Boolean).join(" ");
   const style = open ? { display: "block" } : undefined;
@@ -44,15 +48,72 @@ const CaEditModal = ({ open, onClose, categoryId, onEdit, onDelete, className })
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onEdit) onEdit(form);
-    if (onClose) onClose();
+    setEditError(null);
+
+    if (!validateName(form.name)) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      if (onEdit) await onEdit(form);
+      if (onClose) onClose();
+    } catch (err) {
+      const status = err?.response?.status;
+      const data = err?.response?.data;
+      const backendMsg =
+        data?.detail || data?.message || (typeof data === "string" ? data : null);
+
+      if (status === 401) {
+        setEditError(backendMsg || "unauthorized - please log in");
+      } else if (status === 403) {
+        setEditError(backendMsg || "forbidden - you don't have permission to perform this action");
+      } else if (status === 404) {
+        setEditError(backendMsg || "not found - the requested resource was not found");
+      } else if (status === 422) {
+        setEditError(backendMsg || "validation error - please check your input");
+      } else if (status >= 500) {
+        setEditError(backendMsg || "server error - please try again later");
+      } else if (err?.request) {
+        setEditError("network error - please check your connection");
+      } else {
+        setEditError(err?.message || "an unexpected error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
+
   };
 
-  const handleDelete = () => {
-    if (onDelete) onDelete(categoryId);
-    if (onClose) onClose();
+  const handleDelete = async () => {
+    try {
+      if (onDelete) await onDelete(categoryId);
+      if (onClose) onClose();
+    } catch (err) {
+      const status = err?.response?.status;
+      const data = err?.response?.data;
+      const backendMsg =
+        data?.detail || data?.message || (typeof data === "string" ? data : null);
+
+      if (status === 401) {
+        setEditError(backendMsg || "unauthorized - please log in");
+      } else if (status === 403) {
+        setEditError(backendMsg || "forbidden - you don't have permission to perform this action");
+      } else if (status === 404) {
+        setEditError(backendMsg || "not found - the requested resource was not found");
+      } else if (status === 422) {
+        setEditError(backendMsg || "validation error - please check your input");
+      } else if (status >= 500) {
+        setEditError(backendMsg || "server error - please try again later");
+      } else if (err?.request) {
+        setEditError("network error - please check your connection");
+      } else {
+        setEditError(err?.message || "an unexpected error occurred");
+      }
+    }
   }
 
   if (!open) return null;
@@ -68,23 +129,56 @@ const CaEditModal = ({ open, onClose, categoryId, onEdit, onDelete, className })
               <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} aria-busy={loading}>
 
               <div className="modal-body">
-                <label htmlFor="name" className="form-label">name:</label>
+                <label htmlFor="name" className="form-label">name: *</label>
                 <input 
+                  id="name"
                   type="text" 
                   name="name" 
                   value={form.name} 
-                  onChange={handleChange}
-                  className="form-control"
-                  id="name"
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (validationErrors.name) validateName(e.target.value);
+                  }}
+                  onBlur={() => validateName(form.name)}
+                  required
+                  className={`form-control mb-1 ${validationErrors.name ? "is-invalid" : ""}`}
                 />
+                <div
+                  className="invalid-feedback"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: validationErrors.name ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {validationErrors.name || "\u00A0"}
+                </div>
               </div>
 
               <div className="modal-footer">
-                <Button type="submit" variant="primary">save</Button>
-                <Button type="button" onClick={handleDelete} variant="secondary" icon={FiTrash}>delete</Button>
+                <div
+                  className="alert alert-danger"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: editError ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {editError || "\u00A0"}
+                </div>
+                <Button type="submit" variant="primary" disabled={loading}>
+                  {loading ? "saving..." : "save"}
+                </Button>
+                <Button type="button" onClick={handleDelete} variant="secondary" icon={FiTrash} disabled={loading}>
+                  {loading ? "deleting..." : "delete"}
+                </Button>
               </div>
 
             </form>

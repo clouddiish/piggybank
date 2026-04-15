@@ -25,22 +25,26 @@ const GoalsPage = () => {
   const [editingGoalId, setEditingGoalId] = useState(null);
 
   useEffect(() => {
-    Promise.all([getTypes(), getCategories()])
-      .then(([typesRes, categoriesRes]) => {
-        const typeObj = {};
-        typesRes.data.forEach(t => { typeObj[t.id] = t.name; });
-        setTypeMap(typeObj);
+    const fetchTypesAndCategories = async () => {
+      const [typesRes, categoriesRes] = await Promise.all([getTypes(), getCategories()]);
 
-        const categoryObj = {};
-        categoriesRes.data.forEach(c => { categoryObj[c.id] = c.name; });
-        setCategoryMap(categoryObj);
-    });
+      const typeObj = {};
+      typesRes.data.forEach(t => { typeObj[t.id] = t.name; });
+      setTypeMap(typeObj);
+
+      const categoryObj = {};
+      categoriesRes.data.forEach(c => { categoryObj[c.id] = c.name; });
+      setCategoryMap(categoryObj);
+    }
+    fetchTypesAndCategories();
   }, []);
   
   useEffect(() => {
-    getGoals(filters)
-      .then((res) => setGoals(res.data))
-      .catch(() => setGoals([]));
+    const fetchGoals = async () => {
+      const res = await getGoals(filters);
+      setGoals(res.data);
+    }
+    fetchGoals();
   }, [filters]);
 
   useEffect(() => {
@@ -78,7 +82,7 @@ const GoalsPage = () => {
     setFilters(query);
   };
 
-  const handleAdd = (form) => {
+  const handleAdd = async (form) => {
     const query = {};
     if (form.type) query.type_id = form.type;
     if (form.category) query.category_id = form.category;
@@ -87,14 +91,12 @@ const GoalsPage = () => {
     if (form.end_date) query.end_date = form.end_date;
     if (form.target_value) query.target_value = form.target_value;
 
-    createGoal(query)
-      .then(() => {
-        setIsAddModalOpen(false);
-        setFilters({ ...filters });
-      });
+    await createGoal(query);
+    setIsAddModalOpen(false);
+    setFilters({ ...filters });
   };
   
-  const handleEdit = (form) => {
+  const handleEdit = async (form) => {
     const query = {};
     if (form.type) query.type_id = form.type;
     if (form.category && form.category !== "") query.category_id = form.category;
@@ -103,21 +105,17 @@ const GoalsPage = () => {
     if (form.end_date) query.end_date = form.end_date;
     if (form.target_value) query.target_value = form.target_value;
 
-    updateGoal(editingGoalId, query)
-      .then(() => {
-        setIsEditModalOpen(false);
-        setEditingGoalId(null);
-        setFilters({ ...filters });
-      });
+    await updateGoal(editingGoalId, query);
+    setIsEditModalOpen(false);
+    setEditingGoalId(null);
+    setFilters({ ...filters });
   };
   
-  const handleDelete = (goalId) => {
-    deleteGoal(goalId)
-      .then(() => {
-        setIsEditModalOpen(false);
-        setEditingGoalId(null);
-        setFilters({ ...filters });
-      });
+  const handleDelete = async (goalId) => {
+    await deleteGoal(goalId);
+    setIsEditModalOpen(false);
+    setEditingGoalId(null);
+    setFilters({ ...filters });
   };
 
   const mappedGoals = goals.map(goal => ({

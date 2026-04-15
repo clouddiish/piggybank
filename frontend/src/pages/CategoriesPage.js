@@ -18,49 +18,50 @@ const CategoriesPage = () => {
   const [editingCategoryId, setEditingCategoryId] = useState(null);
 
   useEffect(() => {
-    Promise.all([getTypes(), getCategories()])
-      .then(([typesRes, categoriesRes]) => {
-        const typeObj = {};
-        typesRes.data.forEach(t => { typeObj[t.name] = t.id; });
-        setTypeMap(typeObj);
-        
-        setCategories(categoriesRes.data);
-    });
+    const fetchTypesAndCategories = async () => {
+      const [typesRes, categoriesRes] = await Promise.all([getTypes(), getCategories()]);
+
+      const typeObj = {};
+      typesRes.data.forEach(t => { typeObj[t.name] = t.id; });
+      setTypeMap(typeObj);
+
+      setCategories(categoriesRes.data);
+    }
+    fetchTypesAndCategories();
   }, []);
 
-  const handleAdd = (form) => {
+  const handleAdd = async (form) => {
       const query = {};
       if (form.type) query.type_id = form.type;
       if (form.name) query.name = form.name;
-  
-      createCategory(query)
-        .then(() => {
-          setIsAddModalOpen(false);
-          getCategories().then(res => setCategories(res.data));
-        });
+
+      await createCategory(query);
+      setIsAddModalOpen(false);
+      
+      const updatedCategories = await getCategories();
+      setCategories(updatedCategories.data);
     };
 
-  const handleEdit = (form) => {
+  const handleEdit = async (form) => {
       const query = {};
       if (form.type) query.type_id = form.type;
       if (form.name) query.name = form.name;
-  
-      updateCategory(editingCategoryId, query)
-        .then(() => {
-          setIsEditModalOpen(false);
-          setEditingCategoryId(null);
-          getCategories().then(res => setCategories(res.data));
-        });
+
+      await updateCategory(editingCategoryId, query);
+      setIsEditModalOpen(false);
+      setEditingCategoryId(null);
+
+      const updatedCategories = await getCategories();
+      setCategories(updatedCategories.data);
     };
     
-    const handleDelete = (categoryId) => {
-      deleteCategory(categoryId)
-        .then(() => {
-          setIsEditModalOpen(false);
-          setEditingCategoryId(null);
-          getCategories().then(res => setCategories(res.data));
-        });
-    };
+  const handleDelete = async (categoryId) => {
+    await deleteCategory(categoryId);
+    setIsEditModalOpen(false);
+    setEditingCategoryId(null);
+    const updatedCategories = await getCategories();
+    setCategories(updatedCategories.data);
+  };
 
   const expenseCategories = categories.filter(c => c.type_id === typeMap["expense"]);
   const incomeCategories = categories.filter(c => c.type_id === typeMap["income"]);

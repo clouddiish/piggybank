@@ -97,7 +97,7 @@ const TrFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
               <Button onClick={onClose} icon={IoCloseOutline} variant="secondary" />
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} aria-busy={loading}>
 
               <div className="modal-body">
                   <label htmlFor="type" className="form-label">type:</label>

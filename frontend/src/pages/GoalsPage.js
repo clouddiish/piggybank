@@ -166,7 +166,7 @@ const GoalsPage = () => {
             </Button>
           </div>
         </div>
-        {goCards}
+        {goCards.length > 0 ? goCards : <p className="text-center">no goals found</p>}
       </div>
 
       <GoFilterModal

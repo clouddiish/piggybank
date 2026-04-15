@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 
 import Button from "../../components/Button";
+import useGoValidation from "../../hooks/useGoValidation";
+
 
 const initialState = {
     startDateFrom: "",
@@ -17,6 +19,9 @@ const initialState = {
 
 const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], onFilter, className }) => {
   const [form, setForm] = useState(initialState);
+  const [loading, setLoading] = useState(false);
+  const [filterError, setFilterError] = useState(null);
+  const { validationErrors, validateName, validateDate, validateValue } = useGoValidation();
 
   const cls = ["modal", "fade", open ? "show" : "", className].filter(Boolean).join(" ");
   const style = open ? { display: "block" } : undefined;
@@ -41,8 +46,45 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onFilter) onFilter(form);
-    if (onClose) onClose();
+    setFilterError(null);
+
+    const isStartDateFromValid = validateDate(form.startDateFrom, false, "startDateFrom");
+    const isStartDateToValid = validateDate(form.startDateTo, false, "startDateTo");
+    const isEndDateFromValid = validateDate(form.endDateFrom, false, "endDateFrom");
+    const isEndDateToValid = validateDate(form.endDateTo, false, "endDateTo");
+    const isTargetValueFromValid = validateValue(form.targetValueFrom, false, "targetValueFrom");
+    const isTargetValueToValid = validateValue(form.targetValueTo, false, "targetValueTo");
+    const isNameValid = validateName(form.name, false);
+
+    if (!isStartDateFromValid || !isStartDateToValid || !isEndDateFromValid || !isEndDateToValid || !isTargetValueFromValid || !isTargetValueToValid || !isNameValid) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      if (onFilter) onFilter(form);
+      if (onClose) onClose();
+    } catch (err) {
+      const status = err?.response?.status;
+      const data = err?.response?.data;
+      const backendMsg =
+        data?.detail || data?.message || (typeof data === "string" ? data : null);
+      
+      if (status === 401) {
+        setFilterError(backendMsg || "unauthorized - please log in");
+      } else if (status === 422) {
+        setFilterError(backendMsg || "validation error - please check your input");
+      } else if (status >= 500) {
+        setFilterError(backendMsg || "server error - please try again later");
+      } else if (err?.request) {
+        setFilterError("network error - please check your connection");
+      } else {
+        setFilterError(err?.message || "an unexpected error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!open) return null;
@@ -63,40 +105,104 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
               <div className="modal-body">
                 <label htmlFor="start-date-from" className="form-label">start date from:</label>
                 <input 
+                  id="start-date-from"
                   type="date" 
                   name="startDateFrom" 
                   value={form.startDateFrom} 
-                  onChange={handleChange}
-                  className="form-control mb-3"
-                  id="start-date-from"
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (validationErrors.startDateFrom) validateDate(e.target.value, false, "startDateFrom");
+                  }}
+                  onBlur={() => validateDate(form.startDateFrom, false, "startDateFrom")}
+                  className={`form-control mb-1 ${validationErrors.startDateFrom ? "is-invalid" : ""}`}
                 />
+                <div
+                  className="invalid-feedback"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: validationErrors.startDateFrom ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {validationErrors.startDateFrom || "\u00A0"}
+                </div>
                 <label htmlFor="start-date-to" className="form-label">start date to:</label>
-                <input 
+                <input
+                  id="start-date-to"
                   type="date" 
                   name="startDateTo" 
                   value={form.startDateTo} 
-                  onChange={handleChange}
-                  className="form-control mb-3"
-                  id="start-date-to"
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (validationErrors.startDateTo) validateDate(e.target.value, false, "startDateTo");
+                  }}
+                  onBlur={() => validateDate(form.startDateTo, false, "startDateTo")}
+                  className={`form-control mb-1 ${validationErrors.startDateTo ? "is-invalid" : ""}`}
                 />
+                <div
+                  className="invalid-feedback"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: validationErrors.startDateTo ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {validationErrors.startDateTo || "\u00A0"}
+                </div>
                 <label htmlFor="end-date-from" className="form-label">end date from:</label>
-                <input 
+                <input
+                  id="end-date-from"
                   type="date" 
                   name="endDateFrom" 
                   value={form.endDateFrom} 
-                  onChange={handleChange}
-                  className="form-control mb-3"
-                  id="end-date-from"
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (validationErrors.endDateFrom) validateDate(e.target.value, false, "endDateFrom");
+                  }}
+                  onBlur={() => validateDate(form.endDateFrom, false, "endDateFrom")}
+                  className={`form-control mb-1 ${validationErrors.endDateFrom ? "is-invalid" : ""}`}
                 />
+                <div
+                  className="invalid-feedback"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: validationErrors.endDateFrom ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {validationErrors.endDateFrom || "\u00A0"}
+                </div>
                 <label htmlFor="end-date-to" className="form-label">end date to:</label>
-                <input 
+                <input
+                  id="end-date-to"
                   type="date" 
                   name="endDateTo" 
                   value={form.endDateTo} 
-                  onChange={handleChange}
-                  className="form-control mb-3"
-                  id="end-date-to"
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (validationErrors.endDateTo) validateDate(e.target.value, false, "endDateTo");
+                  }}
+                  onBlur={() => validateDate(form.endDateTo, false, "endDateTo")}
+                  className={`form-control mb-1 ${validationErrors.endDateTo ? "is-invalid" : ""}`}
                 />
+                <div
+                  className="invalid-feedback"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: validationErrors.endDateTo ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {validationErrors.endDateTo || "\u00A0"}
+                </div>
                 <label htmlFor="type" className="form-label">type:</label>
                 <select 
                   name="type" 
@@ -125,36 +231,98 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
                 </select>
                 <label htmlFor="target-value-from" className="form-label">target value from:</label> 
                 <input 
+                  id="target-value-from"
                   type="number" 
                   name="targetValueFrom" 
                   value={form.targetValueFrom} 
-                  onChange={handleChange}
-                  className="form-control mb-3"
-                  id="target-value-from"
-                />
+                  onChange={(e) => {
+                      handleChange(e);
+                      if (validationErrors.targetValueFrom) validateValue(e.target.value, false, "targetValueFrom");
+                    }}
+                    onBlur={() => validateValue(form.targetValueFrom, false, "targetValueFrom")}
+                    className={`form-control mb-1 ${validationErrors.targetValueFrom ? "is-invalid" : ""}`}
+                  />
+                  <div
+                    className="invalid-feedback"
+                    role="alert"
+                    aria-live="polite"
+                    style={{
+                      display: "block",
+                      visibility: validationErrors.targetValueFrom ? "visible" : "hidden",
+                      minHeight: "1.25rem",
+                    }}
+                  >
+                    {validationErrors.targetValueFrom || "\u00A0"}
+                  </div>
                 <label htmlFor="target-value-to" className="form-label">target value to:</label>
-                <input 
+                <input
+                  id="target-value-to"
                   type="number" 
                   name="targetValueTo" 
                   value={form.targetValueTo} 
-                  onChange={handleChange} 
-                  className="form-control mb-3"
-                  id="target-value-to"
-                />
+                  onChange={(e) => {
+                      handleChange(e);
+                      if (validationErrors.targetValueTo) validateValue(e.target.value, false, "targetValueTo");
+                    }}
+                    onBlur={() => validateValue(form.targetValueTo, false, "targetValueTo")}
+                    className={`form-control mb-1 ${validationErrors.targetValueTo ? "is-invalid" : ""}`}
+                  />
+                  <div
+                    className="invalid-feedback"
+                    role="alert"
+                    aria-live="polite"
+                    style={{
+                      display: "block",
+                      visibility: validationErrors.targetValueTo ? "visible" : "hidden",
+                      minHeight: "1.25rem",
+                    }}
+                  >
+                    {validationErrors.targetValueTo || "\u00A0"}
+                  </div>
                 <label htmlFor="name-contains" className="form-label">name contains:</label>
-                <input 
+                <input
+                  id="name-contains"
                   type="text" 
                   name="name" 
                   value={form.name} 
-                  onChange={handleChange}
-                  className="form-control"
-                  id="name-contains"
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (validationErrors.name) validateName(e.target.value, false);
+                  }}
+                  onBlur={() => validateName(form.name, false)}
+                  className={`form-control ${validationErrors.name ? "is-invalid" : ""}`}
                 />
+                <div
+                  className="invalid-feedback"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: validationErrors.name ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {validationErrors.name || "\u00A0"}
+                </div>
               </div>
               
               <div className="modal-footer">
+                <div
+                  className="alert alert-danger"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: filterError ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {filterError || "\u00A0"}
+                </div>
                 <Button type="button" variant="secondary" onClick={handleClear}>clear all</Button>
-                <Button type="submit" variant="primary">filter</Button>
+                <Button type="submit" variant="primary" disabled={loading}>
+                  {loading ? "filtering..." : "filter"}
+                </Button>
               </div>
 
             </form>

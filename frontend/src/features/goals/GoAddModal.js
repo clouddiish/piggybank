@@ -71,7 +71,7 @@ const GoAddModal = ({ open, onClose, typeOptions = [], onAdd, className }) => {
     setLoading(true);
 
     try {
-      if (onAdd) onAdd(form);
+      if (onAdd) await onAdd(form);
       if (onClose) onClose();
     } catch (err) {
       const status = err?.response?.status;

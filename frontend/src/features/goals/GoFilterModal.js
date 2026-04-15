@@ -103,6 +103,57 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
             <form onSubmit={handleSubmit}>
 
               <div className="modal-body">
+                <label htmlFor="type" className="form-label">type:</label>
+                <select 
+                  name="type" 
+                  value={form.type} 
+                  onChange={handleChange}
+                  className="form-select mb-3"
+                  id="type"
+                >
+                  <option value="">-- select type --</option>
+                  {typeOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+                <label htmlFor="category" className="form-label">category:</label>
+                <select 
+                  name="category" 
+                  value={form.category} 
+                  onChange={handleChange}
+                  className="form-select mb-3"
+                  id="category"
+                >
+                  <option value="">-- select category --</option>
+                  {categoryOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+                <label htmlFor="name-contains" className="form-label">name contains:</label>
+                <input
+                  id="name-contains"
+                  type="text" 
+                  name="name" 
+                  value={form.name} 
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (validationErrors.name) validateName(e.target.value, false);
+                  }}
+                  onBlur={() => validateName(form.name, false)}
+                  className={`form-control ${validationErrors.name ? "is-invalid" : ""}`}
+                />
+                <div
+                  className="invalid-feedback"
+                  role="alert"
+                  aria-live="polite"
+                  style={{
+                    display: "block",
+                    visibility: validationErrors.name ? "visible" : "hidden",
+                    minHeight: "1.25rem",
+                  }}
+                >
+                  {validationErrors.name || "\u00A0"}
+                </div>
                 <label htmlFor="start-date-from" className="form-label">start date from:</label>
                 <input 
                   id="start-date-from"
@@ -203,32 +254,6 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
                 >
                   {validationErrors.endDateTo || "\u00A0"}
                 </div>
-                <label htmlFor="type" className="form-label">type:</label>
-                <select 
-                  name="type" 
-                  value={form.type} 
-                  onChange={handleChange}
-                  className="form-select mb-3"
-                  id="type"
-                >
-                  <option value="">-- select type --</option>
-                  {typeOptions.map(opt => (
-                  <option key={opt.id} value={opt.id}>{opt.name}</option>
-                  ))}
-                </select>
-                <label htmlFor="category" className="form-label">category:</label>
-                <select 
-                  name="category" 
-                  value={form.category} 
-                  onChange={handleChange}
-                  className="form-select mb-3"
-                  id="category"
-                >
-                  <option value="">-- select category --</option>
-                  {categoryOptions.map(opt => (
-                  <option key={opt.id} value={opt.id}>{opt.name}</option>
-                  ))}
-                </select>
                 <label htmlFor="target-value-from" className="form-label">target value from:</label> 
                 <input 
                   id="target-value-from"
@@ -279,31 +304,6 @@ const GoFilterModal = ({ open, onClose, typeOptions = [], categoryOptions = [], 
                   >
                     {validationErrors.targetValueTo || "\u00A0"}
                   </div>
-                <label htmlFor="name-contains" className="form-label">name contains:</label>
-                <input
-                  id="name-contains"
-                  type="text" 
-                  name="name" 
-                  value={form.name} 
-                  onChange={(e) => {
-                    handleChange(e);
-                    if (validationErrors.name) validateName(e.target.value, false);
-                  }}
-                  onBlur={() => validateName(form.name, false)}
-                  className={`form-control ${validationErrors.name ? "is-invalid" : ""}`}
-                />
-                <div
-                  className="invalid-feedback"
-                  role="alert"
-                  aria-live="polite"
-                  style={{
-                    display: "block",
-                    visibility: validationErrors.name ? "visible" : "hidden",
-                    minHeight: "1.25rem",
-                  }}
-                >
-                  {validationErrors.name || "\u00A0"}
-                </div>
               </div>
               
               <div className="modal-footer">

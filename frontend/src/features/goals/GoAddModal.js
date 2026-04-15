@@ -54,7 +54,7 @@ const GoAddModal = ({ open, onClose, typeOptions = [], onAdd, className }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setAddError(null);
 

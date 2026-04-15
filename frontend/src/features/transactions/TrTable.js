@@ -24,7 +24,13 @@ const TrTable = ({transactions, onEditTransaction, className }) => {
         </tr>
       </thead>
       <tbody className="table-group-divider">
-        {rows}
+        {rows.length > 0 ? rows : (
+          <tr>
+            <td colSpan="3" className="text-center">
+              no transactions found
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

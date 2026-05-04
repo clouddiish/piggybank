@@ -1,16 +1,13 @@
 from functools import lru_cache
-from pathlib import Path
 from typing_extensions import Self
 
 from pydantic import model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 from app.common.enums import LogLevel
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parents[2] / ".env")
-
     # environment settings
     env: str = "prod"
 
@@ -25,28 +22,17 @@ class Settings(BaseSettings):
     postgres_user: str = "postgres"
     postgres_password: str = "changethis"
     postgres_db: str = "piggybankdb"
+    db_host: str = "changethis"
 
     @property
     def async_database_url(self) -> str:
-        if self.env == "local":
-            return (
-                f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@localhost:5432/{self.postgres_db}"
-            )
-        if self.env == "docker":
-            return f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@db:5432/{self.postgres_db}"
-        else:
-            raise ValueError(f"Unknown environment: {self.env}")
+        return (
+            f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@{self.db_host}:5432/{self.postgres_db}"
+        )
 
     @property
     def sync_database_url(self) -> str:
-        if self.env == "local":
-            return (
-                f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}@localhost:5432/{self.postgres_db}"
-            )
-        if self.env == "docker":
-            return f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}@db:5432/{self.postgres_db}"
-        else:
-            raise ValueError(f"Unknown environment: {self.env}")
+        return f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}@{self.db_host}:5432/{self.postgres_db}"
 
     initial_admin_email: str = "changethis"
     initial_admin_password: str = "changethis"
@@ -85,6 +71,7 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def _enforce_non_default_secrets(self) -> Self:
         self._check_default_secret("postgres_password", self.postgres_password)
+        self._check_default_secret("db_host", self.db_host)
         self._check_default_secret("initial_admin_email", self.initial_admin_email)
         self._check_default_secret("initial_admin_password", self.initial_admin_password)
         self._check_default_secret("secret_key", self.secret_key)

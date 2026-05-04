@@ -8,7 +8,6 @@ from app.core.session import get_session_context
 from app.core.seeder import seed_initial_data
 from app.routes import role, security, type, user, category, transaction, goal
 
-
 settings = get_settings()
 
 
@@ -39,7 +38,7 @@ app.include_router(goal.router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

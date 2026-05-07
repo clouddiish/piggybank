@@ -68,6 +68,9 @@ class Settings(BaseSettings):
             else:
                 print(f"WARNING: {message}")
 
+    # frontend settings
+    frontend_url: str = "changethis"
+
     @model_validator(mode="after")
     def _enforce_non_default_secrets(self) -> Self:
         self._check_default_secret("postgres_password", self.postgres_password)
@@ -75,6 +78,7 @@ class Settings(BaseSettings):
         self._check_default_secret("initial_admin_email", self.initial_admin_email)
         self._check_default_secret("initial_admin_password", self.initial_admin_password)
         self._check_default_secret("secret_key", self.secret_key)
+        self._check_default_secret("frontend_url", self.frontend_url)
 
         return self
 

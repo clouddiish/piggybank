@@ -11,7 +11,6 @@ from app.schemas import Token
 from app.services import UserService, get_user_service
 from app.services.security import authenticate_user, create_access_token, create_refresh_token, verify_refresh_token
 
-
 settings = get_settings()
 router = APIRouter(prefix="/token", tags=[Tag.security])
 
@@ -39,7 +38,7 @@ async def login(
         value=access_token,
         httponly=True,
         secure=settings.secure_cookies,
-        samesite="lax",
+        samesite="none",
         max_age=int(access_token_expires.total_seconds()),
         path="/",
     )
@@ -48,7 +47,7 @@ async def login(
         value=refresh_token,
         httponly=True,
         secure=settings.secure_cookies,
-        samesite="lax",
+        samesite="none",
         max_age=int(refresh_token_expires.total_seconds()),
         path="/",
     )
@@ -71,7 +70,7 @@ async def refresh_token(refresh_token: str = Cookie(None), response: Response = 
         value=access_token,
         httponly=True,
         secure=settings.secure_cookies,
-        samesite="lax",
+        samesite="none",
         max_age=int(access_token_expires.total_seconds()),
         path="/",
     )

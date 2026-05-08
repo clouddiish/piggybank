@@ -38,7 +38,7 @@ async def login(
         value=access_token,
         httponly=True,
         secure=settings.secure_cookies,
-        samesite="none",
+        samesite="none" if settings.secure_cookies else "lax",
         max_age=int(access_token_expires.total_seconds()),
         path="/",
     )
@@ -47,7 +47,7 @@ async def login(
         value=refresh_token,
         httponly=True,
         secure=settings.secure_cookies,
-        samesite="none",
+        samesite="none" if settings.secure_cookies else "lax",
         max_age=int(refresh_token_expires.total_seconds()),
         path="/",
     )
@@ -70,7 +70,7 @@ async def refresh_token(refresh_token: str = Cookie(None), response: Response = 
         value=access_token,
         httponly=True,
         secure=settings.secure_cookies,
-        samesite="none",
+        samesite="none" if settings.secure_cookies else "lax",
         max_age=int(access_token_expires.total_seconds()),
         path="/",
     )
@@ -80,6 +80,16 @@ async def refresh_token(refresh_token: str = Cookie(None), response: Response = 
 
 @router.post("/logout", responses=common_responses_dict)
 async def logout(response: Response = None):
-    response.delete_cookie(key="access_token", path="/", secure=settings.secure_cookies, samesite="none")
-    response.delete_cookie(key="refresh_token", path="/", secure=settings.secure_cookies, samesite="none")
+    response.delete_cookie(
+        key="access_token",
+        path="/",
+        secure=settings.secure_cookies,
+        samesite="none" if settings.secure_cookies else "lax",
+    )
+    response.delete_cookie(
+        key="refresh_token",
+        path="/",
+        secure=settings.secure_cookies,
+        samesite="none" if settings.secure_cookies else "lax",
+    )
     return {"detail": "Successfully logged out"}

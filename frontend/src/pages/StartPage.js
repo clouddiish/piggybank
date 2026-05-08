@@ -24,7 +24,6 @@ const StartPage = () => {
         <div className="col-12 col-md-auto">
           <Button variant="secondary" className="w-100" onClick={() => navigate('/register')}>register</Button>
         </div>
-        <div>Test for ci/cd</div>
       </div>
       
     </div>

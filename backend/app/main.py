@@ -50,9 +50,3 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "hello world!"}
-
-
-# test for ci/cd
-@app.get("/test")
-async def health():
-    return {"status": "test ok!"}

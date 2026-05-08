@@ -55,4 +55,4 @@ async def root():
 # test for ci/cd
 @app.get("/test")
 async def health():
-    return {"status": "test ok"}
+    return {"status": "test ok!"}

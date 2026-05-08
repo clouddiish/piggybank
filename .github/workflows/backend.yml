@@ -1,0 +1,45 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}}
+
+      - name: Login to ACR
+        run: az acr login --name piggybankacr
+
+      - name: Build and Push Image
+        run: |
+          IMAGE_TAG=${GITHUB_SHA::7}
+
+          docker build \
+            -t piggybankacr-dfbvbwchhta5bhdg.azurecr.io/piggybank-backend:$IMAGE_TAG \
+            ./backend
+
+          docker push \
+            piggybankacr-dfbvbwchhta5bhdg.azurecr.io/piggybank-backend:$IMAGE_TAG
+
+      - name: Update Container App
+        run: |
+          IMAGE_TAG=${GITHUB_SHA::7}
+
+          az containerapp update \
+            --name piggybank-backend \
+            --resource-group piggybank_uni \
+            --image piggybankacr-dfbvbwchhta5bhdg.azurecr.io/piggybank-backend:$IMAGE_TAG

@@ -57,11 +57,19 @@ const TransactionsPage = () => {
       const expenseTypeId = Object.keys(typeMap).find(id => typeMap[id] === "expense");
 
       try {
-        if (incomeTypeId) {
+        if (filters.type_id === incomeTypeId) {
+          const incomeRes = await getTransactionsTotal(filters);
+          setIncomeTotal(incomeRes.data.total);
+          setExpensesTotal(0);
+          return;
+        } else if (filters.type_id ===  expenseTypeId) {
+          const expenseRes = await getTransactionsTotal(filters);
+          setExpensesTotal(expenseRes.data.total);
+          setIncomeTotal(0);
+          return;
+        } else {
           const incomeRes = await getTransactionsTotal({ type_id: incomeTypeId, ...filters });
           setIncomeTotal(incomeRes.data.total);
-        }
-        if (expenseTypeId) {
           const expenseRes = await getTransactionsTotal({ type_id: expenseTypeId, ...filters });
           setExpensesTotal(expenseRes.data.total);
         }

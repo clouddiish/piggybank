@@ -59,12 +59,12 @@ pytest
 
 ### services used
 
-| component | azure Service |
+| component | Azure service |
 |---|---|
-| Database | Azure Database for PostgreSQL Flexible Server |
-| Container Registry | Azure Container Registry |
-| Backend | Azure Container Apps |
-| Frontend | Azure Static Web Apps |
+| database | Azure Database for PostgreSQL flexible server |
+| container registry | Azure Container Registry |
+| backend | Azure Container Apps |
+| frontend | Azure Static Web Apps |
 
 ## CI/CD
 

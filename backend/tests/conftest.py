@@ -1,11 +1,15 @@
 from datetime import date
+from pathlib import Path
 from typing import AsyncGenerator
 from unittest.mock import AsyncMock
 
 import pytest
+from dotenv import load_dotenv
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 import app.db_models
 from app.main import app as fastapi_app
@@ -16,7 +20,6 @@ from app.core.session import get_session
 from app.db_models import User, Role, Type, Category, Transaction, Goal
 from app.db_models.base import Base
 from app.services import UserService, RoleService, TypeService, CategoryService, TransactionService, GoalService
-
 
 settings = get_settings()
 
